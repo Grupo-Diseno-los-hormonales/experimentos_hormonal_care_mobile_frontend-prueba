@@ -54,20 +54,32 @@ class _SignUpPatientState extends State<SignUpPatient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFE5DDE6), // Fondo de la pantalla
       appBar: AppBar(
-        title: Text("Patient's Sign Up"),
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: const Color(0xFFC0A0C3), // Fondo morado del AppBar
+        title: const Text("Patient's Sign Up"),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFC0A0C3), // Fondo morado claro del formulario
+              borderRadius: BorderRadius.circular(15),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -81,23 +93,36 @@ class _SignUpPatientState extends State<SignUpPatient> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage: _image.isNotEmpty ? NetworkImage(_image) : null,
-                      child: _image.isEmpty ? Icon(Icons.camera_alt, size: 50) : null,
+                      child: _image.isEmpty ? const Icon(Icons.camera_alt, size: 50) : null,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  _buildTextField(_firstNameController, 'First Name'),
-                  _buildTextField(_lastNameController, 'Last Name'),
+                  const SizedBox(height: 20),
+                  _buildTextField(_firstNameController, 'Enter your name'),
+                  _buildTextField(_lastNameController, 'Enter your last name'),
                   _buildDropdownField(_genderController, 'Gender', ['Male', 'Female']),
-                  _buildTextField(_birthdayController, 'Birthday'),
-                  _buildTextField(_phoneNumberController, 'Phone Number'),
-                  _buildTextField(_usernameController, 'Username'),
-                  _buildTextField(_passwordController, 'Password', obscureText: true),
+                  _buildTextField(_birthdayController, 'Enter your age'),
+                  _buildTextField(_phoneNumberController, 'Enter your phone number'),
+                  _buildTextField(_usernameController, 'Enter your email'),
+                  _buildTextField(_passwordController, 'Enter your password', obscureText: true),
                   _buildDropdownField(_typeOfBloodController, 'Type of Blood', ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-']),
-                  _buildTextField(_doctorIdController, 'Doctor\'s ID'),
-                  SizedBox(height: 20),
+                  _buildTextField(_doctorIdController, 'Enter your doctor\'s ID'),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submit,
-                    child: Text('Sign Up'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF8F7193), // Fondo morado del botón
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white, // Texto blanco
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -115,8 +140,11 @@ class _SignUpPatientState extends State<SignUpPatient> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
+          filled: true,
+          fillColor: const Color(0xFFE5DDE6), // Fondo morado claro del campo de texto
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
           ),
         ),
         obscureText: obscureText,
@@ -136,8 +164,11 @@ class _SignUpPatientState extends State<SignUpPatient> {
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: label,
+          filled: true,
+          fillColor: const Color(0xFFE5DDE6), // Fondo morado claro del campo de texto
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
           ),
         ),
         value: controller.text.isNotEmpty ? controller.text : null,

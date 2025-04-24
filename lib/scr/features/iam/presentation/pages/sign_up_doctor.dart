@@ -54,11 +54,18 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFE5DDE6), // Fondo de la pantalla
       appBar: AppBar(
-        title: Text("Doctor's Sign Up"),
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: const Color(0xFFC0A0C3), // Fondo morado del AppBar
+        title: const Text("Doctor's Sign Up"),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -68,38 +75,56 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Image upload placeholder
-                  GestureDetector(
-                    onTap: () {
-                      // Implement image picker here
-                    },
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _image.isNotEmpty ? NetworkImage(_image) : null,
-                      child: _image.isEmpty ? Icon(Icons.camera_alt, size: 50) : null,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFFC0A0C3), // Fondo morado claro del formulario
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Image upload placeholder
+                    GestureDetector(
+                      onTap: () {
+                        // Implement image picker here
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _image.isNotEmpty ? NetworkImage(_image) : null,
+                        child: _image.isEmpty ? const Icon(Icons.camera_alt, size: 50) : null,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  _buildTextField(_firstNameController, 'First Name'),
-                  _buildTextField(_lastNameController, 'Last Name'),
-                  _buildDropdownField(_genderController, 'Gender', ['Male', 'Female']),
-                  _buildTextField(_birthdayController, 'Birthday'),
-                  _buildTextField(_phoneNumberController, 'Phone Number'),
-                  _buildTextField(_usernameController, 'Username'),
-                  _buildTextField(_passwordController, 'Password', obscureText: true),
-                  _buildTextField(_medicalLicenseNumberController, 'Medical License Number'),
-                  _buildTextField(_subSpecialtyController, 'SubSpecialty'),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    child: Text('Sign Up'),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    _buildTextField(_firstNameController, 'Enter your name'),
+                    _buildTextField(_lastNameController, 'Enter your last name'),
+                    _buildTextField(_birthdayController, 'Enter your age'),
+                    _buildTextField(_usernameController, 'Enter your email'),
+                    _buildTextField(_passwordController, 'Enter your password', obscureText: true),
+                    _buildTextField(_subSpecialtyController, 'Enter your qualifications'),
+                    _buildTextField(_medicalLicenseNumberController, 'Enter your School Number'),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8F7193), // Fondo morado del botón
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.black, 
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -115,46 +140,17 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
+          filled: true,
+          fillColor: const Color(0xFFE5DDE6), // Fondo morado claro del campo de texto
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
           ),
         ),
         obscureText: obscureText,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter $label';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Widget _buildDropdownField(TextEditingController controller, String label, List<String> items) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-        value: controller.text.isNotEmpty ? controller.text : null,
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            controller.text = newValue!;
-          });
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select $label';
           }
           return null;
         },
