@@ -118,7 +118,7 @@ class _SignUpPatientState extends State<SignUpPatient> {
                     child: const Text(
                       'Sign Up',
                       style: TextStyle(
-                        color: Colors.white, // Texto blanco
+                        color: Colors.black, // Texto blanco
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
