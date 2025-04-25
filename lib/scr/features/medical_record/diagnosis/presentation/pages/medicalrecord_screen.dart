@@ -403,7 +403,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                 print('Prescriptions: ${prescriptionSnapshot.data}');
 
 
-              return FutureBuilder<List<Treatment>>(
+                            return FutureBuilder<List<Treatment>>(
                 future: MedicalRecordService().getTreatmentsByRecordId(medicalRecordId),
                 builder: (context, treatmentSnapshot) {
                   if (treatmentSnapshot.connectionState == ConnectionState.waiting) {
@@ -434,32 +434,27 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               ),
                               SizedBox(height: 10),
                               if (prescriptions.isEmpty)
-                                Center(child: Text('No prescriptions found')),
-
-                                ...prescriptions.map((prescription) {
+                                Center(child: Text('No prescriptions found. Add one below.')),
+                              ...prescriptions.map((prescription) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: Text(
-                                        _formatDate(prescription.prescriptionDate ?? ''), // Manejar valores nulos
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        _formatDate(prescription.prescriptionDate ?? ''),
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                     SizedBox(height: 10),
                                     Text(
-                                      prescription.notes ?? 'No notes available', // Proporcionar un valor predeterminado
+                                      prescription.notes ?? 'No notes available',
                                       style: TextStyle(fontSize: 14),
                                     ),
                                     SizedBox(height: 20),
                                   ],
                                 );
                               }).toList(),
-
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -474,7 +469,6 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                             ],
                           ),
                         ),
-
                         // Medication Section
                         Container(
                           padding: EdgeInsets.all(16),
@@ -539,36 +533,36 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                 ],
                               ),
                               SizedBox(height: 10),
-                              if (medications.isEmpty)
-                                Center(child: Text('No medications found')),
 
+                                                          if (medications.isEmpty)
+                                Center(child: Text('No medications found. Add one below.')),
                               ...medications.map((medication) {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        medication.drugName ?? 'Unknown', // Proporcionar un valor predeterminado
+                                        medication.drugName ?? 'Unknown',
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
-                                        medication.quantity ?? '0', // Proporcionar un valor predeterminado
-                                        style: TextStyle(fontSize: 14),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        medication.concentration ?? '0', // Proporcionar un valor predeterminado
+                                        medication.quantity ?? '0',
                                         style: TextStyle(fontSize: 14),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
-                                        medication.frequency ?? 'Unknown', // Proporcionar un valor predeterminado
+                                        medication.concentration ?? '0',
+                                        style: TextStyle(fontSize: 14),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        medication.frequency ?? 'Unknown',
                                         style: TextStyle(fontSize: 14),
                                         textAlign: TextAlign.center,
                                       ),
@@ -576,8 +570,6 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                   ],
                                 );
                               }).toList(),
-
-                              SizedBox(height: 20),
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -592,7 +584,6 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                             ],
                           ),
                         ),
-
                         // Treatment Section
                         Container(
                           padding: EdgeInsets.all(16),
@@ -612,22 +603,20 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                 ),
                               ),
                               SizedBox(height: 10),
-                              if (treatments.isEmpty && !treatmentSnapshot.hasError)
-                                Center(child: Text('No treatments found')),
-
-                                ...treatments.map((treatment) {
+                              if (treatments.isEmpty)
+                                Center(child: Text('No treatments found. Add one below.')),
+                              ...treatments.map((treatment) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      treatment.description ?? 'No description available', // Proporcionar un valor predeterminado
+                                      treatment.description ?? 'No description available',
                                       style: TextStyle(fontSize: 14),
                                     ),
                                     SizedBox(height: 10),
                                   ],
                                 );
                               }).toList(),
-
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -734,8 +723,8 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                     ),
                     isExpanded: true, // Usar el ancho completo
                     items: prescriptions.map((prescription) {
-                      final formattedDate = DateFormat('yyyy-MM-dd').format(
-                        DateTime.parse(prescription.prescriptionDate),
+                       final formattedDate = DateFormat('yyyy-MM-dd').format(
+                        DateTime.parse(prescription.prescriptionDate ?? '2025-04-26'),
                       );
                       return DropdownMenuItem<int>(
                         value: prescription.id,
@@ -744,8 +733,8 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                             // Usar Flexible para el texto de las notas y limitar su overflow
                             Flexible(
                               child: Text(
-                                prescription.notes,
-                                overflow: TextOverflow.ellipsis, // Recorta si es muy largo
+                                prescription.notes ?? 'No notes available', // Valor predeterminado
+                                overflow: TextOverflow.ellipsis,
                                 softWrap: false,
                               ),
                             ),
@@ -767,6 +756,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
               }
             },
           ),
+
           SizedBox(height: 10),
           TextFormField(
             decoration: InputDecoration(

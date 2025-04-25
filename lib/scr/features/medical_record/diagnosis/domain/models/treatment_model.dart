@@ -1,19 +1,19 @@
 class Treatment {
-  String description;
+  String? description; // Cambiar a nullable
   int medicalRecordId;
 
-  Treatment({required this.description, required this.medicalRecordId});
+  Treatment({this.description, required this.medicalRecordId});
 
   factory Treatment.fromJson(Map<String, dynamic> json) {
     return Treatment(
-      description: json['description'],
+      description: json['description'] ?? 'No description available', // Valor predeterminado
       medicalRecordId: json['medicalRecordId'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'description': description,
+      'description': description ?? '', // Manejar nulos al enviar
       'medicalRecordId': medicalRecordId,
     };
   }

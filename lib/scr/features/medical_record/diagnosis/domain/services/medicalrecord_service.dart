@@ -97,6 +97,7 @@ class MedicalRecordService {
     final response = await http.get(Uri.parse('$treatmentsUrl/$medicalRecordId'), headers: headers);
     if (response.statusCode == 200) {
       final List<dynamic> treatmentsJson = json.decode(response.body);
+      print('Treatments JSON: $treatmentsJson'); // Agregar este print para inspeccionar los datos
       return treatmentsJson.map((json) => Treatment.fromJson(json)).toList();
     } else {
       print('Error fetching treatments: ${response.body}');
