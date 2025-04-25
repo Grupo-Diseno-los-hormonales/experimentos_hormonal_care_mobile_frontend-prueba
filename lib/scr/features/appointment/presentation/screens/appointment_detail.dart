@@ -69,14 +69,14 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
     return '${dateFormatter.format(parsedDate)} ${timeFormatter.format(parsedStartTime)} - ${timeFormatter.format(parsedEndTime)}';
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     if (_appointmentDetails == null || _patientDetails == null) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFF6A828D),
+          backgroundColor: Color(0xFF8F7193), // Fondo del AppBar
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back, color: Color(0xFFE5DDE6)), // Color del ícono
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -84,7 +84,7 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
           title: Text(
             'Appointment Detail',
             style: TextStyle(
-              color: Colors.white,
+              color: Color(0xFFE5DDE6), // Color del texto
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -95,12 +95,12 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
         ),
       );
     }
-
+  
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: Color(0xFF8F7193), // Fondo del AppBar
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Color(0xFFE5DDE6)), // Color del ícono
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -108,7 +108,7 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
         title: Text(
           'Appointment Detail',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFFE5DDE6), // Color del texto
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -123,10 +123,10 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
               child: Container(
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFF40535B),
+                  color: Color(0xFFA788AB), // Fondo del contenedor
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                width: MediaQuery.of(context).size.width * 0.8, // Adjust width to be 80% of screen width
+                width: MediaQuery.of(context).size.width * 0.8,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -135,13 +135,13 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                           ? NetworkImage(_patientDetails!['image'])
                           : null,
                       radius: 20,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Color(0xFFE5DDE6), // Fondo del avatar
                     ),
                     SizedBox(width: 8),
                     Text(
                       _patientDetails!['fullName'],
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFE5DDE6), // Color del texto
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -159,14 +159,19 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                     height: 24,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color(int.parse(_appointmentDetails!['color'].startsWith('0x') ? _appointmentDetails!['color'] : '0x${_appointmentDetails!['color']}')),
+                      color: Color(int.parse(_appointmentDetails!['color'].startsWith('0x')
+                          ? _appointmentDetails!['color']
+                          : '0x${_appointmentDetails!['color']}')),
                     ),
                   ),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _appointmentDetails!['title'],
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF8F7193), // Color del texto
+                      ),
                     ),
                   ),
                 ],
@@ -177,7 +182,10 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
               width: MediaQuery.of(context).size.width * 0.8,
               child: Text(
                 _formatDate(_appointmentDetails!['eventDate'], _appointmentDetails!['startTime'], _appointmentDetails!['endTime']),
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color(0xFF8F7193), // Color del texto
+                ),
               ),
             ),
             SizedBox(height: 8),
@@ -194,14 +202,14 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                           SnackBar(content: Text('Meeting link copied to clipboard')),
                         );
                       },
-                      icon: Icon(Icons.copy, color: Colors.blue),
+                      icon: Icon(Icons.copy, color: Color(0xFF8F7193)), // Color del ícono
                       label: Text(
                         'Copy Link',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey),
+                        backgroundColor: Color(0xFFE5DDE6), // Fondo del botón
+                        side: BorderSide(color: Color(0xFFA788AB)), // Borde del botón
                       ),
                     ),
                   ),
@@ -218,22 +226,22 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                           );
                         }
                       },
-                      icon: Icon(Icons.link, color: Colors.blue),
+                      icon: Icon(Icons.link, color: Color(0xFF8F7193)), // Color del ícono
                       label: Text(
                         'Join Meeting',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey),
+                        backgroundColor: Color(0xFFE5DDE6), // Fondo del botón
+                        side: BorderSide(color: Color(0xFFA788AB)), // Borde del botón
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            Spacer(), // Pushes the buttons to the bottom
-                        Container(
+            Spacer(),
+            Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,17 +250,20 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                     child: ElevatedButton.icon(
                       onPressed: _deleteAppointment,
                       icon: Icon(Icons.delete, color: Colors.white),
-                      label: Text('Delete', style: TextStyle(color: Colors.white, fontSize: 18)), // Aumenta el tamaño del texto
+                      label: Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: EdgeInsets.symmetric(vertical: 16), // Aumenta el padding vertical
+                        backgroundColor: Colors.red, // Fondo del botón
+                        padding: EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 16), // Espacio entre los botones
+                  SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
@@ -265,16 +276,19 @@ class _AppointmentDetailState extends State<AppointmentDetail> {
                             ),
                           ),
                         );
-            
+  
                         if (result == true) {
-                          Navigator.of(context).pop(true); // Return true to indicate success
+                          Navigator.of(context).pop(true);
                         }
                       },
-                      icon: Icon(Icons.edit, color: Colors.white),
-                      label: Text('Edit', style: TextStyle(color: Colors.white, fontSize: 18)), // Aumenta el tamaño del texto
+                      icon: Icon(Icons.edit, color: Color(0xFFE5DDE6)), // Color del ícono
+                      label: Text(
+                        'Edit',
+                        style: TextStyle(color: Color(0xFFE5DDE6), fontSize: 18), // Color del texto
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF40535B),
-                        padding: EdgeInsets.symmetric(vertical: 16), // Aumenta el padding vertical
+                        backgroundColor: Color(0xFF8F7193), // Fondo del botón
+                        padding: EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),

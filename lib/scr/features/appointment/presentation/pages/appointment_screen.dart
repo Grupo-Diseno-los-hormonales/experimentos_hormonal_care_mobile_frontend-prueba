@@ -74,13 +74,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         title: Text(
           'Medical Appointments',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFFE5DDE6), // Color del texto
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF6A828D),
-        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF8F7193), // Color de fondo
+        iconTheme: IconThemeData(color: Color(0xFFE5DDE6)), // Color de los íconos
       ),
       drawer: Drawer(
         child: ListView(
@@ -88,35 +88,44 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Color(0xFF6A828D),
+                color: Color(0xFF8F7193), // Fondo del encabezado
               ),
               child: Text(
                 'Calendar View',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Color(0xFFE5DDE6), // Color del texto
                   fontSize: 24,
                 ),
               ),
             ),
             ListTile(
-              leading: Icon(Icons.view_day),
-              title: Text('Day'),
+              leading: Icon(Icons.view_day, color: Color(0xFF8F7193)), // Color del ícono
+              title: Text(
+                'Day',
+                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
+              ),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.day);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_week),
-              title: Text('Week'),
+              leading: Icon(Icons.view_week, color: Color(0xFF8F7193)), // Color del ícono
+              title: Text(
+                'Week',
+                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
+              ),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.week);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_agenda),
-              title: Text('Month Agenda View'),
+              leading: Icon(Icons.view_agenda, color: Color(0xFF8F7193)), // Color del ícono
+              title: Text(
+                'Month Agenda View',
+                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
+              ),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.month);
                 Navigator.pop(context);
@@ -134,7 +143,30 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 view: _calendarView,
                 dataSource: calendarDataSource,
                 initialDisplayDate: DateTime.now(),
-                monthViewSettings: MonthViewSettings(showAgenda: true),
+                backgroundColor: Color(0xFFE5DDE6), // Fondo del calendario
+                headerStyle: CalendarHeaderStyle(
+                  textStyle: TextStyle(
+                    color: Color(0xFF8F7193), // Color del texto del encabezado
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                viewHeaderStyle: ViewHeaderStyle(
+                  backgroundColor: Color(0xFFA788AB), // Fondo de los días de la semana
+                  dayTextStyle: TextStyle(
+                    color: Color(0xFFE5DDE6), // Color del texto de los días
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                monthViewSettings: MonthViewSettings(
+                  showAgenda: true,
+                  agendaStyle: AgendaStyle(
+                    backgroundColor: Color(0xFFE5DDE6), // Fondo de la agenda
+                    appointmentTextStyle: TextStyle(
+                      color: Color(0xFF8F7193), // Color del texto de las citas
+                    ),
+                  ),
+                ),
                 onTap: _calendarView == CalendarView.month ? null : _calendarTapped,
               ),
             ),

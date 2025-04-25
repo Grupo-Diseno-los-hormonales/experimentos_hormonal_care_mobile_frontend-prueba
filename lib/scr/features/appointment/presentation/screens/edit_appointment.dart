@@ -217,21 +217,21 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
     );
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Color(0xFFE5DDE6)), // Color del ícono
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: Color(0xFF8F7193), // Fondo del AppBar
         title: Text(
           'Edit Appointment',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFFE5DDE6), // Color del texto
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -249,13 +249,13 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                     onTap: () => _selectPatient(context),
                     child: Row(
                       children: [
-                        Icon(Icons.person, color: Colors.grey),
+                        Icon(Icons.person, color: Color(0xFF8F7193)), // Color del ícono
                         SizedBox(width: 10),
                         Text(
                           _patients.isNotEmpty
                               ? _patients.firstWhere((patient) => patient['patientId'] == _selectedPatientId, orElse: () => {'fullName': 'Unknown'})['fullName'] ?? 'Unknown'
                               : 'Unknown',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ],
                     ),
@@ -265,7 +265,7 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                 _buildContainer(
                   child: Row(
                     children: [
-                      Icon(Icons.title, color: Colors.grey),
+                      Icon(Icons.title, color: Color(0xFF8F7193)), // Color del ícono
                       SizedBox(width: 10),
                       Expanded(
                         child: TextField(
@@ -274,7 +274,7 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                             labelText: 'Title',
                             border: InputBorder.none,
                           ),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ),
                     ],
@@ -286,11 +286,11 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                     onTap: () => _selectDate(context),
                     child: Row(
                       children: [
-                        Icon(Icons.calendar_today, color: Colors.grey),
+                        Icon(Icons.calendar_today, color: Color(0xFF8F7193)), // Color del ícono
                         SizedBox(width: 10),
                         Text(
                           DateFormat('EEE, d \'of\' MMMM \'yyyy').format(_selectedDate),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ],
                     ),
@@ -302,11 +302,11 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                     onTap: () => _selectTime(context, true),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, color: Colors.grey),
+                        Icon(Icons.access_time, color: Color(0xFF8F7193)), // Color del ícono
                         SizedBox(width: 10),
                         Text(
                           _formatTimeOfDay(_startTime),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ],
                     ),
@@ -318,11 +318,11 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                     onTap: () => _selectTime(context, false),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, color: Colors.grey),
+                        Icon(Icons.access_time, color: Color(0xFF8F7193)), // Color del ícono
                         SizedBox(width: 10),
                         Text(
                           _formatTimeOfDay(_endTime),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ],
                     ),
@@ -334,7 +334,7 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                     onTap: () => _selectColor(context),
                     child: Row(
                       children: [
-                        Icon(Icons.color_lens, color: Colors.grey),
+                        Icon(Icons.color_lens, color: Color(0xFF8F7193)), // Color del ícono
                         SizedBox(width: 10),
                         Container(
                           width: 24,
@@ -349,7 +349,7 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
                           _colors.isNotEmpty
                               ? _colors.firstWhere((color) => color['color'] == _selectedColor, orElse: () => {'name': 'Unknown'})['name'] ?? 'Unknown'
                               : 'Unknown',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, color: Color(0xFF8F7193)), // Color del texto
                         ),
                       ],
                     ),
@@ -364,9 +364,9 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
           onPressed: _updateAppointment,
-          child: Text('Save', style: TextStyle(color: Colors.white)),
+          child: Text('Save', style: TextStyle(color: Color(0xFFE5DDE6))), // Color del texto
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF40535B),
+            backgroundColor: Color(0xFF8F7193), // Fondo del botón
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -376,13 +376,13 @@ class _EditAppointmentScreenState extends State<EditAppointmentScreen> {
       ),
     );
   }
-
+  
   Widget _buildContainer({required Widget child}) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Color(0xFFA788AB)), // Color del borde
       ),
       child: child,
     );
