@@ -242,6 +242,7 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
     child: TabBarView(
       controller: _tabController,
       children: [
+
         _buildPatientHistoryTab(patient),
         _buildDiagnosisAndTreatmentsTab(patient.id), // Usar el medicalRecordId
         _buildMedicalTestsTab(patient.id), // Convertir patientId y medicalRecordId a String
@@ -250,61 +251,60 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
     ),
   );
 }
-
-Widget _buildPatientHistoryTab(Patient patient) {
-  return ListView(
-    padding: EdgeInsets.all(16),
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Personal history:',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () => _showEditDialog('Personal history', patient.personalHistory, (newValue) {
-              _updatePersonalHistory(patient.id, newValue);
-            }),
-          ),
-        ],
-      ),
-      SizedBox(height: 10),
-      Text(
-        patient.personalHistory,
-        style: TextStyle(fontSize: 16),
-      ),
-      SizedBox(height: 20),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Family history:',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () => _showEditDialog('Family history', patient.familyHistory, (newValue) {
-              _updateFamilyHistory(patient.id, newValue);
-            }),
-          ),
-        ],
-      ),
-      SizedBox(height: 10),
-      Text(
-        patient.familyHistory,
-        style: TextStyle(fontSize: 16),
-      ),
-    ],
-  );
-}
+ Widget _buildPatientHistoryTab(Patient patient) {
+   return ListView(
+     padding: EdgeInsets.all(16),
+     children: [
+       Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           Text(
+             'Personal history:',
+             style: TextStyle(
+               fontSize: 18,
+               fontWeight: FontWeight.bold,
+             ),
+           ),
+           IconButton(
+             icon: Icon(Icons.edit),
+             onPressed: () => _showEditDialog('Personal history', patient.personalHistory, (newValue) {
+               _updatePersonalHistory(patient.id, newValue);
+             }),
+           ),
+         ],
+       ),
+       SizedBox(height: 10),
+       Text(
+         patient.personalHistory,
+         style: TextStyle(fontSize: 16),
+       ),
+       SizedBox(height: 20),
+       Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           Text(
+             'Family history:',
+             style: TextStyle(
+               fontSize: 18,
+               fontWeight: FontWeight.bold,
+             ),
+           ),
+           IconButton(
+             icon: Icon(Icons.edit),
+             onPressed: () => _showEditDialog('Family history', patient.familyHistory, (newValue) {
+               _updateFamilyHistory(patient.id, newValue);
+             }),
+           ),
+         ],
+       ),
+       SizedBox(height: 10),
+       Text(
+         patient.familyHistory,
+         style: TextStyle(fontSize: 16),
+       ),
+     ],
+   );
+ }
 
 void _showEditDialog(String title, String initialValue, Function(String) onSave) {
   final TextEditingController _controller = TextEditingController(text: initialValue);
@@ -341,36 +341,35 @@ void _showEditDialog(String title, String initialValue, Function(String) onSave)
   );
 }
 
-void _updatePersonalHistory(int patientId, String newPersonalHistory) async {
-  try {
-    final response = await MedicalRecordService().updatePersonalHistory(patientId, newPersonalHistory);
-    if (response.statusCode == 200) {
-      setState(() {
-        _patientFuture = MedicalRecordService().getPatientById(widget.patientId);
-      });
-    } else {
-      print('Error updating personal history: ${response.body}');
+  void _updatePersonalHistory(int patientId, String newPersonalHistory) async {
+    try {
+      final response = await MedicalRecordService().updatePersonalHistory(patientId, newPersonalHistory);
+      if (response.statusCode == 200) {
+        setState(() {
+          _patientFuture = MedicalRecordService().getPatientById(widget.patientId);
+        });
+      } else {
+        print('Error updating personal history: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception updating personal history: $e');
     }
-  } catch (e) {
-    print('Exception updating personal history: $e');
   }
-}
 
-void _updateFamilyHistory(int patientId, String newFamilyHistory) async {
-  try {
-    final response = await MedicalRecordService().updateFamilyHistory(patientId, newFamilyHistory);
-    if (response.statusCode == 200) {
-      setState(() {
-        _patientFuture = MedicalRecordService().getPatientById(widget.patientId);
-      });
-    } else {
-      print('Error updating family history: ${response.body}');
+  void _updateFamilyHistory(int patientId, String newFamilyHistory) async {
+    try {
+      final response = await MedicalRecordService().updateFamilyHistory(patientId, newFamilyHistory);
+      if (response.statusCode == 200) {
+        setState(() {
+          _patientFuture = MedicalRecordService().getPatientById(widget.patientId);
+        });
+      } else {
+        print('Error updating family history: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception updating family history: $e');
     }
-  } catch (e) {
-    print('Exception updating family history: $e');
   }
-}
-
 
 
 
