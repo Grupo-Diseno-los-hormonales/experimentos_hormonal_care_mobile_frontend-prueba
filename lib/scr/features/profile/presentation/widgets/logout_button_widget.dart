@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/domain/services/auth_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 
 class LogoutButtonWidget extends StatelessWidget {
   const LogoutButtonWidget({Key? key}) : super(key: key);

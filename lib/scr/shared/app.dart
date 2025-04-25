@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/shared/presentation/pages/home_screen.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/presentation/pages/sign_in.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/sign_in.dart';
 
 class MyApp extends StatelessWidget {
   @override

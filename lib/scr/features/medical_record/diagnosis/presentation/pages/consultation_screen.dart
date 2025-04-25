@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/diagnosis/presentation/widgets/edit_modal.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/diagnosis/presentation/widgets/editable_field.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/diagnosis/presentation/widgets/medication_section.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/diagnosis/presentation/widgets/lab_test_section.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/profile/data/data_sources/remote/patient_service.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/profile/data/data_sources/remote/profile_service.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/medical_prescription/domain/models/patient_model.dart'; // Importa el modelo de paciente
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/presentation/widgets/edit_modal.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/presentation/widgets/editable_field.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/presentation/widgets/medication_section.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/presentation/widgets/lab_test_section.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/patient_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/medical_prescription/domain/models/patient_model.dart'; // Importa el modelo de paciente
 import 'package:intl/intl.dart'; // Importa el paquete intl para formatear fechas
 
 class ConsultationScreen extends StatefulWidget {

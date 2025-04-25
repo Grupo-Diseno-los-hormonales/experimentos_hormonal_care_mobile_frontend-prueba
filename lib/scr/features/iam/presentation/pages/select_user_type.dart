@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/presentation/pages/sign_up_doctor.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/presentation/pages/sign_up_patient.dart';
-import 'package:trabajo_moviles_ninjacode/scr/core/utils/usecases/jwt_storage.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/sign_up_doctor.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/sign_up_patient.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 
 class SelectUserType extends StatelessWidget {
   @override

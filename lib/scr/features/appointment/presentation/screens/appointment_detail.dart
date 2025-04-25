@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/appointment/presentation/screens/edit_appointment.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/edit_appointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppointmentDetail extends StatefulWidget {

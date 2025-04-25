@@ -1,12 +1,12 @@
 import 'dart:math'; // Importa Random para JitsiMeetingLinkGenerator
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/appointment/data/repositories/medical_appointment_repository.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/appointment/presentation/widgets/custom_buttons.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/repositories/medical_appointment_repository.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/widgets/custom_buttons.dart';
 import 'package:confetti/confetti.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:trabajo_moviles_ninjacode/scr/core/utils/usecases/jwt_storage.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 
 class JitsiMeetingLinkGenerator {
   static const String _baseUrl = 'https://meet.jit.si/';

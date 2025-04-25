@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/domain/services/auth_service.dart';
-import 'package:trabajo_moviles_ninjacode/scr/shared/presentation/pages/home_screen.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/presentation/pages/select_user_type.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/select_user_type.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
