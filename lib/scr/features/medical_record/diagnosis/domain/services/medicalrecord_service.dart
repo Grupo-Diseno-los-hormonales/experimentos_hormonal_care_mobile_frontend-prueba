@@ -183,7 +183,7 @@ Future<http.Response> updatePersonalHistory(int patientId, String personalHistor
   };
 
   final response = await http.put(
-    Uri.parse('https://hormonal-care-backend-production.up.railway.app/api/v1/medical-record/patient/personal-history/$patientId'),
+    Uri.parse('http://localhost:8080/api/v1/medical-record/patient/personal-history/$patientId'),
     headers: headers,
     body: json.encode({'personalHistory': personalHistory}),
   );
@@ -199,7 +199,7 @@ Future<http.Response> updateFamilyHistory(int patientId, String familyHistory) a
   };
 
   final response = await http.put(
-    Uri.parse('https://hormonal-care-backend-production.up.railway.app/api/v1/medical-record/patient/family-history/$patientId'),
+    Uri.parse('http://localhost:8080/api/v1/medical-record/patient/family-history/$patientId'),
     headers: headers,
     body: json.encode({'familyHistory': familyHistory}),
   );

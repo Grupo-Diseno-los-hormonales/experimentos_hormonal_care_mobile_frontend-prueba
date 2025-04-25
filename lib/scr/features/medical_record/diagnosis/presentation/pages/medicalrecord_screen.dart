@@ -389,6 +389,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
         return Center(child: Text('Error: ${medicationSnapshot.error}'));
       } else {
         final medications = medicationSnapshot.data ?? [];
+        print('Medications: ${medicationSnapshot.data}');
 
         return FutureBuilder<List<Prescription>>(
           future: MedicalRecordService().getPrescriptionsByRecordId(medicalRecordId),
@@ -399,6 +400,8 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                 return Center(child: Text('Error: ${prescriptionSnapshot.error}'));
               } else {
                 final prescriptions = prescriptionSnapshot.data ?? [];
+                print('Prescriptions: ${prescriptionSnapshot.data}');
+
 
               return FutureBuilder<List<Treatment>>(
                 future: MedicalRecordService().getTreatmentsByRecordId(medicalRecordId),
@@ -407,7 +410,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                     return Center(child: CircularProgressIndicator());
                   } else {
                     final treatments = treatmentSnapshot.data ?? [];
-
+                    print('Treatments: ${treatmentSnapshot.data}');
                     return ListView(
                       padding: EdgeInsets.all(16),
                       children: [
@@ -432,14 +435,15 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               SizedBox(height: 10),
                               if (prescriptions.isEmpty)
                                 Center(child: Text('No prescriptions found')),
-                              ...prescriptions.map((prescription) {
+
+                                ...prescriptions.map((prescription) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: Text(
-                                        _formatDate(prescription.prescriptionDate),
+                                        _formatDate(prescription.prescriptionDate ?? ''), // Manejar valores nulos
                                         style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -448,13 +452,14 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                     ),
                                     SizedBox(height: 10),
                                     Text(
-                                      prescription.notes,
+                                      prescription.notes ?? 'No notes available', // Proporcionar un valor predeterminado
                                       style: TextStyle(fontSize: 14),
                                     ),
                                     SizedBox(height: 20),
                                   ],
                                 );
                               }).toList(),
+
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -536,33 +541,34 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               SizedBox(height: 10),
                               if (medications.isEmpty)
                                 Center(child: Text('No medications found')),
+
                               ...medications.map((medication) {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        medication.drugName,
+                                        medication.drugName ?? 'Unknown', // Proporcionar un valor predeterminado
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
-                                        medication.quantity,
-                                        style: TextStyle(fontSize: 14),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        medication.concentration,
+                                        medication.quantity ?? '0', // Proporcionar un valor predeterminado
                                         style: TextStyle(fontSize: 14),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
-                                        medication.frequency,
+                                        medication.concentration ?? '0', // Proporcionar un valor predeterminado
+                                        style: TextStyle(fontSize: 14),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        medication.frequency ?? 'Unknown', // Proporcionar un valor predeterminado
                                         style: TextStyle(fontSize: 14),
                                         textAlign: TextAlign.center,
                                       ),
@@ -570,6 +576,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                   ],
                                 );
                               }).toList(),
+
                               SizedBox(height: 20),
                               Center(
                                 child: ElevatedButton(
@@ -607,18 +614,20 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               SizedBox(height: 10),
                               if (treatments.isEmpty && !treatmentSnapshot.hasError)
                                 Center(child: Text('No treatments found')),
-                              ...treatments.map((treatment) {
+
+                                ...treatments.map((treatment) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      treatment.description,
+                                      treatment.description ?? 'No description available', // Proporcionar un valor predeterminado
                                       style: TextStyle(fontSize: 14),
                                     ),
                                     SizedBox(height: 10),
                                   ],
                                 );
                               }).toList(),
+
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
