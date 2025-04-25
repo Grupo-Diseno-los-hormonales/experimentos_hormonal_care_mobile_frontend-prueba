@@ -170,5 +170,43 @@ Future<List<MedicalType>> fetchMedicalTypes() async {
       throw Exception('Failed to load medical types');
     }
   }
+
+
+
+
+
+Future<http.Response> updatePersonalHistory(int patientId, String personalHistory) async {
+  final token = await JwtStorage.getToken();
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+
+  final response = await http.put(
+    Uri.parse('https://hormonal-care-backend-production.up.railway.app/api/v1/medical-record/patient/personal-history/$patientId'),
+    headers: headers,
+    body: json.encode({'personalHistory': personalHistory}),
+  );
+
+  return response;
+}
+
+Future<http.Response> updateFamilyHistory(int patientId, String familyHistory) async {
+  final token = await JwtStorage.getToken();
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+
+  final response = await http.put(
+    Uri.parse('https://hormonal-care-backend-production.up.railway.app/api/v1/medical-record/patient/family-history/$patientId'),
+    headers: headers,
+    body: json.encode({'familyHistory': familyHistory}),
+  );
+
+  return response;
+}
+
+
 }
 
