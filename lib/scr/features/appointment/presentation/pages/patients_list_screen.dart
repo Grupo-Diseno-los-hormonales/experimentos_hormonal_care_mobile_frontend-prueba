@@ -52,6 +52,7 @@ class _HomePatientsScreenState extends State<HomePatientsScreen> {
       for (var appointment in appointments) {
         final patientDetails = await _patientService.fetchPatientDetails(appointment['patientId']);
         final profileDetails = await _profileService.fetchProfileDetails(patientDetails['profileId']);
+        final age = _calculateAge(profileDetails['birthday']); // Calcular edad
         fetchedPatients.add({
           'name': profileDetails['fullName'] ?? 'No name',
           'time': appointment['startTime'] ?? 'No start time',
@@ -63,6 +64,7 @@ class _HomePatientsScreenState extends State<HomePatientsScreen> {
           'description': appointment['description'] ?? 'No description',
           'color': appointment['color'] ?? '0xFF039BE5',
           'appointmentId': appointment['id'].toString(),
+          'age': age.toString(), // Agregar edad al mapa
         });
       }
 
@@ -83,6 +85,17 @@ class _HomePatientsScreenState extends State<HomePatientsScreen> {
         isLoading = false;
       });
     }
+  }
+
+  int _calculateAge(String? birthday) {
+    if (birthday == null) return 0;
+    final birthDate = DateTime.parse(birthday);
+    final today = DateTime.now();
+    int age = today.year - birthDate.year;
+    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   @override
