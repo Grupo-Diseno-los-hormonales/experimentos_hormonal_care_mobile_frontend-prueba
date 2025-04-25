@@ -99,12 +99,19 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
                   SizedBox(height: 10),
                   _buildInfoField('Type of blood', patient.typeOfBlood),
                   SizedBox(height: 20),
+
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF8F7193), // Color de fondo
+                      foregroundColor: Color(0xFFE5DDE6), // Color del texto
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: Text('Close'),
                   ),
+
+
                 ],
               ),
             ),
@@ -165,12 +172,12 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
     return age;
   }
 
-  Widget _buildPatientHeader(Patient patient) {
+   Widget _buildPatientHeader(Patient patient) {
     return GestureDetector(
       onTap: () => _showPatientInfo(patient),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF4B5A62),
+          color: Color(0xFF8F7193), // Cambiado a tu color de fondo
           borderRadius: BorderRadius.circular(12),
         ),
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -182,9 +189,9 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
                 CircleAvatar(
                   radius: 20,
                   backgroundImage: NetworkImage(_getImageUrl(patient.profile?.image)),
-                  backgroundColor: Colors.blueGrey[200],
+                  backgroundColor: Color(0xFFA788AB), // Color de fondo del avatar
                   child: patient.profile?.image == null || patient.profile!.image.isEmpty
-                      ? Icon(Icons.person, color: Colors.white)
+                      ? Icon(Icons.person, color: Color(0xFFE5DDE6)) // Color del ícono
                       : null,
                 ),
                 SizedBox(width: 10),
@@ -194,7 +201,7 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
                     Text(
                       patient.profile?.fullName ?? 'Unknown',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFE5DDE6), // Color del texto
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -206,7 +213,7 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
             Text(
               'Age: ${calculateAge(patient.profile?.birthday)}',
               style: TextStyle(
-                color: Colors.white,
+                color: Color(0xFFE5DDE6), // Color del texto
                 fontSize: 16,
               ),
             ),
@@ -223,9 +230,9 @@ class _MedicalRecordScreenState extends State<MedicalRecordScreen> with SingleTi
       child: TabBar(
         controller: _tabController,
         isScrollable: true,
-        indicatorColor: Colors.black,
-        labelColor: Colors.black,
-        unselectedLabelColor: Colors.grey,
+        indicatorColor: Color(0xFFE5DDE6), // Color del indicador
+        labelColor: Color(0xFFA788AB), // Color del texto seleccionado
+        unselectedLabelColor: Color(0xFF8F7193), // Color del texto no seleccionado
         labelStyle: TextStyle(fontWeight: FontWeight.bold),
         tabs: [
           Tab(text: 'Patient History'),
@@ -313,7 +320,11 @@ void _showEditDialog(String title, String initialValue, Function(String) onSave)
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Edit $title'),
+         backgroundColor: Color(0xFFE5DDE6), // Fondo del diálogo
+         
+        title: Text('Edit $title',
+        style: TextStyle(color: Color(0xFF8F7193)), // Color del título
+        ),
         content: TextField(
           controller: _controller,
           maxLines: 5,
@@ -329,6 +340,10 @@ void _showEditDialog(String title, String initialValue, Function(String) onSave)
             child: Text('Cancel'),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF8F7193), // Color de fondo
+              foregroundColor: Color(0xFFE5DDE6), // Color del texto
+            ),
             onPressed: () {
               onSave(_controller.text);
               Navigator.of(context).pop();
@@ -419,7 +434,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                           padding: EdgeInsets.all(16),
                           margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Color(0xFFE5DDE6), // Fondo del contenedor
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
@@ -430,11 +445,18 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF8F7193), // Color del texto
                                 ),
                               ),
                               SizedBox(height: 10),
                               if (prescriptions.isEmpty)
-                                Center(child: Text('No prescriptions found. Add one below.')),
+                                Center(
+                                  child: Text(
+                                    'No prescriptions found. Add one below.',
+                                    style: TextStyle(color: Color(0xFFA788AB)), // Color del texto
+                                  ),
+                                  ),
+                                
                               ...prescriptions.map((prescription) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,6 +479,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               }).toList(),
                               Center(
                                 child: ElevatedButton(
+                                   style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF8F7193), // Color de fondo
+                                  foregroundColor: Color(0xFFE5DDE6), // Color del texto
+                                ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
@@ -474,7 +500,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                           padding: EdgeInsets.all(16),
                           margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Color(0xFFE5DDE6), // Fondo del contenedor
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
@@ -485,6 +511,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF8F7193), // Color del texto
                                 ),
                               ),
                               SizedBox(height: 10),
@@ -535,7 +562,9 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               SizedBox(height: 10),
 
                                                           if (medications.isEmpty)
-                                Center(child: Text('No medications found. Add one below.')),
+                                Center(child: Text('No medications found. Add one below.',
+                                style: TextStyle(color: Color(0xFFA788AB)), // Color del texto
+                                )),
                               ...medications.map((medication) {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -572,6 +601,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               }).toList(),
                               Center(
                                 child: ElevatedButton(
+                                   style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF8F7193), // Color de fondo
+                                        foregroundColor: Color(0xFFE5DDE6), // Color del texto
+                                      ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
@@ -589,7 +622,7 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                           padding: EdgeInsets.all(16),
                           margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Color(0xFFE5DDE6), // Fondo del contenedor
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
@@ -600,11 +633,14 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF8F7193), // Color del texto
                                 ),
                               ),
                               SizedBox(height: 10),
                               if (treatments.isEmpty)
-                                Center(child: Text('No treatments found. Add one below.')),
+                                Center(child: Text('No treatments found. Add one below.',
+                                style: TextStyle(color: Color(0xFFA788AB)), // Color del texto
+                                )),
                               ...treatments.map((treatment) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,6 +655,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
                               }).toList(),
                               Center(
                                 child: ElevatedButton(
+                                   style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF8F7193), // Color de fondo
+                                    foregroundColor: Color(0xFFE5DDE6), // Color del texto
+                                  ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
@@ -669,7 +709,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
 
     
     return AlertDialog(
-  title: Text('Add Diagnosis'),
+       backgroundColor: Color(0xFFE5DDE6), // Fondo del diálogo
+  title: Text('Add Diagnosis',
+  style: TextStyle(color: Color(0xFF8F7193)), // Color del título
+  ),
   content: Form(
     key: _formKey,
     child: SingleChildScrollView(
@@ -829,6 +872,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
       child: Text('Cancel'),
     ),
     ElevatedButton(
+       style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF8F7193), // Color de fondo
+              foregroundColor: Color(0xFFE5DDE6), // Color del texto
+            ),
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
@@ -899,7 +946,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
     }
 
     return AlertDialog(
-      title: Text('Add Prescription'),
+       backgroundColor: Color(0xFFE5DDE6), // Fondo del diálogo
+      title: Text('Add Prescription',
+      style: TextStyle(color: Color(0xFF8F7193)), // Color del título
+      ),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -936,6 +986,10 @@ Widget _buildDiagnosisAndTreatmentsTab(int medicalRecordId) {
           child: Text('Cancel'),
         ),
         ElevatedButton(
+           style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF8F7193), // Color de fondo
+              foregroundColor: Color(0xFFE5DDE6), // Color del texto
+            ),
           onPressed: _submitPrescriptionForm,
           child: Text('Submit'),
         ),
@@ -970,7 +1024,10 @@ Widget _AddTreatmentDialog(int medicalRecordId) {
   }
 
   return AlertDialog(
-    title: Text('Add Treatment'),
+    backgroundColor: Color(0xFFE5DDE6), // Fondo del diálogo
+    title: Text('Add Treatment',
+    style: TextStyle(color: Color(0xFF8F7193)), // Color del título
+    ),
     content: Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -979,6 +1036,7 @@ Widget _AddTreatmentDialog(int medicalRecordId) {
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Description',
+                labelStyle: TextStyle(color: Color(0xFF8F7193)), // Color del label
                 border: OutlineInputBorder(),
               ),
               onSaved: (value) => _treatment.description = value!,
@@ -993,6 +1051,10 @@ Widget _AddTreatmentDialog(int medicalRecordId) {
         child: Text('Cancel'),
       ),
       ElevatedButton(
+         style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF8F7193), // Color de fondo
+              foregroundColor: Color(0xFFE5DDE6), // Color del texto
+            ),
         onPressed: _submitTreatmentForm,
         child: Text('Submit'),
       ),
@@ -1386,16 +1448,17 @@ Widget _buildReportItem(String reportName, String url, DateTime? modificationDat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Medical record',
+    appBar: AppBar(
+        title: Text(
+          'Medical record',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFFE5DDE6), // Color del texto
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF6A828D),
-        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF8F7193), // Color de fondo
+        iconTheme: IconThemeData(color: Color(0xFFE5DDE6)), // Color de los íconos
       ),
       body: FutureBuilder<Patient>(
         future: _patientFuture,
