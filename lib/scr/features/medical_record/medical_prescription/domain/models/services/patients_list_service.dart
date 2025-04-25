@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:trabajo_moviles_ninjacode/scr/core/utils/usecases/jwt_storage.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/iam/domain/services/auth_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 import '../patient_model.dart';
 import '../profile_model.dart';
 

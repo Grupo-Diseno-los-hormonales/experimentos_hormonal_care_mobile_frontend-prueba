@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/notifications/data/data_sources/remote/notifications_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/notifications/data/data_sources/remote/notifications_service.dart';
 import 'package:intl/intl.dart';
 
 class NotificationScreen extends StatefulWidget {

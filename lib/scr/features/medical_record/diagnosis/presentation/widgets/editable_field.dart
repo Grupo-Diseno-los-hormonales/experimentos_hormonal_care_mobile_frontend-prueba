@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/diagnosis/presentation/widgets/edit_modal.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/presentation/widgets/edit_modal.dart';
 
 class EditableField extends StatelessWidget {
   final String label;

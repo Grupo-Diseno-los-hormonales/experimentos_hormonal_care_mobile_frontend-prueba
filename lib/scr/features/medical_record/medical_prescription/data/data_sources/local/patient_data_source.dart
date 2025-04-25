@@ -1,4 +1,4 @@
-import 'package:trabajo_moviles_ninjacode/scr/features/medical_record/medical_prescription/domain/models/patient_model.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/medical_prescription/domain/models/patient_model.dart';
 import '../../../domain/models/services/patients_list_service.dart';
 
 class PatientsDataSource {

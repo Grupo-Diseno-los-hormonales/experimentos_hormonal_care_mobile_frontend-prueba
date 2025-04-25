@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:trabajo_moviles_ninjacode/scr/core/utils/usecases/jwt_storage.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import '../../../medical_prescription/domain/models/patient_model.dart';
 import '../../../medical_prescription/domain/models/profile_model.dart';
 import '../../domain/models/medication_model.dart';
