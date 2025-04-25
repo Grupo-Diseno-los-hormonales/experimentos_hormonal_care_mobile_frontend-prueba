@@ -1,6 +1,6 @@
 {
-    "name": "hormonal_care_frontend",
-    "short_name": "hormonal_care_frontend",
+    "name": "experimentos_hormonal_care_mobile_frontend",
+    "short_name": "experimentos_hormonal_care_mobile_frontend",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
