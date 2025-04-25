@@ -21,7 +21,7 @@ class LabTestSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF40535B),
+            color: Color(0xFF8F7193), // Texto morado oscuro
           ),
         ),
         const SizedBox(height: 10),
@@ -33,7 +33,7 @@ class LabTestSection extends StatelessWidget {
         const SizedBox(height: 10),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF40535B),
+            backgroundColor: const Color(0xFF8F7193), // Botón morado oscuro
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -52,27 +52,27 @@ class LabTestSection extends StatelessWidget {
 
   Widget _buildLabTestItem(Map<String, dynamic> labTest, int index) {
     return Card(
-      color: const Color(0xFFEDECEC),
+      color: const Color(0xFFDFCAE1), // Fondo morado claro
       child: ListTile(
         title: Text(
           labTest['testName'].isNotEmpty
               ? 'Lab Test: ${labTest["testName"]}'
               : 'Unnamed Test',
           style: const TextStyle(
-            color: Color(0xFF40535B),
+            color: Color(0xFF8F7193), // Texto morado oscuro
           ),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.upload_file),
+              icon: const Icon(Icons.upload_file, color: Color(0xFFA788AB)), // Icono morado intermedio
               onPressed: () {
                 // Implementar lógica de carga de archivos
               },
             ),
             IconButton(
-              icon: const Icon(Icons.delete, color: Color(0xFF40535B)),
+              icon: const Icon(Icons.delete, color: Color(0xFF8F7193)), // Icono morado oscuro
               onPressed: () {
                 onDeleteLabTest(index);
               },

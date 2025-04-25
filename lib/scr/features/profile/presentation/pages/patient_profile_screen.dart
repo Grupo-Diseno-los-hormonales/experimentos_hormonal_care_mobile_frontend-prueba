@@ -33,7 +33,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         _profileDetails = _profileService.fetchProfileDetails(userId);
       });
     } else {
-      // Maneja el caso en que no se encuentra el user ID
       print('User ID not found');
     }
   }
@@ -56,38 +55,37 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF6A828D),
-        title: Text('Patient Profile'),
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
+        backgroundColor: const Color(0xFF8F7193), // Fondo morado oscuro
+        title: const Text(
+          'Patient Profile',
+          style: TextStyle(color: Colors.white),
         ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Profile picture, edit button, and logout button
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Icons.edit, color: const Color.fromARGB(255, 0, 0, 0)),
+                  icon: const Icon(Icons.edit, color: Color(0xFFA788AB)), // Icono morado intermedio
                   onPressed: toggleEditMode,
                 ),
-                SizedBox(width: 8.0), // Reduce the space between the edit button and the profile picture
+                const SizedBox(width: 8.0),
                 FutureBuilder<Map<String, dynamic>>(
                   future: _profileDetails,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator(
+                        color: Color(0xFF8F7193), // Indicador morado oscuro
+                      );
                     } else if (snapshot.hasError) {
-                      return Icon(Icons.error);
+                      return const Icon(Icons.error, color: Color(0xFF8F7193)); // Icono morado oscuro
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Icon(Icons.person);
+                      return const Icon(Icons.person, color: Color(0xFF8F7193)); // Icono morado oscuro
                     } else {
                       final profile = snapshot.data!;
                       final imageUrl = profile['image'] as String?;
@@ -99,27 +97,38 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                     }
                   },
                 ),
-                SizedBox(width: 8.0), // Reduce the space between the profile picture and the logout button
+                const SizedBox(width: 8.0),
                 IconButton(
-                  icon: Icon(Icons.logout, color: const Color.fromARGB(255, 0, 0, 0)),
+                  icon: const Icon(Icons.logout, color: Color(0xFFA788AB)), // Icono morado intermedio
                   onPressed: _logout,
                 ),
               ],
             ),
-
-            SizedBox(height: 20.0),
-
-            // Display fields or editable fields based on edit mode
+            const SizedBox(height: 20.0),
             if (!isEditing) ...[
               FutureBuilder<Map<String, dynamic>>(
                 future: _profileDetails,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF8F7193), // Indicador morado oscuro
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                      ),
+                    );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data found'));
+                    return const Center(
+                      child: Text(
+                        'No data found',
+                        style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                      ),
+                    );
                   } else {
                     final profile = snapshot.data!;
                     final fullName = profile['fullName'] ?? '';
@@ -134,7 +143,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                         ProfileFieldWidget(label: "Gender", value: profile['gender'] ?? ''),
                         ProfileFieldWidget(label: "Phone Number", value: profile['phoneNumber'] ?? ''),
                         ProfileFieldWidget(label: "Birthday", value: profile['birthday'] ?? ''),
-                        // Add more fields as needed
                       ],
                     );
                   }
@@ -145,11 +153,25 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                 future: _profileDetails,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF8F7193), // Indicador morado oscuro
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                      ),
+                    );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data found'));
+                    return const Center(
+                      child: Text(
+                        'No data found',
+                        style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                      ),
+                    );
                   } else {
                     return EditModeWidget(
                       profile: snapshot.data!,

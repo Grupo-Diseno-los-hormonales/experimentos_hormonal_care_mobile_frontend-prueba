@@ -60,11 +60,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF40535B),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF8F7193), // Fondo morado oscuro
       ),
       body: ListView.builder(
         itemCount: _appointments.length,
@@ -73,27 +74,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Card(
-              color: const Color(0xFF6A828D),
+              color: const Color(0xFFDFCAE1), // Fondo morado claro
               child: ListTile(
                 title: Text(
                   'Next Appointment: ${appointment['title']}',
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       appointment['patientName'],
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
                     ),
                     Text(
                       '${appointment['startTime']} - ${appointment['endTime']}',
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
                     ),
                   ],
                 ),
                 trailing: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.white),
+                  icon: const Icon(Icons.delete, color: Color(0xFF8F7193)), // Icono morado oscuro
                   onPressed: () => _removeAppointment(appointment['id']),
                 ),
               ),

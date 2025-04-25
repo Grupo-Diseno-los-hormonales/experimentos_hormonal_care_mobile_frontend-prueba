@@ -24,7 +24,7 @@ class _PatientsListScreenState extends State<PatientsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6A828D),
+        backgroundColor: const Color(0xFF8F7193),
         title: const Text('Patients'),
         centerTitle: true,
         titleTextStyle: const TextStyle(

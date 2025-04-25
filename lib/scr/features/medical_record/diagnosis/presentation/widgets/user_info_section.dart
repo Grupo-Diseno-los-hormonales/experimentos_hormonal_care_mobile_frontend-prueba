@@ -8,7 +8,7 @@ class UserInfoSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: const Color(0xFF40535B),
+        color: const Color(0xFF8F7193), // Fondo morado oscuro
         borderRadius: BorderRadius.circular(10),
       ),
       child: const Row(
@@ -16,6 +16,7 @@ class UserInfoSection extends StatelessWidget {
           CircleAvatar(
             radius: 25,
             backgroundImage: AssetImage('assets/images/user_avatar.png'), // Replace with actual image path
+            backgroundColor: Color(0xFFA788AB), // Fondo morado intermedio
           ),
           SizedBox(width: 16),
           Expanded(
@@ -27,7 +28,7 @@ class UserInfoSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Color(0xFFDFCAE1), // Texto morado claro
                   ),
                 ),
               ],
@@ -37,7 +38,7 @@ class UserInfoSection extends StatelessWidget {
             'Age: 30',
             style: TextStyle(
               fontSize: 16.0,
-              color: Colors.white,
+              color: Color(0xFFDFCAE1), // Texto morado claro
             ),
           ),
         ],

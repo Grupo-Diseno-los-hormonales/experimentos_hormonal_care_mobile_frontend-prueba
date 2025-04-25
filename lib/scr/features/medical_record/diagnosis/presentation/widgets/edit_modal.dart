@@ -21,7 +21,7 @@ class EditModal extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: const Color(0xFFEDECEC),
+          color: const Color(0xFFDFCAE1), // Fondo morado claro
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -33,7 +33,7 @@ class EditModal extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF40535B),
+                color: Color(0xFF8F7193), // Texto morado oscuro
               ),
             ),
             const SizedBox(height: 10),
@@ -43,26 +43,26 @@ class EditModal extends StatelessWidget {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: const BorderSide(
-                    color: Color(0xFF6A828D),
+                    color: Color(0xFFA788AB), // Borde morado intermedio
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: const BorderSide(
-                    color: Color(0xFF6A828D),
+                    color: Color(0xFFA788AB), // Borde morado intermedio
                   ),
                 ),
                 filled: true,
-                fillColor: const Color(0xFFEDECEC),
+                fillColor: const Color(0xFFDFCAE1), // Fondo morado claro
               ),
-              style: const TextStyle(color: Color(0xFF40535B)),
+              style: const TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
             ),
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF40535B),
+                  backgroundColor: const Color(0xFF8F7193), // Botón morado oscuro
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

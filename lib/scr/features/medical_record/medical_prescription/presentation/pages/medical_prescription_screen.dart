@@ -5,7 +5,7 @@ class MedicalRecordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: Color(0xFFA788AB),
         title: Text('Historial Médico'),
       ),
       body: Center(

@@ -109,11 +109,11 @@ Widget build(BuildContext context) {
 
   return Scaffold(
     appBar: AppBar(
-      backgroundColor: const Color(0xFFC0A0C3), // Fondo morado del AppBar
+      backgroundColor: const Color(0xFF8F7193), // Fondo morado del AppBar
       title: const Text("Today's Patients"),
       centerTitle: true,
       titleTextStyle: const TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),

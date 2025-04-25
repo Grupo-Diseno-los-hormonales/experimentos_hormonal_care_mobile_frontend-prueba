@@ -21,12 +21,12 @@ class EditableField extends StatelessWidget {
             value.isEmpty ? 'Enter $label' : value,
             style: const TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF40535B),
+              color: Color(0xFF8F7193), // Texto morado oscuro
             ),
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.edit, color: Color(0xFF40535B)),
+          icon: const Icon(Icons.edit, color: Color(0xFFA788AB)), // Icono morado intermedio
           onPressed: () {
             _showEditModal(context, label, value, onSave);
           },

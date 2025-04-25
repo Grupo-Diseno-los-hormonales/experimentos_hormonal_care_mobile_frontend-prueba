@@ -11,7 +11,7 @@ class PatientCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFAEBBC3), // Fondo de cada tarjeta de paciente
+        color: const Color(0xFFDFCAE1), // Fondo morado claro
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Padding(
@@ -28,22 +28,22 @@ class PatientCard extends StatelessWidget {
                   CircleAvatar(
                     radius: avatarRadius,
                     backgroundImage: NetworkImage(_getImageUrl(patient.profile?.image)),
-                    backgroundColor: Color(0xFF40535B),
+                    backgroundColor: const Color(0xFFA788AB), // Fondo morado intermedio
                     child: patient.profile?.image == null || patient.profile!.image.isEmpty
                         ? Icon(Icons.person, size: avatarRadius, color: Colors.white)
                         : null,
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     patient.profile?.fullName ?? 'Unknown', // Mostrar el nombre completo del perfil
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                      color: const Color(0xFF8F7193), // Texto morado oscuro
                       fontSize: avatarRadius / 4,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.0), // Botón de historial médico
+                  const SizedBox(height: 10.0), // Botón de historial médico
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -54,7 +54,7 @@ class PatientCard extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF40535B), // Color gris oscuro del botón
+                      backgroundColor: const Color(0xFF8F7193), // Botón morado oscuro
                       foregroundColor: Colors.white, // Texto del botón en blanco
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(avatarRadius / 8),
@@ -64,9 +64,9 @@ class PatientCard extends StatelessWidget {
                         fontSize: avatarRadius / 5, // Tamaño del texto del botón
                       ),
                     ),
-                    child: Text('Medical record'),
+                    child: const Text('Medical record'),
                   ),
-                  SizedBox(height: 5.0),
+                  const SizedBox(height: 5.0),
                 ],
               ),
             );

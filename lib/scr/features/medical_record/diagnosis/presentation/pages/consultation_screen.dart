@@ -105,7 +105,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   Widget _buildPatientHeader(Map<String, dynamic> profileDetails) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF4B5A62),
+        color: Color(0xFF8F7193), // Fondo morado oscuro
         borderRadius: BorderRadius.circular(12),
       ),
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -117,7 +117,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
               CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(_getImageUrl(profileDetails['image'])),
-                backgroundColor: Colors.blueGrey[200],
+                backgroundColor: Color(0xFFA788AB), // Fondo morado claro
                 child: profileDetails['image'] == null || profileDetails['image'].isEmpty
                     ? Icon(Icons.person, color: Colors.white)
                     : null,
@@ -149,12 +149,12 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
       ),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6A828D),
+        backgroundColor: const Color(0xFF6A828D), // Fondo morado del AppBar
         title: const Text('Consultation'),
         centerTitle: true,
         titleTextStyle: const TextStyle(
@@ -175,7 +175,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
           } else {
             final patientDetails = snapshot.data!['patientDetails'];
             final profileDetails = snapshot.data!['profileDetails'];
-
+  
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -188,7 +188,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF40535B),
+                      color: Color(0xFF8F7193), // Morado oscuro
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -207,7 +207,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF40535B),
+                      color: Color(0xFF8F7193), // Morado oscuro
                     ),
                   ),
                   const SizedBox(height: 10),
