@@ -82,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF6A828D),
-        unselectedItemColor: const Color(0xFF40535B),
+        selectedItemColor: const Color(0xFFA788AB),
+        unselectedItemColor: const Color(0xFF8F7193),
         onTap: _onItemTapped,
 
       ),
