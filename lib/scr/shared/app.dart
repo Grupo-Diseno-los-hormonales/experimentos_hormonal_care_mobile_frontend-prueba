@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
         dialogBackgroundColor: Color(0xFFAEBBC3), // Color verde claro
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
-      home: SignIn(), // Cambiar la pantalla inicial a SignIn
-      //home: HomeScreen(),
+      //home: SignIn(), // Cambiar la pantalla inicial a SignIn
+      home: HomeScreen(),
     );
   }
 }
