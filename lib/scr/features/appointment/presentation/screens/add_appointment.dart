@@ -32,7 +32,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
   final MedicalAppointmentApi _appointmentService = MedicalAppointmentApi();
   List<Map<String, dynamic>> _patients = [];
   int? _selectedPatientId;
-  Color _selectedColor = Color(0xFF8F7193); // Default color
+  Color _selectedColor = Color(0xFF039BE5); // Default color
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -122,7 +122,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF8F7193),
+        backgroundColor: Color(0xFF6A828D),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -250,7 +250,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 18), // Aumenta el tamaño del texto
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF8F7193), // Color de fondo
+                  backgroundColor: Color(0xFF40535B), // Color de fondo
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), // Aumenta el padding
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0), // Bordes redondeados

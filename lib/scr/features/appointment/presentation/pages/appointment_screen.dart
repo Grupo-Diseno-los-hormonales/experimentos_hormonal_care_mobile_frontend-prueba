@@ -74,13 +74,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         title: Text(
           'Medical Appointments',
           style: TextStyle(
-            color: Color(0xFFE5DDE6), // Color del texto
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF8F7193), // Color de fondo
-        iconTheme: IconThemeData(color: Color(0xFFE5DDE6)), // Color de los íconos
+        backgroundColor: Color(0xFF6A828D),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: ListView(
@@ -88,44 +88,35 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Color(0xFF8F7193), // Fondo del encabezado
+                color: Color(0xFF6A828D),
               ),
               child: Text(
                 'Calendar View',
                 style: TextStyle(
-                  color: Color(0xFFE5DDE6), // Color del texto
+                  color: Colors.white,
                   fontSize: 24,
                 ),
               ),
             ),
             ListTile(
-              leading: Icon(Icons.view_day, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
-                'Day',
-                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
-              ),
+              leading: Icon(Icons.view_day),
+              title: Text('Day'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.day);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_week, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
-                'Week',
-                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
-              ),
+              leading: Icon(Icons.view_week),
+              title: Text('Week'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.week);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_agenda, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
-                'Month Agenda View',
-                style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
-              ),
+              leading: Icon(Icons.view_agenda),
+              title: Text('Month Agenda View'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.month);
                 Navigator.pop(context);
@@ -143,30 +134,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 view: _calendarView,
                 dataSource: calendarDataSource,
                 initialDisplayDate: DateTime.now(),
-                backgroundColor: Color(0xFFE5DDE6), // Fondo del calendario
-                headerStyle: CalendarHeaderStyle(
-                  textStyle: TextStyle(
-                    color: Color(0xFF8F7193), // Color del texto del encabezado
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                viewHeaderStyle: ViewHeaderStyle(
-                  backgroundColor: Color(0xFFA788AB), // Fondo de los días de la semana
-                  dayTextStyle: TextStyle(
-                    color: Color(0xFFE5DDE6), // Color del texto de los días
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                monthViewSettings: MonthViewSettings(
-                  showAgenda: true,
-                  agendaStyle: AgendaStyle(
-                    backgroundColor: Color(0xFFE5DDE6), // Fondo de la agenda
-                    appointmentTextStyle: TextStyle(
-                      color: Color(0xFF8F7193), // Color del texto de las citas
-                    ),
-                  ),
-                ),
+                monthViewSettings: MonthViewSettings(showAgenda: true),
                 onTap: _calendarView == CalendarView.month ? null : _calendarTapped,
               ),
             ),

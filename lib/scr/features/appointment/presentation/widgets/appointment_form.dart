@@ -143,11 +143,11 @@ class _AppointmentFormState extends State<AppointmentForm> {
     return null;
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     final limaTimeZone = tz.getLocation('America/Lima');
     final now = tz.TZDateTime.now(limaTimeZone);
-  
+
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -160,21 +160,20 @@ class _AppointmentFormState extends State<AppointmentForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Campo: Título de la reunión
+                // Field: Meeting Title
                 TextFormField(
                   controller: _titleController,
                   decoration: InputDecoration(
                     labelText: 'Title',
                     hintText: 'Title of the meeting',
-                    prefixIcon: Icon(Icons.title, color: Color(0xFF8F7193)), // Color del ícono
+                    prefixIcon: Icon(Icons.title),
                     filled: true,
-                    fillColor: Color(0xFFE5DDE6), // Fondo del campo
+                    fillColor: Color(0xFFF5F5F5),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(color: Color(0xFFA788AB)), // Color del borde
                     ),
                   ),
-                  style: TextStyle(fontSize: 14, color: Color(0xFF8F7193)), // Color del texto
+                  style: TextStyle(fontSize: 14),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the title of the meeting';
@@ -183,22 +182,21 @@ class _AppointmentFormState extends State<AppointmentForm> {
                   },
                 ),
                 SizedBox(height: 12),
-  
-                // Campo: Fecha
+
+                // Field: Date
                 TextFormField(
                   controller: _dateController,
                   decoration: InputDecoration(
                     labelText: 'Date',
                     hintText: 'Day',
-                    prefixIcon: Icon(Icons.calendar_today, color: Color(0xFF8F7193)), // Color del ícono
+                    prefixIcon: Icon(Icons.calendar_today),
                     filled: true,
-                    fillColor: Color(0xFFE5DDE6), // Fondo del campo
+                    fillColor: Color(0xFFF5F5F5),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(color: Color(0xFFA788AB)), // Color del borde
                     ),
                   ),
-                  style: TextStyle(fontSize: 14, color: Color(0xFF8F7193)), // Color del texto
+                  style: TextStyle(fontSize: 14),
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   validator: (value) {
@@ -216,8 +214,8 @@ class _AppointmentFormState extends State<AppointmentForm> {
                   },
                 ),
                 SizedBox(height: 12),
-  
-                // Campo: Hora "Desde"
+
+                // Field: Time "From"
                 Row(
                   children: [
                     Expanded(
@@ -226,36 +224,34 @@ class _AppointmentFormState extends State<AppointmentForm> {
                         decoration: InputDecoration(
                           labelText: 'From',
                           hintText: 'Hour',
-                          prefixIcon: Icon(Icons.access_time, color: Color(0xFF8F7193)), // Color del ícono
+                          prefixIcon: Icon(Icons.access_time),
                           filled: true,
-                          fillColor: Color(0xFFE5DDE6), // Fondo del campo
+                          fillColor: Color(0xFFF5F5F5),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(color: Color(0xFFA788AB)), // Color del borde
                           ),
                         ),
-                        style: TextStyle(fontSize: 14, color: Color(0xFF8F7193)), // Color del texto
+                        style: TextStyle(fontSize: 14),
                         validator: _validateTime,
                       ),
                     ),
                     SizedBox(width: 12),
-  
-                    // Campo: Hora "Hasta"
+
+                    // Field: Time "To"
                     Expanded(
                       child: TextFormField(
                         controller: _toTimeController,
                         decoration: InputDecoration(
                           labelText: 'To',
                           hintText: 'Hour',
-                          prefixIcon: Icon(Icons.access_time, color: Color(0xFF8F7193)), // Color del ícono
+                          prefixIcon: Icon(Icons.access_time),
                           filled: true,
-                          fillColor: Color(0xFFE5DDE6), // Fondo del campo
+                          fillColor: Color(0xFFF5F5F5),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(color: Color(0xFFA788AB)), // Color del borde
                           ),
                         ),
-                        style: TextStyle(fontSize: 14, color: Color(0xFF8F7193)), // Color del texto
+                        style: TextStyle(fontSize: 14),
                         validator: (value) {
                           final error = _validateTime(value);
                           if (error != null) return error;
@@ -275,14 +271,11 @@ class _AppointmentFormState extends State<AppointmentForm> {
                   ],
                 ),
                 SizedBox(height: 16),
-  
-                // Botones personalizados (Limpiar y Crear evento)
+
+                // Custom buttons (Clear and Create event)
                 CustomButtons(
                   onClear: _clearFields,
                   onCreate: _createEvent,
-                  clearButtonColor: Color(0xFFA788AB), // Fondo del botón "Clear"
-                  createButtonColor: Color(0xFF8F7193), // Fondo del botón "Create"
-                  textColor: Color(0xFFE5DDE6), // Color del texto de los botones
                 ),
               ],
             ),
