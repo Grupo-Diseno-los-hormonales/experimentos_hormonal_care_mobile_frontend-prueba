@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/doctor_signup_service.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 
 class SignUpDoctor extends StatefulWidget {
   @override
@@ -17,17 +16,20 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _medicalLicenseNumberController = TextEditingController();
   final TextEditingController _subSpecialtyController = TextEditingController();
-  final TextEditingController _birthdayController = TextEditingController(); // Controlador para la fecha
+  final TextEditingController _birthdayController = TextEditingController();
+  final FocusNode _phoneFocusNode = FocusNode();
+  final FocusNode _birthdayFocusNode = FocusNode();
+  final FocusNode _professionalIdFocusNode = FocusNode();
   String _image = '';
   String? _gender;
 
-    void _submit() async {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
         final imageUrl = _image.isNotEmpty
             ? _image
             : 'https://hips.hearstapps.com/hmg-prod/images/portrait-of-a-happy-young-doctor-in-his-clinic-royalty-free-image-1661432441.jpg?crop=0.66698xw:1xh;center,top&resize=1200:*';
-  
+
         await DoctorSignUpService.signUpDoctor(
           _usernameController.text,
           _passwordController.text,
@@ -40,7 +42,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
           int.parse(_medicalLicenseNumberController.text),
           _subSpecialtyController.text,
         );
-  
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Doctor registered successfully!')),
         );
@@ -52,6 +54,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
       }
     }
   }
+
   String? _validateDate(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your birthday';
@@ -61,11 +64,64 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
       return 'Invalid date format. Use YYYY-MM-DD';
     }
     try {
-      DateTime.parse(value); // Verifica si la fecha es válida
+      DateTime.parse(value);
     } catch (_) {
       return 'Invalid date';
     }
     return null;
+  }
+
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    final phoneRegex = RegExp(r'^\d{3}-\d{3}-\d{4}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'Invalid phone number format. Use XXX-XXX-XXXX';
+    }
+    return null;
+  }
+
+  String? _validateNumber(String? value, String fieldName) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your $fieldName';
+    }
+    if (int.tryParse(value) == null) {
+      return '$fieldName must be a number';
+    }
+    return null;
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label, {
+    bool obscureText = false,
+    String? Function(String?)? validator,
+    void Function(String)? onChanged,
+    FocusNode? focusNode,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: const Color(0xFFE5DDE6),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+        ),
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        validator: validator,
+        onChanged: onChanged,
+      ),
+    );
   }
 
   @override
@@ -151,34 +207,33 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
                       _birthdayController,
                       'Enter your birthday (YYYY-MM-DD)',
                       validator: _validateDate,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      focusNode: _birthdayFocusNode,
+                      keyboardType: TextInputType.datetime,
                     ),
                     _buildTextField(
                       _phoneNumberController,
                       'Enter your phone number (XXX-XXX-XXXX)',
-                      validator: (value) {
-                        final phoneRegex = RegExp(r'^\d{3}-\d{3}-\d{4}$');
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        } else if (!phoneRegex.hasMatch(value)) {
-                          return 'Invalid phone number format';
-                        }
-                        return null;
+                      validator: _validatePhoneNumber,
+                      onChanged: (value) {
+                        setState(() {});
                       },
+                      focusNode: _phoneFocusNode,
+                      keyboardType: TextInputType.phone,
                     ),
                     _buildTextField(_passwordController, 'Enter your password', obscureText: true),
                     _buildTextField(_subSpecialtyController, 'Enter your sub-specialty'),
                     _buildTextField(
                       _medicalLicenseNumberController,
                       'Enter your professional ID',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your professional ID';
-                        }
-                        if (int.tryParse(value) == null) {
-                          return 'Professional ID must be a number';
-                        }
-                        return null;
+                      validator: (value) => _validateNumber(value, 'Professional ID'),
+                      onChanged: (value) {
+                        setState(() {});
                       },
+                      focusNode: _professionalIdFocusNode,
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -204,33 +259,6 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, String label,
-      {bool obscureText = false, String? Function(String?)? validator}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: const Color(0xFFE5DDE6),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        obscureText: obscureText,
-        validator: validator ??
-            (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter $label';
-              }
-              return null;
-            },
       ),
     );
   }
