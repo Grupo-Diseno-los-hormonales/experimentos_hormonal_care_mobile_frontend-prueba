@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/notice_manager.dart';
 
 class SendNoticeScreen extends StatefulWidget {
   @override
@@ -18,8 +19,8 @@ class _SendNoticeScreenState extends State<SendNoticeScreen> {
       return;
     }
 
-    // Aquí puedes implementar la lógica para enviar el aviso
-    print('Enviando aviso a $_selectedAudience: $noticeText');
+    // Guarda el aviso en NoticeManager
+    NoticeManager.setNotice(noticeText);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Aviso enviado exitosamente.')),
@@ -27,6 +28,7 @@ class _SendNoticeScreenState extends State<SendNoticeScreen> {
 
     // Limpia el campo de texto
     _noticeController.clear();
+    Navigator.pop(context); // Regresa a la pantalla anterior
   }
 
   @override

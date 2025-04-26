@@ -6,6 +6,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointm
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/notifications/presentation/pages/notification_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/presentation/pages/doctor_profile_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/presentation/pages/patient_profile_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/notice_manager.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   String? role;
   int? doctorId;
-  String? _notice; // Aviso actual
 
   List<Widget> _widgetOptions = [];
 
@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadRoleAndDoctorId();
-    _loadNotice(); // Carga el aviso al iniciar
   }
 
   Future<void> _loadRoleAndDoctorId() async {
@@ -38,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       role = storedRole;
       doctorId = storedDoctorId;
 
+      // Carga las pantallas funcionales en lugar de textos estáticos
       _widgetOptions = [
         HomePatientsScreen(doctorId: doctorId ?? 0),
         PatientsListScreen(),
@@ -45,13 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
         NotificationScreen(doctorId: doctorId ?? 0),
         role == 'ROLE_DOCTOR' ? DoctorProfileScreen() : PatientProfileScreen(),
       ];
-    });
-  }
-
-  void _loadNotice() {
-    // Simula la carga de un aviso
-    setState(() {
-      _notice = 'Este es un aviso importante para todos los usuarios.';
     });
   }
 
@@ -66,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Column(
         children: [
-          if (_notice != null)
+          if (NoticeManager.currentNotice != null)
             Container(
               color: const Color(0xFFFFF3CD), // Fondo amarillo claro
               padding: const EdgeInsets.all(10),
@@ -74,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      _notice!,
+                      NoticeManager.currentNotice!,
                       style: const TextStyle(color: Colors.black),
                     ),
                   ),
@@ -82,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(Icons.close, color: Colors.black),
                     onPressed: () {
                       setState(() {
-                        _notice = null; // Oculta el aviso
+                        NoticeManager.clearNotice(); // Limpia el aviso
                       });
                     },
                   ),
