@@ -25,7 +25,7 @@ class SaveCancelButtonsWidget extends StatelessWidget {
         ElevatedButton(
           onPressed: onSave,
           style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF40535B), // Botón "Create event" con el color principal
+                    backgroundColor: Color(0xFF8F7193), // Botón "Create event" con el color principal
                   ),
                   child: Text('Save', style: TextStyle(color: Colors.white)),
                 ),

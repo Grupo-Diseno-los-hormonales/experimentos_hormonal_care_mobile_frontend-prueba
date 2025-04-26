@@ -79,7 +79,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF6A828D),
+        backgroundColor: Color(0xFFA78AAB),
         iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
@@ -88,7 +88,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Color(0xFF6A828D),
+                color: Color(0xFFA78AAB),
               ),
               child: Text(
                 'Calendar View',

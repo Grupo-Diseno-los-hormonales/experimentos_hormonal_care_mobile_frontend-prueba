@@ -38,7 +38,7 @@ class InfoAppointment extends StatelessWidget {
               Text(
                 'Appointment Details',
                 style: TextStyle(
-                  color: Color(0xFF40535B),
+                  color: Color(0xFF8F7193),
                   fontWeight: FontWeight.bold,
                   fontSize: screenWidth * 0.06,
                 ),
@@ -62,9 +62,9 @@ class InfoAppointment extends StatelessWidget {
                 child: Text('Close'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, // Fondo claro
-                  foregroundColor: Color(0xFF40535B), // Texto oscuro
+                  foregroundColor: Color(0xFF8F7193), // Texto oscuro
                   textStyle: TextStyle(
-                    color: Color(0xFF40535B),
+                    color: Color(0xFF8F7193),
                     fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.bold,
                   ),

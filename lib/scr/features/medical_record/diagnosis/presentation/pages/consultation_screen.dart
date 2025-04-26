@@ -154,7 +154,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6A828D), // Fondo morado del AppBar
+        backgroundColor: const Color(0xFFA78AAB), // Fondo morado del AppBar
         title: const Text('Consultation'),
         centerTitle: true,
         titleTextStyle: const TextStyle(

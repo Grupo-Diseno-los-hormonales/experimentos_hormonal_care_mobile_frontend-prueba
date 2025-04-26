@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
       title: 'Medical Care App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xFF6A828D),
+        primaryColor: Color(0xFFA78AAB),
         dialogBackgroundColor: Color(0xFFAEBBC3), // Color verde claro
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
