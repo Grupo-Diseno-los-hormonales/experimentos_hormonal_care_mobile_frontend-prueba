@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/select_user_type.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/admin_tools.dart'; // Importa la pantalla de herramientas de administrador
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -19,8 +20,21 @@ class _SignInState extends State<SignIn> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
+      final username = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      // Verifica si es el administrador
+      if (username == 'admin' && password == 'admin') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminToolsScreen()), // Navega a la pantalla de herramientas de administrador
+        );
+        return;
+      }
+
+      // Lógica para usuarios normales
       try {
-        final token = await _authService.signIn(_emailController.text, _passwordController.text);
+        final token = await _authService.signIn(username, password);
         if (token != null) {
           Navigator.pushReplacement(
             context,
@@ -90,7 +104,7 @@ class _SignInState extends State<SignIn> {
                             TextFormField(
                               controller: _emailController,
                               decoration: InputDecoration(
-                                labelText: 'Enter your email',
+                                labelText: 'Enter your username',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: const BorderSide(

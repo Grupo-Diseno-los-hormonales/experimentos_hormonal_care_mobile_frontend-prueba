@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   String? role;
   int? doctorId;
+  String? _notice; // Aviso actual
 
   List<Widget> _widgetOptions = [];
 
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadRoleAndDoctorId();
+    _loadNotice(); // Carga el aviso al iniciar
   }
 
   Future<void> _loadRoleAndDoctorId() async {
@@ -46,6 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _loadNotice() {
+    // Simula la carga de un aviso
+    setState(() {
+      _notice = 'Este es un aviso importante para todos los usuarios.';
+    });
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -55,9 +64,38 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetOptions.isNotEmpty
-          ? _widgetOptions[_selectedIndex]
-          : Center(child: CircularProgressIndicator()),
+      body: Column(
+        children: [
+          if (_notice != null)
+            Container(
+              color: const Color(0xFFFFF3CD), // Fondo amarillo claro
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _notice!,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.black),
+                    onPressed: () {
+                      setState(() {
+                        _notice = null; // Oculta el aviso
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: _widgetOptions.isNotEmpty
+                ? _widgetOptions[_selectedIndex]
+                : const Center(child: CircularProgressIndicator()),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -85,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: const Color(0xFFA788AB),
         unselectedItemColor: const Color(0xFF8F7193),
         onTap: _onItemTapped,
-
       ),
     );
   }
