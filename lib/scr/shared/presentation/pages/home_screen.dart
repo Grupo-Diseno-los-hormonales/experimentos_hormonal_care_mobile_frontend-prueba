@@ -1,3 +1,5 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/presentation/pages/patient_profile_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -475,19 +477,19 @@ class _HomeScreenState extends State<HomeScreen> {
               );*/
               break;
             case 2:
-              /*Navigator.push(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const NotificationScreen()),
-              );*/
+                MaterialPageRoute(builder: (context) => AppointmentScreen()),
+              );
               break;
             case 3:
-              /*Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const TreatmentTrackerScreen(
+                    builder: (context) => PatientProfileScreen(
                         //preferredName: 'Patient',
                         )),
-              );*/
+              );
               break;
           }
         },

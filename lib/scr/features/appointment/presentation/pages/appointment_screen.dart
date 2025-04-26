@@ -1,3 +1,5 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
@@ -71,7 +73,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Medical Appointments',
           style: TextStyle(
             color: Color(0xFFE5DDE6), // Color del texto
@@ -79,14 +81,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF8F7193), // Color de fondo
-        iconTheme: IconThemeData(color: Color(0xFFE5DDE6)), // Color de los íconos
+        backgroundColor: const Color(0xFF8F7193), // Color de fondo
+        iconTheme: const IconThemeData(color: Color(0xFFE5DDE6)), // Color de los íconos
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Color(0xFF8F7193), // Fondo del encabezado
               ),
@@ -99,8 +101,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.view_day, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
+              leading: const Icon(Icons.view_day, color: Color(0xFF8F7193)), // Color del ícono
+              title: const Text(
                 'Day',
                 style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
               ),
@@ -110,8 +112,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_week, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
+              leading: const Icon(Icons.view_week, color: Color(0xFF8F7193)), // Color del ícono
+              title: const Text(
                 'Week',
                 style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
               ),
@@ -121,8 +123,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.view_agenda, color: Color(0xFF8F7193)), // Color del ícono
-              title: Text(
+              leading: const Icon(Icons.view_agenda, color: Color(0xFF8F7193)), // Color del ícono
+              title: const Text(
                 'Month Agenda View',
                 style: TextStyle(color: Color(0xFF8F7193)), // Color del texto
               ),
@@ -135,7 +137,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: SfCalendar(
@@ -143,22 +145,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 view: _calendarView,
                 dataSource: calendarDataSource,
                 initialDisplayDate: DateTime.now(),
-                backgroundColor: Color(0xFFE5DDE6), // Fondo del calendario
-                headerStyle: CalendarHeaderStyle(
+                backgroundColor: const Color(0xFFE5DDE6), // Fondo del calendario
+                headerStyle: const CalendarHeaderStyle(
                   textStyle: TextStyle(
                     color: Color(0xFF8F7193), // Color del texto del encabezado
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                viewHeaderStyle: ViewHeaderStyle(
+                viewHeaderStyle: const ViewHeaderStyle(
                   backgroundColor: Color(0xFFA788AB), // Fondo de los días de la semana
                   dayTextStyle: TextStyle(
                     color: Color(0xFFE5DDE6), // Color del texto de los días
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                monthViewSettings: MonthViewSettings(
+                monthViewSettings: const MonthViewSettings(
                   showAgenda: true,
                   agendaStyle: AgendaStyle(
                     backgroundColor: Color(0xFFE5DDE6), // Fondo de la agenda
@@ -169,6 +171,40 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 ),
                 onTap: _calendarView == CalendarView.month ? null : _calendarTapped,
               ),
+            ),
+            bottomNavigationBar: CustomBottomNavigationBar(
+              currentIndex: 0,
+              onTap: (index) {
+                switch (index) {
+                  case 0:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                    break;
+                  case 1:
+                    /*Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchDoctorPage()),
+                    );*/
+                    break;
+                  case 2:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AppointmentScreen()),
+                    );
+                    break;
+                  case 3:
+                    /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TreatmentTrackerScreen(
+                              //preferredName: 'Patient',
+                              )),
+                    );*/
+                    break;
+                }
+              },
             ),
     );
   }
