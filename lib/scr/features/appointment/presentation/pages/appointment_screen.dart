@@ -1,3 +1,4 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -195,13 +196,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     );
                     break;
                   case 3:
-                    /*Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const TreatmentTrackerScreen(
                               //preferredName: 'Patient',
                               )),
-                    );*/
+                    );
                     break;
                 }
               },
