@@ -1,6 +1,7 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/domain/models/log_entry_model.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -500,7 +501,7 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
             case 0:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreenPatient()),
               );
               break;
             case 1:
@@ -512,7 +513,7 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AppointmentScreen()),
+                MaterialPageRoute(builder: (context) => AppointmentScreenPatient()),
               );
               break;
             case 3:

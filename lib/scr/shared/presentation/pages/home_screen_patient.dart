@@ -1,4 +1,4 @@
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +9,10 @@ class HomeScreenPatient extends StatefulWidget {
   const HomeScreenPatient({super.key});
 
   @override
-  State<HomeScreenPatient> createState() => _HomeScreenState();
+  State<HomeScreenPatient> createState() => _HomeScreenPatientState();
 }
 
-class _HomeScreenState extends State<HomeScreenPatient> {
+class _HomeScreenPatientState extends State<HomeScreenPatient> {
   // Lista de medicaciones
   final List<MedicationItem> _medicationItems = [
     MedicationItem(
@@ -479,8 +479,8 @@ class _HomeScreenState extends State<HomeScreenPatient> {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AppointmentScreen()), //cambiar por una solo para pacientes
-                
+                MaterialPageRoute(builder: (context) => AppointmentScreenPatient()), //cambiar por una solo para pacientes
+
               );
               break;
             case 3:
