@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1';
+  final String baseUrl = 'http://localhost:8080/api/v1';
 
   Future<Map<String, dynamic>> signUp(String username, String password, String role) async {
     final response = await http.post(

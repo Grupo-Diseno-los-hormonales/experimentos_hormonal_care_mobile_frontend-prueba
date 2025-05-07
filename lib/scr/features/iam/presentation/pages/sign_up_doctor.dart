@@ -30,39 +30,37 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
         final imageUrl = _image.isNotEmpty
             ? _image
             : 'https://hips.hearstapps.com/hmg-prod/images/portrait-of-a-happy-young-doctor-in-his-clinic-royalty-free-image-1661432441.jpg?crop=0.66698xw:1xh;center,top&resize=1200:*';
-
-
-    // Convierte la fecha al formato ISO 8601
-      final birthdayIsoFormat = DateTime.parse(_birthdayController.text).toIso8601String();
-   
-   print('Datos enviados al servidor:');
+  
+        // Convierte la fecha al formato ISO 8601
+        final birthdayIsoFormat = DateTime.parse(_birthdayController.text.trim()).toIso8601String();
+  
+        print('Datos enviados al servidor:');
         print({
           'username': _usernameController.text.trim(),
           'password': _passwordController.text.trim(),
           'firstName': _firstNameController.text.trim(),
           'lastName': _lastNameController.text.trim(),
-          'gender': _gender,
+          'gender': _gender?.trim(),
           'phoneNumber': _phoneNumberController.text.trim(),
           'image': imageUrl,
           'birthday': birthdayIsoFormat,
-          'professionalIdentificationNumber': int.parse(_medicalLicenseNumberController.text.trim()),
+          'professionalIdentificationNumber': _medicalLicenseNumberController.text.trim(),
           'subSpecialty': _subSpecialtyController.text.trim(),
         });
-
-
+  
         await DoctorSignUpService.signUpDoctor(
-          _usernameController.text,
-          _passwordController.text,
-          _firstNameController.text,
-          _lastNameController.text,
-          _gender!,
-          _phoneNumberController.text,
+          _usernameController.text.trim(),
+          _passwordController.text.trim(),
+          _firstNameController.text.trim(),
+          _lastNameController.text.trim(),
+          _gender!.trim(),
+          _phoneNumberController.text.trim(),
           imageUrl,
-           birthdayIsoFormat, 
-          int.parse(_medicalLicenseNumberController.text),
-          _subSpecialtyController.text,
+          birthdayIsoFormat,
+          _medicalLicenseNumberController.text.trim(), // Enviar como cadena
+          _subSpecialtyController.text.trim(),
         );
-
+  
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Doctor registered successfully!')),
         );
@@ -74,8 +72,6 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
       }
     }
   }
-
-
 
   String? _validateDate(String? value) {
     if (value == null || value.trim().isEmpty) {
