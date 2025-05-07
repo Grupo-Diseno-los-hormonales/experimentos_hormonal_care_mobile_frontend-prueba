@@ -11,13 +11,13 @@ import '../../domain/models/prescriptionpost_model.dart';
 import '../../domain/models/medicaltype_model.dart';
 
 class MedicalRecordService {
-  final String baseUrl = 'http://localhost:8080/api/v1/medical-record/patient/record';
-  final String profileBaseUrl = 'http://localhost:8080/api/v1/profile/profile';
-  final String medicationsUrl = 'http://localhost:8080/api/v1/medical-record/medications';
-  final String prescriptionsUrl = 'http://localhost:8080/api/v1/medical-record/medications/prescriptions';
-  final String treatmentsUrl = 'http://localhost:8080/api/v1/medical-record/treatments/medicalRecordId'; // URL base para tratamientos
-  final String treatmentspostUrl = 'http://localhost:8080/api/v1/medical-record/treatments'; // URL base para tratamientos
-  final String medicaltypesUrl = 'http://localhost:8080/api/v1/medical-record/medications/medicationTypes';
+  final String baseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/patient/record';
+  final String profileBaseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/profile/profile';
+  final String medicationsUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/medications';
+  final String prescriptionsUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/medications/prescriptions';
+  final String treatmentsUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/treatments/medicalRecordId'; // URL base para tratamientos
+  final String treatmentspostUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/treatments'; // URL base para tratamientos
+  final String medicaltypesUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/medications/medicationTypes';
 
 
   Future<Patient> getPatientById(String patientId) async {

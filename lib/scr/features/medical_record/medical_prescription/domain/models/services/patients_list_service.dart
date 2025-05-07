@@ -6,9 +6,9 @@ import '../patient_model.dart';
 import '../profile_model.dart';
 
 class PatientsListService {
-  final String baseUrl = 'http://localhost:8080/api/v1/medical-record/patient';
-  final String profileBaseUrl = 'http://localhost:8080/api/v1/profile/profile';
-  final String doctorBaseUrl = 'http://localhost:8080/api/v1/doctor/doctor';
+  final String baseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/medical-record/patient';
+  final String profileBaseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/profile/profile';
+  final String doctorBaseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1/doctor/doctor';
 
   Future<List<Patient>> getPatients() async {
     final token = await JwtStorage.getToken();
