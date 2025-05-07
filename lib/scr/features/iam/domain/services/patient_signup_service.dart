@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 
 class PatientSignUpService {
@@ -16,12 +15,13 @@ class PatientSignUpService {
     String image,
     String birthday,
     String typeOfBlood,
-    String doctorId,
+    int doctorId, // Cambiado a int para validar el rango
   ) async {
     final authService = AuthService();
 
     try {
       // Paso 1: Registrar al usuario con ROLE_PATIENT
+      print('Paso 1: Registrando usuario...');
       final userResponse = await authService.signUp(username, password, 'ROLE_PATIENT');
       final userId = userResponse['id'];
 
@@ -30,6 +30,7 @@ class PatientSignUpService {
       }
 
       // Paso 2: Realizar login para obtener el token
+      print('Paso 2: Iniciando sesión...');
       final loginResponse = await http.post(
         Uri.parse('$baseUrl/authentication/sign-in'),
         headers: {'Content-Type': 'application/json'},
@@ -51,6 +52,7 @@ class PatientSignUpService {
       }
 
       // Paso 3: Crear el perfil del paciente
+      print('Paso 3: Creando perfil del paciente...');
       final patientResponse = await http.post(
         Uri.parse('$baseUrl/medical-record/patient'),
         headers: {
@@ -70,14 +72,17 @@ class PatientSignUpService {
           'typeOfBlood': typeOfBlood,
           'personalHistory': '',
           'familyHistory': '',
-          'doctorId': int.parse(doctorId),
+          'doctorId': doctorId, // Validado previamente
         }),
       );
 
       if (patientResponse.statusCode != 201) {
         throw Exception('Error creating patient profile: ${patientResponse.body}');
       }
+
+      print('Perfil del paciente creado exitosamente.');
     } catch (e) {
+      print('Error durante el proceso de registro: $e');
       throw Exception('Error during patient sign-up: $e');
     }
   }
