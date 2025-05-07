@@ -60,10 +60,10 @@ class AuthService {
   
   Future<void> fetchAndSavePatientId(int profileId, String token) async {
     final patientResponse = await http.get(
-      Uri.parse('$baseUrl/patient/patient/profile/$profileId'),
+      Uri.parse('$baseUrl/medical-record/patient/profile/$profileId'),
       headers: {'Authorization': 'Bearer $token'},
     );
-  
+
     if (patientResponse.statusCode == 200) {
       final patientData = json.decode(patientResponse.body);
       final patientId = patientData['id'];
