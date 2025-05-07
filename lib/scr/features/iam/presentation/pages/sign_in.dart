@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart'; // Importa la pantalla para pacientes
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/select_user_type.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/admin_tools.dart'; // Importa la pantalla de herramientas de administrador
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/admin_tools.dart';
+
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -16,11 +21,65 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _captchaVerified = false;
   bool _obscureText = true;
   final _authService = AuthService();
 
+  void _verifyCaptcha() async {
+    if (kIsWeb) {
+      // Lógica para Flutter Web
+      final html.WindowBase popup = html.window.open(
+        'https://www.google.com/recaptcha/api2/demo',
+        'Verify CAPTCHA',
+        'width=600,height=600',
+      );
+  
+      // Verifica periódicamente si el popup sigue abierto
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (popup.closed!) {
+          timer.cancel();
+          setState(() {
+            _captchaVerified = true;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('CAPTCHA Verified!')),
+          );
+        }
+      });
+    } else {
+      // Lógica para dispositivos móviles
+      final controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageFinished: (String url) {
+              if (url.contains('success')) {
+                setState(() {
+                  _captchaVerified = true;
+                });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('CAPTCHA Verified!')),
+                );
+              }
+            },
+          ),
+        )
+        ..loadRequest(Uri.parse('https://www.google.com/recaptcha/api2/demo'));
+  
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Scaffold(
+            appBar: AppBar(title: const Text('Verify CAPTCHA')),
+            body: WebViewWidget(controller: controller),
+          ),
+        ),
+      );
+    }
+  }
   void _submit() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _captchaVerified) {
       final username = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
@@ -28,7 +87,7 @@ class _SignInState extends State<SignIn> {
       if (username == 'admin' && password == 'admin') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminToolsScreen()), // Navega a la pantalla de herramientas de administrador
+          MaterialPageRoute(builder: (context) => AdminToolsScreen()),
         );
         return;
       }
@@ -37,16 +96,16 @@ class _SignInState extends State<SignIn> {
       try {
         final token = await _authService.signIn(username, password);
         if (token != null) {
-          final role = await _authService.getRole(); // Obtiene el rol del usuario
+          final role = await _authService.getRole();
           if (role == 'ROLE_PATIENT') {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreenPatient()), // Redirige a HomeScreenPatient
+              MaterialPageRoute(builder: (context) => HomeScreenPatient()),
             );
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()), // Redirige a HomeScreen
+              MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           }
         } else {
@@ -59,13 +118,17 @@ class _SignInState extends State<SignIn> {
           SnackBar(content: Text('Error: $e')),
         );
       }
+    } else if (!_captchaVerified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please verify the CAPTCHA')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE5DDE6), // Fondo de la pantalla
+      backgroundColor: const Color(0xFFE5DDE6),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -73,7 +136,6 @@ class _SignInState extends State<SignIn> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo debajo del título
                 Image.asset(
                   'assets/images/newlogohormonalcare.png',
                   height: 100,
@@ -91,7 +153,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFA788AB), // Color de la tarjeta
+                    color: const Color(0xFFA788AB),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Column(
@@ -116,9 +178,6 @@ class _SignInState extends State<SignIn> {
                                 labelText: 'Enter your username',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: Color.fromRGBO(74, 90, 99, 1),
-                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -132,9 +191,6 @@ class _SignInState extends State<SignIn> {
                                 labelText: 'Enter your password',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: Color.fromRGBO(74, 90, 99, 1),
-                                  ),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -152,9 +208,26 @@ class _SignInState extends State<SignIn> {
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
+                              onPressed: _verifyCaptcha,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF8F7193),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                'Verify CAPTCHA',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
                               onPressed: _submit,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF8F7193), // Fondo del botón "Enter"
+                                backgroundColor: const Color(0xFF8F7193),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
                                 ),
@@ -171,46 +244,6 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Align(
-                  alignment: Alignment.centerLeft, // Alinea el texto a la izquierda
-                  child: const Text(
-                    "Don't have an account?",
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SelectUserType()),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color(0xFFDFCAE1), // Fondo del botón "Register"
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.person, color: Color(0xFF8F7193)), // Icono del botón
-                        const SizedBox(width: 5),
-                        const Text(
-                          'Register',
-                          style: TextStyle(
-                            color: Color(0xFF8F7193), // Color del texto
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ],
