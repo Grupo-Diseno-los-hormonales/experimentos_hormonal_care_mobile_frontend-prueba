@@ -340,4 +340,28 @@ class MedicalAppointmentApi {
     }
     return profileDetails;
   }
+
+  Future<List<Map<String, dynamic>>> fetchAppointmentsByPatientId() async {
+    final token = await _getToken();
+    final patientId = await JwtStorage.getPatientId();
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    if (patientId == null) {
+      throw Exception('Patient ID not found');
+    }
+
+    // Reutiliza tu método existente
+    final allAppointments = await fetchAllAppointments();
+
+    // Filtra por patientId
+    final filteredAppointments = allAppointments.where((appointment) {
+      return appointment['patientId'] == patientId;
+    }).toList();
+
+    return filteredAppointments;
+  }
+
 }
