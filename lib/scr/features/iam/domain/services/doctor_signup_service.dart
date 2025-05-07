@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 
 class DoctorSignUpService {
-  static final String baseUrl = 'http://localhost:8080/api/v1';
+  static final String baseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1';
 
   static Future<void> signUpDoctor(
     String username,

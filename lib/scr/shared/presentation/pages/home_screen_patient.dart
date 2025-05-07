@@ -1,9 +1,12 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/domain/models/medication_model.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/domain/services/medicalrecord_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreenPatient extends StatefulWidget {
   const HomeScreenPatient({super.key});
@@ -13,13 +16,18 @@ class HomeScreenPatient extends StatefulWidget {
 }
 
 class _HomeScreenPatientState extends State<HomeScreenPatient> {
-  // Lista de medicaciones
-  final List<MedicationItem> _medicationItems = [
-    MedicationItem(
-      nameController: TextEditingController(text: "Levothyroxine"),
-      dosageController: TextEditingController(text: "100 mcg"),
-    ),
-  ];
+  // Servicio para obtener datos médicos
+  final MedicalRecordService _medicalRecordService = MedicalRecordService();
+  
+  // Lista de medicaciones desde el servicio
+  List<Medication> _medications = [];
+  
+  // Estado de carga
+  bool _isLoading = true;
+  String _errorMessage = '';
+  
+  // ID del registro médico del paciente (se obtendrá de SharedPreferences)
+  int? _medicalRecordId;
   
   // Lista de exámenes
   final List<ExamItem> _examItems = [
@@ -40,9 +48,64 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
       _addExamTextFieldListener(item.controller);
     }
     
-    // Inicializar listeners para las medicaciones
-    for (var item in _medicationItems) {
-      _addMedicationTextFieldListener(item);
+    // Cargar medicaciones
+    _loadMedicalRecordId().then((_) {
+      if (_medicalRecordId != null) {
+        _loadMedications();
+      }
+    });
+  }
+  
+  // Cargar el ID del registro médico desde SharedPreferences
+  Future<void> _loadMedicalRecordId() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        // Aquí debes usar la clave correcta donde guardas el ID del registro médico
+        _medicalRecordId = prefs.getInt('medical_record_id');
+        
+        // Para propósitos de prueba, si no hay ID guardado, usar uno predeterminado
+        // Elimina esta línea en producción y maneja el caso de ID nulo adecuadamente
+        _medicalRecordId ??= 1; // ID de prueba
+      });
+    } catch (e) {
+      print('Error loading medical record ID: $e');
+      setState(() {
+        _errorMessage = 'Error loading patient data';
+        _isLoading = false;
+      });
+    }
+  }
+  
+  // Cargar medicaciones desde el servicio
+  Future<void> _loadMedications() async {
+    if (_medicalRecordId == null) {
+      setState(() {
+        _errorMessage = 'No medical record ID found';
+        _isLoading = false;
+      });
+      return;
+    }
+    
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+    
+    try {
+      // Obtener medicaciones del servicio
+      final medications = await _medicalRecordService.getMedicationsByRecordId(_medicalRecordId!);
+      
+      setState(() {
+        _medications = medications;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading medications: $e');
+      setState(() {
+        _errorMessage = 'Error loading medications';
+        _isLoading = false;
+      });
     }
   }
 
@@ -58,42 +121,6 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
           _addExamTextFieldListener(_examItems.last.controller);
         });
       }
-    });
-  }
-
-  // Listener para los campos de medicación
-  void _addMedicationTextFieldListener(MedicationItem item) {
-    void checkAndAddNew() {
-      // Si ambos campos del último elemento tienen texto, agregar uno nuevo
-      if (_medicationItems.isNotEmpty &&
-          _medicationItems.last.nameController.text.isNotEmpty &&
-          _medicationItems.last.dosageController.text.isNotEmpty) {
-        setState(() {
-          final newItem = MedicationItem(
-            nameController: TextEditingController(),
-            dosageController: TextEditingController(),
-          );
-          _medicationItems.add(newItem);
-          _addMedicationTextFieldListener(newItem);
-        });
-      }
-    }
-
-    // Agregar listeners a ambos controladores
-    item.nameController.addListener(checkAndAddNew);
-    item.dosageController.addListener(checkAndAddNew);
-  }
-
-  // Eliminar una medicación específica
-  void _removeMedication(int index) {
-    // No eliminar si solo queda un elemento
-    if (_medicationItems.length <= 1) return;
-    
-    setState(() {
-      final item = _medicationItems.removeAt(index);
-      // Liberar los controladores
-      item.nameController.dispose();
-      item.dosageController.dispose();
     });
   }
 
@@ -138,15 +165,36 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
       );
     }
   }
+  
+  // Formatear la información de dosificación
+  String _formatDosage(Medication medication) {
+    List<String> parts = [];
+    
+    if (medication.quantity != null && medication.quantity!.isNotEmpty && medication.quantity != '0') {
+      parts.add('${medication.quantity}');
+    }
+    
+    if (medication.concentration != null && medication.concentration!.isNotEmpty && medication.concentration != '0') {
+      parts.add('${medication.concentration}');
+    }
+    
+    if (parts.isEmpty) {
+      return 'No dosage info';
+    }
+    
+    return parts.join(' - ');
+  }
+  
+  // Formatear la información de frecuencia
+  String _formatFrequency(Medication medication) {
+    if (medication.frequency != null && medication.frequency!.isNotEmpty && medication.frequency != 'Unknown') {
+      return medication.frequency!;
+    }
+    return '';
+  }
 
   @override
   void dispose() {
-    // Liberar los controladores de medicaciones
-    for (var item in _medicationItems) {
-      item.nameController.dispose();
-      item.dosageController.dispose();
-    }
-    
     // Liberar los controladores de exámenes
     for (var item in _examItems) {
       item.controller.dispose();
@@ -195,6 +243,12 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                       ),
                     ),
                     const Spacer(),
+                    // Botón de recarga
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: _loadMedications,
+                      tooltip: 'Reload medications',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -211,7 +265,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                       ),
                     ),
                     Text(
-                      "${_medicationItems.where((item) => item.nameController.text.isNotEmpty).length} medications",
+                      "${_medications.length} medications",
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 14,
@@ -224,20 +278,57 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                 const Divider(height: 1, thickness: 1),
                 const SizedBox(height: 32),
                 
-                // Lista dinámica de medicaciones
-                ...List.generate(_medicationItems.length, (index) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFBFA2C7),
-                          borderRadius: BorderRadius.circular(16),
+                // Mostrar indicador de carga o mensaje de error
+                if (_isLoading)
+                  const Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFFBFA2C7),
+                    ),
+                  )
+                else if (_errorMessage.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        _errorMessage,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
                         ),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            // Solo mostrar título y botón de eliminar si no es el primer elemento o si hay más de uno
-                            if (_medicationItems.length > 1 || index > 0) 
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                // Mostrar mensaje si no hay medicaciones
+                else if (_medications.isEmpty)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        "No medications found",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  )
+                // Mostrar lista de medicaciones
+                else
+                  ...List.generate(_medications.length, (index) {
+                    final medication = _medications[index];
+                    return Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFBFA2C7),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Título de la medicación
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -248,67 +339,99 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete_outline, color: Colors.white),
-                                    onPressed: () => _removeMedication(index),
-                                    iconSize: 20,
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
                                 ],
                               ),
-                            if (_medicationItems.length > 1 || index > 0) 
-                              const SizedBox(height: 8),
-                            
-                            // Campos de nombre y dosis
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    height: 50,
-                                    child: TextField(
-                                      controller: _medicationItems[index].nameController,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Medication name",
-                                      ),
-                                    ),
-                                  ),
+                              const SizedBox(height: 12),
+                              
+                              // Nombre y dosis de la medicación
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Nombre del medicamento
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.medication, size: 20, color: Colors.deepPurple),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            medication.drugName ?? 'Unknown medication',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    height: 50,
-                                    child: TextField(
-                                      controller: _medicationItems[index].dosageController,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Dosage",
+                                    const SizedBox(height: 8),
+                                    const Divider(height: 1),
+                                    const SizedBox(height: 8),
+                                    
+                                    // Dosis
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.scale, size: 20, color: Colors.deepPurple),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Dosage: ${_formatDosage(medication)}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    
+                                    // Frecuencia (si está disponible)
+                                    if (medication.frequency != null && medication.frequency!.isNotEmpty && medication.frequency != 'Unknown')
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.schedule, size: 20, color: Colors.deepPurple),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Frequency: ${_formatFrequency(medication)}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    
+                                    // Duración (si está disponible)
+                                    if (medication.duration != null && medication.duration!.isNotEmpty && medication.duration != 'Unknown')
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.date_range, size: 20, color: Colors.deepPurple),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Duration: ${medication.duration}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                }),
+                        const SizedBox(height: 16),
+                      ],
+                    );
+                  }),
                 
                 const SizedBox(height: 16),
                 
@@ -497,16 +620,6 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
       ),
     );
   }
-}
-
-class MedicationItem {
-  final TextEditingController nameController;
-  final TextEditingController dosageController;
-
-  MedicationItem({
-    required this.nameController,
-    required this.dosageController,
-  });
 }
 
 class ExamItem {

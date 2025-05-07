@@ -4,7 +4,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecas
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 
 class PatientSignUpService {
-  static final String baseUrl = 'http://localhost:8080/api/v1';
+  static final String baseUrl = 'http://localhost:8080/swagger-ui/index.html#/api/v1';
 
   static Future<void> signUpPatient(
     String username,
