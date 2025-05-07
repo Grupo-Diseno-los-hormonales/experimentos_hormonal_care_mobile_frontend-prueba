@@ -20,53 +20,65 @@ class PatientSignUpService {
   ) async {
     final authService = AuthService();
 
-    // Sign up user
-    final userResponse = await authService.signUp(username, password, 'ROLE_PATIENT');
-    final userId = userResponse['id'];
+    try {
+      // Paso 1: Registrar al usuario con ROLE_PATIENT
+      final userResponse = await authService.signUp(username, password, 'ROLE_PATIENT');
+      final userId = userResponse['id'];
 
-    // Create profile
-    final profileResponse = await http.post(
-      Uri.parse('$baseUrl/profile/profile'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'firstName': firstName,
-        'lastName': lastName,
-        'gender': gender,
-        'phoneNumber': phoneNumber,
-        'image': image,
-        'birthday': birthday,
-        'userId': userId,
-      }),
-    );
+      if (userId == null) {
+        throw Exception('Error: User ID not returned after sign-up');
+      }
 
-    if (profileResponse.statusCode != 201) {
-      throw Exception('Error creating profile');
-    }
+      // Paso 2: Realizar login para obtener el token
+      final loginResponse = await http.post(
+        Uri.parse('$baseUrl/authentication/sign-in'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'username': username,
+          'password': password,
+        }),
+      );
 
-    final profileData = json.decode(profileResponse.body);
-    final profileId = profileData['id'];
+      if (loginResponse.statusCode != 200) {
+        throw Exception('Error during login: ${loginResponse.body}');
+      }
 
-    // Create patient profile
-    final patientResponse = await http.post(
-      Uri.parse('$baseUrl/medical-record/patient'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'firstName': firstName,
-        'lastName': lastName,
-        'gender': gender,
-        'phoneNumber': phoneNumber,
-        'image': image,
-        'birthday': birthday,
-        'userId': userId,
-        'typeOfBlood': typeOfBlood,
-        'personalHistory': '',
-        'familyHistory': '',
-        'doctorId': int.parse(doctorId),
-      }),
-    );
+      final loginData = json.decode(loginResponse.body);
+      final token = loginData['token'];
 
-    if (patientResponse.statusCode != 201) {
-      throw Exception('Error creating patient profile');
+      if (token == null) {
+        throw Exception('Error: Token not returned after login');
+      }
+
+      // Paso 3: Crear el perfil del paciente
+      final patientResponse = await http.post(
+        Uri.parse('$baseUrl/medical-record/patient'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Usa el token del usuario
+        },
+        body: json.encode({
+          'firstName': firstName,
+          'lastName': lastName,
+          'gender': gender,
+          'phoneNumber': phoneNumber,
+          'image': image.isNotEmpty
+              ? image
+              : 'https://cdn.pixabay.com/photo/2018/11/08/23/52/man-3803551_1280.jpg', // Imagen por defecto
+          'birthday': birthday,
+          'userId': userId,
+          'typeOfBlood': typeOfBlood,
+          'personalHistory': '',
+          'familyHistory': '',
+          'doctorId': int.parse(doctorId),
+        }),
+      );
+
+      if (patientResponse.statusCode != 201) {
+        throw Exception('Error creating patient profile: ${patientResponse.body}');
+      }
+    } catch (e) {
+      throw Exception('Error during patient sign-up: $e');
     }
   }
 }

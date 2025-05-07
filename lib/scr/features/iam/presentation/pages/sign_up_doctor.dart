@@ -31,6 +31,25 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
             ? _image
             : 'https://hips.hearstapps.com/hmg-prod/images/portrait-of-a-happy-young-doctor-in-his-clinic-royalty-free-image-1661432441.jpg?crop=0.66698xw:1xh;center,top&resize=1200:*';
 
+
+    // Convierte la fecha al formato ISO 8601
+      final birthdayIsoFormat = DateTime.parse(_birthdayController.text).toIso8601String();
+   
+   print('Datos enviados al servidor:');
+        print({
+          'username': _usernameController.text.trim(),
+          'password': _passwordController.text.trim(),
+          'firstName': _firstNameController.text.trim(),
+          'lastName': _lastNameController.text.trim(),
+          'gender': _gender,
+          'phoneNumber': _phoneNumberController.text.trim(),
+          'image': imageUrl,
+          'birthday': birthdayIsoFormat,
+          'professionalIdentificationNumber': int.parse(_medicalLicenseNumberController.text.trim()),
+          'subSpecialty': _subSpecialtyController.text.trim(),
+        });
+
+
         await DoctorSignUpService.signUpDoctor(
           _usernameController.text,
           _passwordController.text,
@@ -39,7 +58,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
           _gender!,
           _phoneNumberController.text,
           imageUrl,
-          _birthdayController.text,
+           birthdayIsoFormat, 
           int.parse(_medicalLicenseNumberController.text),
           _subSpecialtyController.text,
         );
@@ -56,16 +75,19 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
     }
   }
 
+
+
   String? _validateDate(String? value) {
-    if (value == null || value.isEmpty) {
+    if (value == null || value.trim().isEmpty) {
       return 'Please enter your birthday';
     }
+    final trimmedValue = value.trim();
     final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-    if (!dateRegex.hasMatch(value)) {
+    if (!dateRegex.hasMatch(trimmedValue)) {
       return 'Invalid date format. Use YYYY-MM-DD';
     }
     try {
-      DateTime.parse(value);
+      DateTime.parse(trimmedValue);
     } catch (_) {
       return 'Invalid date';
     }
@@ -139,55 +161,53 @@ Widget _buildTextField(
 }
 
 
-Widget _buildPhoneNumberField() {
-  final TextEditingController _phoneNumberController = TextEditingController();
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Phone Number:',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 4),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE5DDE6),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.black, width: 1), // Agregar borde negro
-        ),
-        child: TextFormField(
-          controller: _phoneNumberController,
-          decoration: const InputDecoration(
-            hintText: 'XXX-XXX-XXXX',
-            counterText: '',
-            border: InputBorder.none,
+ Widget _buildPhoneNumberField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Phone Number:',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
-          maxLength: 12, // Incluye los guiones
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            _PhoneNumberInputFormatter(), // Formateador personalizado
-          ],
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your phone number';
-            }
-            final phoneRegex = RegExp(r'^\d{3}-\d{3}-\d{4}$');
-            if (!phoneRegex.hasMatch(value)) {
-              return 'Invalid phone number format. Use XXX-XXX-XXXX';
-            }
-            return null;
-          },
         ),
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE5DDE6),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.black, width: 1),
+          ),
+          child: TextFormField(
+            controller: _phoneNumberController, // Usa el controlador declarado en la clase
+            decoration: const InputDecoration(
+              hintText: 'XXX-XXX-XXXX',
+              counterText: '',
+              border: InputBorder.none,
+            ),
+            maxLength: 12, // Incluye los guiones
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              _PhoneNumberInputFormatter(), // Formateador personalizado
+            ],
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your phone number';
+              }
+              final phoneRegex = RegExp(r'^\d{3}-\d{3}-\d{4}$');
+              if (!phoneRegex.hasMatch(value)) {
+                return 'Invalid phone number format. Use XXX-XXX-XXXX';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
 Widget _buildProfessionalIdField() {
   return _buildTextField(
@@ -208,8 +228,6 @@ Widget _buildProfessionalIdField() {
 }
 
 Widget _buildBirthdayField() {
-  final TextEditingController _birthdayController = TextEditingController();
-
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -236,35 +254,17 @@ Widget _buildBirthdayField() {
             border: InputBorder.none,
           ),
           maxLength: 10, // Incluye los guiones
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.datetime,
           inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9-]')), // Permitir solo números y guiones
             _DateInputFormatter(), // Formateador personalizado
           ],
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your birthday';
-            }
-            final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-            if (!dateRegex.hasMatch(value)) {
-              return 'Invalid date format. Use YYYY-MM-DD';
-            }
-            try {
-              final date = DateTime.parse(value);
-              if (date.year < 1900 || date.year > DateTime.now().year) {
-                return 'Enter a valid year (1900-${DateTime.now().year})';
-              }
-            } catch (_) {
-              return 'Invalid date';
-            }
-            return null;
-          },
+          validator: _validateDate, // Asigna el validador aquí
         ),
       ),
     ],
   );
 }
-
 
 @override
 Widget build(BuildContext context) {
@@ -412,12 +412,11 @@ class _PhoneNumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    final text = newValue.text.replaceAll('-', ''); // Eliminar guiones existentes
+    final text = newValue.text.replaceAll('-', '');
     final buffer = StringBuffer();
 
     for (int i = 0; i < text.length; i++) {
       buffer.write(text[i]);
-      // Agregar guiones en las posiciones correctas
       if (i == 2 || i == 5) {
         buffer.write('-');
       }

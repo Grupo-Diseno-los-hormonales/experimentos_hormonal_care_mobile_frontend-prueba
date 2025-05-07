@@ -23,36 +23,58 @@ class AuthService {
     }
   }
 
-   Future<String?> signIn(String username, String password) async {
+  Future<String?> signIn(String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/authentication/sign-in'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'password': password}),
     );
-
+  
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       final token = responseData['token'];
       final userId = responseData['id'];
       final role = responseData['role'];
-
+  
       if (token != null && userId != null && role != null) {
         await JwtStorage.saveToken(token);
         await JwtStorage.saveUserId(userId);
         await JwtStorage.saveRole(role);
-
+  
         final profileId = await fetchAndSaveProfileId(userId, token);
-
+  
         if (role == 'ROLE_DOCTOR' && profileId != null) {
           await fetchAndSaveDoctorId(profileId, token);
+        } else if (role == 'ROLE_PATIENT' && profileId != null) {
+          await fetchAndSavePatientId(profileId, token); // Lógica para pacientes
         }
-
+  
         return token;
       } else {
         throw Exception('Token, User ID, or Role is null');
       }
     } else {
       throw Exception('Error in sign-in');
+    }
+  }
+  
+  Future<void> fetchAndSavePatientId(int profileId, String token) async {
+    final patientResponse = await http.get(
+      Uri.parse('$baseUrl/patient/patient/profile/$profileId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+  
+    if (patientResponse.statusCode == 200) {
+      final patientData = json.decode(patientResponse.body);
+      final patientId = patientData['id'];
+  
+      if (patientId != null) {
+        await JwtStorage.savePatientId(patientId); // Guardar el ID del paciente
+      } else {
+        throw Exception('Patient ID is null');
+      }
+    } else {
+      throw Exception('Error fetching patient ID: ${patientResponse.statusCode}');
     }
   }
 
@@ -108,4 +130,8 @@ class AuthService {
   Future<void> logout() async {
     await JwtStorage.clearAll();
   }
+
+
+
+
 }
