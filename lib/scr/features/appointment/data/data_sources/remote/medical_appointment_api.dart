@@ -341,27 +341,73 @@ class MedicalAppointmentApi {
     return profileDetails;
   }
 
-  Future<List<Map<String, dynamic>>> fetchAppointmentsByPatientId() async {
-    final token = await _getToken();
-    final patientId = await JwtStorage.getPatientId();
-
-    if (token == null) {
-      throw Exception('Token not found');
+  Future<List<Map<String, dynamic>>> fetchPatientAppointmentsWithDoctor() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+      
+      final userId = await _getUserId();
+      if (userId == null) {
+        throw Exception('User ID not found');
+      }
+      
+      final profileResponse = await http.get(
+        Uri.parse('$_baseUrl/profile/profile/userId/$userId'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      
+      if (profileResponse.statusCode != 200) {
+        throw Exception('Failed to load user profile');
+      }
+      
+      final profileData = json.decode(profileResponse.body);
+      final profileId = profileData['id'];
+      
+      final patientResponse = await http.get(
+        Uri.parse('$_baseUrl/medical-record/patient/profile/$profileId'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      
+      if (patientResponse.statusCode != 200) {
+        throw Exception('Failed to load patient data');
+      }
+      
+      final patientData = json.decode(patientResponse.body);
+      final patientId = patientData['id'];
+      
+      await JwtStorage.savePatientId(patientId);
+      
+      final doctorId = patientData['doctorId'];
+      
+      if (doctorId == null) {
+        throw Exception('Doctor ID not found for this patient');
+      }
+      
+      final response = await http.get(
+        Uri.parse('$_baseUrl/medicalAppointment/medicalAppointments/doctor/$doctorId'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load appointments');
+      }
+      
+      final List<Map<String, dynamic>> allAppointments = 
+          List<Map<String, dynamic>>.from(json.decode(response.body));
+      
+      final patientAppointments = allAppointments.where((appointment) {
+        return appointment['patientId'] == patientId;
+      }).toList();
+      
+      print('Found ${patientAppointments.length} appointments for patient $patientId with doctor $doctorId');
+      
+      return patientAppointments;
+    } catch (e) {
+      print('Error fetching patient appointments: $e');
+      rethrow;
     }
-
-    if (patientId == null) {
-      throw Exception('Patient ID not found');
-    }
-
-    // Reutiliza tu método existente
-    final allAppointments = await fetchAllAppointments();
-
-    // Filtra por patientId
-    final filteredAppointments = allAppointments.where((appointment) {
-      return appointment['patientId'] == patientId;
-    }).toList();
-
-    return filteredAppointments;
   }
 
 }

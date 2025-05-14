@@ -1,4 +1,4 @@
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
+import 'dart:convert';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/doctor_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
@@ -7,12 +7,10 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentati
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class DoctorListScreen extends StatefulWidget {
-  final int? patientId;
-
-  const DoctorListScreen({Key? key, required this.patientId}) : super(key: key);
+  // Eliminamos el parámetro patientId para evitar dependencias
+  const DoctorListScreen({Key? key}) : super(key: key);
 
   @override
   _DoctorListScreenState createState() => _DoctorListScreenState();
@@ -42,8 +40,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     });
 
     try {
-      // Obtener la lista de doctores
-      final doctors = await _getAllDoctors();
+      // Intentar obtener datos reales
+      final doctors = await _fetchDoctorsFromApi();
       
       // Extraer especialidades únicas para el filtro
       final specialtiesSet = <String>{};
@@ -67,109 +65,87 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     }
   }
 
-  Future<List<Map<String, dynamic>>> _getAllDoctors() async {
+  Future<List<Map<String, dynamic>>> _fetchDoctorsFromApi() async {
     try {
-      final token = await JwtStorage.getToken();
-      if (token == null) {
-        throw Exception('Authentication token not found');
-      }
-      
-      // Obtener la lista de todos los doctores
+      // Intentar obtener doctores sin autenticación
       final response = await http.get(
-        Uri.parse('http://localhost:8080/api/v1/doctor/doctors'),
-        headers: {'Authorization': 'Bearer $token'},
+        Uri.parse('http://localhost:8080/api/v1/doctor/doctors/public'),
+        headers: {'Content-Type': 'application/json'},
       );
       
       if (response.statusCode == 200) {
         final List<dynamic> doctorsData = json.decode(response.body);
-        final List<Map<String, dynamic>> doctorsWithDetails = [];
+        return List<Map<String, dynamic>>.from(doctorsData);
+      } else {
+        // Si falla, intentar con otro endpoint
+        return await _fetchDoctorsAlternative();
+      }
+    } catch (e) {
+      print('Error in primary fetch method: $e');
+      // Si hay una excepción, intentar con método alternativo
+      return await _fetchDoctorsAlternative();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchDoctorsAlternative() async {
+    try {
+      // Intentar obtener doctores de un endpoint alternativo
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/api/v1/public/doctors'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> doctorsData = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(doctorsData);
+      } else {
+        // Si también falla, intentar con un tercer método
+        return await _fetchDoctorsFromProfiles();
+      }
+    } catch (e) {
+      print('Error in alternative fetch method: $e');
+      // Si hay una excepción, intentar con el tercer método
+      return await _fetchDoctorsFromProfiles();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchDoctorsFromProfiles() async {
+    try {
+      // Intentar obtener perfiles públicos y filtrar los que son doctores
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/api/v1/profile/profiles/public'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> profilesData = json.decode(response.body);
+        final List<Map<String, dynamic>> doctorProfiles = [];
         
-        // Para cada doctor, obtener su información de perfil
-        for (var doctor in doctorsData) {
-          try {
-            final doctorId = doctor['id'];
-            final profileId = doctor['profileId'];
-            
-            if (profileId != null) {
-              final profileDetails = await _profileService.fetchProfileDetails(profileId);
-              
-              doctorsWithDetails.add({
-                'id': doctorId,
-                'profileId': profileId,
-                'fullName': profileDetails['fullName'] ?? 'Unknown',
-                'specialty': doctor['specialty'] ?? 'General Medicine',
-                'experience': doctor['experience'] ?? 'Not specified',
-                'image': profileDetails['image'] ?? '',
-                'about': doctor['about'] ?? 'No information available',
-                'rating': (doctor['rating'] ?? 0.0).toDouble(),
-              });
-            }
-          } catch (e) {
-            print('Error fetching details for doctor: $e');
+        for (var profile in profilesData) {
+          if (profile['role'] == 'ROLE_DOCTOR') {
+            doctorProfiles.add({
+              'id': profile['id'],
+              'fullName': profile['fullName'] ?? 'Unknown Doctor',
+              'specialty': profile['specialty'] ?? 'General Medicine',
+              'experience': profile['experience'] ?? 'Not specified',
+              'image': profile['image'] ?? '',
+              'about': profile['about'] ?? 'No information available',
+              'email': profile['email'] ?? '',
+              'phone': profile['phone'] ?? '',
+              'rating': (profile['rating'] ?? 0.0).toDouble(),
+            });
           }
         }
         
-        return doctorsWithDetails;
-      } else if (response.statusCode == 401) {
-        throw Exception('Unauthorized: Invalid or expired token');
+        return doctorProfiles;
       } else {
-        throw Exception('Failed to load doctors: ${response.statusCode}');
+        // Si todos los métodos fallan, lanzar excepción
+        throw Exception('Failed to load doctors from any endpoint');
       }
     } catch (e) {
-      // Si hay un error o no hay conexión, usar datos de ejemplo
-      print('Error fetching doctors, using sample data: $e');
-      return [
-        {
-          'id': 1,
-          'profileId': 101,
-          'fullName': 'Dr. María Rodríguez',
-          'specialty': 'Endocrinología',
-          'rating': 4.8,
-          'experience': '10 años',
-          'image': 'https://randomuser.me/api/portraits/women/44.jpg',
-          'about': 'Especialista en trastornos hormonales y metabólicos con enfoque en salud femenina.',
-        },
-        {
-          'id': 2,
-          'profileId': 102,
-          'fullName': 'Dr. Carlos Mendoza',
-          'specialty': 'Ginecología',
-          'rating': 4.6,
-          'experience': '15 años',
-          'image': 'https://randomuser.me/api/portraits/men/32.jpg',
-          'about': 'Especializado en salud reproductiva y tratamientos hormonales.',
-        },
-        {
-          'id': 3,
-          'profileId': 103,
-          'fullName': 'Dra. Ana Gómez',
-          'specialty': 'Endocrinología',
-          'rating': 4.9,
-          'experience': '8 años',
-          'image': 'https://randomuser.me/api/portraits/women/68.jpg',
-          'about': 'Enfocada en trastornos tiroideos y balance hormonal.',
-        },
-        {
-          'id': 4,
-          'profileId': 104,
-          'fullName': 'Dr. Javier Pérez',
-          'specialty': 'Medicina Interna',
-          'rating': 4.7,
-          'experience': '12 años',
-          'image': 'https://randomuser.me/api/portraits/men/46.jpg',
-          'about': 'Especialista en diagnóstico y tratamiento de enfermedades complejas.',
-        },
-        {
-          'id': 5,
-          'profileId': 105,
-          'fullName': 'Dra. Lucía Martínez',
-          'specialty': 'Ginecología',
-          'rating': 4.5,
-          'experience': '7 años',
-          'image': 'https://randomuser.me/api/portraits/women/90.jpg',
-          'about': 'Especializada en salud hormonal femenina y tratamientos personalizados.',
-        },
-      ];
+      print('Error in profile fetch method: $e');
+      // Si todos los métodos fallan, lanzar excepción
+      throw Exception('Failed to load doctors: $e');
     }
   }
 
@@ -208,7 +184,9 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(doctor['image'] ?? 'https://via.placeholder.com/80'),
+                    backgroundImage: NetworkImage(doctor['image'] != null && doctor['image'].isNotEmpty 
+                        ? doctor['image'] 
+                        : 'https://via.placeholder.com/80'),
                     backgroundColor: Colors.grey[200],
                   ),
                   const SizedBox(width: 16),
@@ -253,6 +231,46 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               
               const SizedBox(height: 24),
               const Divider(),
+              const SizedBox(height: 16),
+              
+              // Información de contacto
+              const Text(
+                'Contact Information',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (doctor['email'] != null && doctor['email'].isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.email, size: 18, color: Color(0xFFA78AAB)),
+                      const SizedBox(width: 8),
+                      Text(
+                        doctor['email'],
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              if (doctor['phone'] != null && doctor['phone'].isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.phone, size: 18, color: Color(0xFFA78AAB)),
+                      const SizedBox(width: 8),
+                      Text(
+                        doctor['phone'],
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              
               const SizedBox(height: 16),
               
               // Experiencia
@@ -492,103 +510,111 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               ],
                             ),
                           )
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: filteredDoctors.length,
-                            itemBuilder: (context, index) {
-                              final doctor = filteredDoctors[index];
-                              return Card(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: InkWell(
-                                  onTap: () => _viewDoctorDetails(doctor),
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Foto del doctor
-                                        CircleAvatar(
-                                          radius: 40,
-                                          backgroundImage: NetworkImage(doctor['image'] ?? 'https://via.placeholder.com/80'),
-                                          backgroundColor: Colors.grey[200],
-                                        ),
-                                        const SizedBox(width: 16),
-                                        
-                                        // Información del doctor
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                doctor['fullName'] ?? 'Unknown Doctor',
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                doctor['specialty'] ?? 'General Medicine',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey[600],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.star, color: Colors.amber, size: 18),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    '${doctor['rating'] ?? 0.0}',
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 16),
-                                                  const Icon(Icons.work, color: Color(0xFFA78AAB), size: 18),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    doctor['experience'] ?? 'Unknown',
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 12),
-                                              ElevatedButton(
-                                                onPressed: () => _scheduleAppointment(doctor),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: const Color(0xFFA78AAB),
-                                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                  ),
-                                                ),
-                                                child: const Text(
-                                                  'Schedule Appointment',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
+                        : RefreshIndicator(
+                            onRefresh: _fetchDoctors,
+                            color: const Color(0xFFA78AAB),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: filteredDoctors.length,
+                              itemBuilder: (context, index) {
+                                final doctor = filteredDoctors[index];
+                                return Card(
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () => _viewDoctorDetails(doctor),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          // Foto del doctor
+                                          CircleAvatar(
+                                            radius: 40,
+                                            backgroundImage: NetworkImage(
+                                              doctor['image'] != null && doctor['image'].isNotEmpty 
+                                                ? doctor['image'] 
+                                                : 'https://via.placeholder.com/80'
+                                            ),
+                                            backgroundColor: Colors.grey[200],
+                                          ),
+                                          const SizedBox(width: 16),
+                                          
+                                          // Información del doctor
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  doctor['fullName'] ?? 'Unknown Doctor',
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  doctor['specialty'] ?? 'General Medicine',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.star, color: Colors.amber, size: 18),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      '${doctor['rating'] ?? 0.0}',
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 16),
+                                                    const Icon(Icons.work, color: Color(0xFFA78AAB), size: 18),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      doctor['experience'] ?? 'Unknown',
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 12),
+                                                ElevatedButton(
+                                                  onPressed: () => _scheduleAppointment(doctor),
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: const Color(0xFFA78AAB),
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                  ),
+                                                  child: const Text(
+                                                    'Schedule Appointment',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
           ),
         ],

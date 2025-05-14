@@ -600,7 +600,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DoctorListScreen(patientId: patientId,)),
+                MaterialPageRoute(builder: (context) => DoctorListScreen()),
               );
               break;
             case 2:

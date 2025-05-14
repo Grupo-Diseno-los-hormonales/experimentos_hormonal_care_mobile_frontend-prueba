@@ -41,7 +41,7 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
     
     try {
       // Usar el nuevo método para obtener solo las citas del paciente
-      final appointments = await _appointmentService.fetchAppointmentsByPatientId();
+      final appointments = await _appointmentService.fetchPatientAppointmentsWithDoctor();
       final List<Meeting> loadedMeetings = appointments.map<Meeting>((appointment) {
         final startTime = DateTime.parse('${appointment['eventDate']}T${appointment['startTime']}:00');
         final endTime = DateTime.parse('${appointment['eventDate']}T${appointment['endTime']}:00');
@@ -252,7 +252,7 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DoctorListScreen(patientId: patientId,)),
+                MaterialPageRoute(builder: (context) => DoctorListScreen()),
               );
               break;
             case 2:
