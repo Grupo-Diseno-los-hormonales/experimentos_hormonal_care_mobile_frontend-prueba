@@ -1,4 +1,5 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctors_list_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/domain/models/medication_model.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/domain/services/medicalrecord_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
@@ -16,6 +17,9 @@ class HomeScreenPatient extends StatefulWidget {
 }
 
 class _HomeScreenPatientState extends State<HomeScreenPatient> {
+
+  int? patientId;
+
   // Servicio para obtener datos médicos
   final MedicalRecordService _medicalRecordService = MedicalRecordService();
   
@@ -594,10 +598,10 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
               );
               break;
             case 1:
-              /*Navigator.push(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchDoctorPage()),
-              );*/
+                MaterialPageRoute(builder: (context) => DoctorListScreen(patientId: patientId,)),
+              );
               break;
             case 2:
               Navigator.push(

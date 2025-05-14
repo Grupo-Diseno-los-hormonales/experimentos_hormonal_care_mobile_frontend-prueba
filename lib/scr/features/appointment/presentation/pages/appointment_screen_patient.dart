@@ -1,3 +1,4 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctors_list_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -15,6 +16,9 @@ class AppointmentScreenPatient extends StatefulWidget {
 }
 
 class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
+
+  int? patientId;
+
   final List<Meeting> _meetings = <Meeting>[];
   final MedicalAppointmentApi _appointmentService = MedicalAppointmentApi();
   late MeetingDataSource calendarDataSource;
@@ -246,10 +250,17 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
               );
               break;
             case 1:
-              // Implementar navegación a pantalla de búsqueda de doctores
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DoctorListScreen(patientId: patientId,)),
+              );
               break;
             case 2:
-              // Ya estamos en esta pantalla
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AppointmentScreenPatient()), //cambiar por una solo para pacientes
+
+              );
               break;
             case 3:
               Navigator.pushReplacement(
