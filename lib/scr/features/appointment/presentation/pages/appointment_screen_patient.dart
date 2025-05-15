@@ -1,4 +1,5 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctors_list_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/appointment_doctor_detail.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -9,6 +10,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentati
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 
 class AppointmentScreenPatient extends StatefulWidget {
+
   const AppointmentScreenPatient({Key? key}) : super(key: key);
 
   @override
@@ -64,15 +66,13 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading patient appointments: $e');
+      print('Error loading appointments: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load appointments: $e')),
+      );
       setState(() {
-        _errorMessage = 'Failed to load appointments: $e';
         _isLoading = false;
       });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage)),
-      );
     }
   }
 
@@ -223,7 +223,7 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
                     dataSource: calendarDataSource,
                     initialDisplayDate: DateTime.now(),
                     monthViewSettings: const MonthViewSettings(showAgenda: true),
-                    onTap: _calendarTapped,
+                    onTap: _calendarView == CalendarView.month ? null : _calendarTapped,
                     headerStyle: const CalendarHeaderStyle(
                       textStyle: TextStyle(
                         fontSize: 18,
@@ -276,8 +276,6 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
 
   void _calendarTapped(CalendarTapDetails details) async {
     if (details.targetElement == CalendarElement.calendarCell) {
-      // Los pacientes no pueden crear citas directamente
-      // Podrías mostrar un mensaje o redirigir a una pantalla de solicitud de cita
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please contact your doctor to schedule a new appointment'),
@@ -289,7 +287,7 @@ class _AppointmentScreenPatientState extends State<AppointmentScreenPatient> {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AppointmentDetail(
+          builder: (context) => AppointmentDoctorDetail(
             appointmentId: int.parse(appointment.id) // Pasar un flag para indicar que es vista de paciente
           ),
         ),
@@ -336,14 +334,11 @@ class MeetingDataSource extends CalendarDataSource {
   }
 
   void updateMeetings(List<Meeting> newMeetings) {
-    // Notifica la eliminación de las citas anteriores
     notifyListeners(CalendarDataSourceAction.remove, appointments!);
 
-    // Actualiza las citas
     appointments!.clear();
     appointments!.addAll(newMeetings);
 
-    // Notifica la adición de las nuevas citas
     notifyListeners(CalendarDataSourceAction.add, appointments!);
   }
 

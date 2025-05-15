@@ -59,6 +59,28 @@ class MedicalAppointmentApi {
     }
   }
 
+  Future<int?> getProfileIdByDoctorId(int doctorId) async {
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    // Usar el endpoint específico para obtener el ID del perfil
+    final response = await http.get(
+      Uri.parse('$_baseUrl/doctor/doctor/$doctorId/profile-id'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      // Asumiendo que la respuesta es directamente el ID del perfil como un número
+      return int.parse(response.body);
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized: Invalid or expired token');
+    } else {
+      throw Exception('Failed to load profile ID for doctor $doctorId: ${response.statusCode}');
+    }
+  }
+
   Future<int> _getDoctorId() async {
     final token = await _getToken();
     final profileId = await JwtStorage.getProfileId();
@@ -341,6 +363,46 @@ class MedicalAppointmentApi {
     return profileDetails;
   }
 
+  Future<Map<String, dynamic>> fetchDoctorProfileDetails(int doctorId) async {
+    try {
+      final profileId = await getProfileIdByDoctorId(doctorId);
+      if (profileId == null) {
+        throw Exception('Profile ID not found for doctor $doctorId');
+      }
+      
+      print('Fetching profile details for doctor $doctorId with profileId: $profileId');
+      
+      final profileDetails = await fetchProfileDetails(profileId);
+      if (profileDetails == null) {
+        throw Exception('Failed to load profile details');
+      }
+      
+      Map<String, dynamic> doctorProfessionalDetails = {};
+      try {
+        final doctorResponse = await http.get(
+          Uri.parse('$_baseUrl/doctor/doctor/$doctorId'),
+          headers: {'Authorization': 'Bearer ${await _getToken()}'},
+        );
+        
+        if (doctorResponse.statusCode == 200) {
+          doctorProfessionalDetails = json.decode(doctorResponse.body);
+        }
+      } catch (e) {
+        print('Warning: Could not fetch doctor professional details: $e');
+      }
+      
+      return {
+        ...profileDetails,
+        ...doctorProfessionalDetails,
+        'doctorId': doctorId,
+        'profileId': profileId,
+      };
+    } catch (e) {
+      print('Error fetching doctor profile details: $e');
+      rethrow;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchPatientAppointmentsWithDoctor() async {
     try {
       final token = await _getToken();
@@ -410,4 +472,39 @@ class MedicalAppointmentApi {
     }
   }
 
+  Future<List<Map<String, dynamic>>> fetchAppointmentsByPatientId() async {
+    try {
+      final token = await _getToken();
+      final patientId = await JwtStorage.getPatientId();
+      
+      if (token == null) {
+        print('Token not found');
+        throw Exception('Authentication token not found');
+      }
+      
+      if (patientId == null) {
+        print('Patient ID not found');
+        throw Exception('Patient ID not found');
+      }
+      
+      print('Fetching appointments for patient ID: $patientId');
+      
+      // Primero obtenemos todas las citas disponibles
+      // Podemos usar el método existente fetchAllAppointments() que obtiene todas las citas
+      final allAppointments = await fetchAllAppointments();
+      
+      // Filtramos las citas que corresponden al paciente actual
+      final patientAppointments = allAppointments.where((appointment) {
+        // Asumiendo que cada cita tiene un campo 'patientId'
+        return appointment['patientId'] == patientId;
+      }).toList();
+      
+      print('Found ${patientAppointments.length} appointments for patient $patientId');
+      
+      return patientAppointments;
+    } catch (e) {
+      print('Error in fetchAppointmentsByPatientId: $e');
+      rethrow;
+    }
+  }
 }
