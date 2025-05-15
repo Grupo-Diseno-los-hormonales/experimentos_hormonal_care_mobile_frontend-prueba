@@ -65,14 +65,12 @@ class MedicalAppointmentApi {
       throw Exception('Token not found');
     }
 
-    // Usar el endpoint específico para obtener el ID del perfil
     final response = await http.get(
       Uri.parse('$_baseUrl/doctor/doctor/$doctorId/profile-id'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
-      // Asumiendo que la respuesta es directamente el ID del perfil como un número
       return int.parse(response.body);
     } else if (response.statusCode == 401) {
       throw Exception('Unauthorized: Invalid or expired token');
@@ -489,13 +487,9 @@ class MedicalAppointmentApi {
       
       print('Fetching appointments for patient ID: $patientId');
       
-      // Primero obtenemos todas las citas disponibles
-      // Podemos usar el método existente fetchAllAppointments() que obtiene todas las citas
       final allAppointments = await fetchAllAppointments();
       
-      // Filtramos las citas que corresponden al paciente actual
       final patientAppointments = allAppointments.where((appointment) {
-        // Asumiendo que cada cita tiene un campo 'patientId'
         return appointment['patientId'] == patientId;
       }).toList();
       
@@ -504,6 +498,79 @@ class MedicalAppointmentApi {
       return patientAppointments;
     } catch (e) {
       print('Error in fetchAppointmentsByPatientId: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAllDoctors() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      // Usar el nuevo endpoint para obtener todos los doctores
+      final response = await http.get(
+        Uri.parse('$_baseUrl/doctor/doctor'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> doctorsData = json.decode(response.body);
+        final List<Map<String, dynamic>> doctors = [];
+
+        // Procesar cada doctor para obtener información completa
+        for (var doctorData in doctorsData) {
+          final doctorId = doctorData['id'];
+          
+          try {
+            // Obtener el ID del perfil del doctor
+            final profileIdResponse = await http.get(
+              Uri.parse('$_baseUrl/doctor/doctor/$doctorId/profile-id'),
+              headers: {'Authorization': 'Bearer $token'},
+            );
+            
+            if (profileIdResponse.statusCode == 200) {
+              final profileId = int.parse(profileIdResponse.body);
+              
+              // Obtener los detalles del perfil
+              final profileDetails = await fetchProfileDetails(profileId);
+              
+              // Combinar la información del doctor y su perfil
+              doctors.add({
+                'id': doctorId,
+                'profileId': profileId,
+                'fullName': profileDetails?['fullName'] ?? 'Doctor',
+                'specialty': doctorData['subSpecialty'] ?? 'General Medicine',
+                'rating': doctorData['rating'] ?? 4.5,
+                'experience': doctorData['experience'] != null 
+                    ? '${doctorData['experience']} años' 
+                    : 'No especificado',
+                'imageUrl': profileDetails?['image'],
+                'about': doctorData['about'] ?? 'Especialista en medicina.',
+                'phoneNumber': profileDetails?['phoneNumber'],
+                'email': profileDetails?['email'],
+              });
+            }
+          } catch (e) {
+            print('Error fetching details for doctor $doctorId: $e');
+            // Agregar información básica del doctor si no se pueden obtener todos los detalles
+            doctors.add({
+              'id': doctorId,
+              'fullName': doctorData['name'] ?? 'Doctor',
+              'specialty': doctorData['subSpecialty'] ?? 'General Medicine',
+            });
+          }
+        }
+        
+        return doctors;
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized: Invalid or expired token');
+      } else {
+        throw Exception('Failed to load doctors: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching all doctors: $e');
       rethrow;
     }
   }
