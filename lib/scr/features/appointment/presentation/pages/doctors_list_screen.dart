@@ -1,5 +1,6 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -319,29 +320,6 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 18),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${doctor['rating'] ?? 0.0}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        const Icon(Icons.work, color: Color(0xFFA78AAB), size: 18),
-                        const SizedBox(width: 4),
-                        Text(
-                          doctor['experience'] ?? 'Unknown',
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () => _scheduleAppointment(doctor),
                       style: ElevatedButton.styleFrom(
@@ -356,6 +334,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -412,27 +391,6 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          doctor['specialty'] ?? 'General Medicine',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 18),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${doctor['rating'] ?? 0.0}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -453,25 +411,12 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                doctor['experience'] ?? 'Not specified',
+                doctor['specialty'] ?? 'Not specified',
                 style: const TextStyle(fontSize: 16),
               ),
               
               const SizedBox(height: 16),
               
-              // Acerca de
-              const Text(
-                'About',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                doctor['about'] ?? 'No information available',
-                style: const TextStyle(fontSize: 16),
-              ),
               
               // Información de contacto
               if (doctor['phoneNumber'] != null || doctor['email'] != null) ...[
@@ -532,6 +477,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
                 ),
@@ -544,26 +490,12 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   }
 
   void _scheduleAppointment(Map<String, dynamic> doctor) {
-    // Aquí implementarías la navegación a la pantalla de programación de citas
-    // con el doctor seleccionado
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Scheduling appointment with ${doctor['fullName']}'),
-        backgroundColor: const Color(0xFFA78AAB),
-        duration: const Duration(seconds: 2),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DoctorChatScreen(doctor: doctor,),
       ),
     );
-    
-    // Ejemplo de navegación a una pantalla de programación de citas
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ScheduleAppointmentScreen(
-    //       doctorId: doctor['id'],
-    //       doctorName: doctor['fullName'],
-    //     ),
-    //   ),
-    // );
   }
 }
