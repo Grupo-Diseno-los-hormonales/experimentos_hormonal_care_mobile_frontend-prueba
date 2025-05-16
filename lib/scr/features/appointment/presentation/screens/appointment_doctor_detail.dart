@@ -1,5 +1,6 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +59,31 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
     return '${dateFormatter.format(parsedDate)} ${timeFormatter.format(parsedStartTime)} - ${timeFormatter.format(parsedEndTime)}';
   }
   
+  void _navigateToChatScreen() {
+    if (_doctorDetails != null) {
+      // Crear un mapa con la información del doctor necesaria para el chat
+      final doctorInfo = {
+        'fullName': _doctorDetails!['fullName'],
+        'imageUrl': _doctorDetails!['image'],
+        'specialty': _doctorProfessionalDetails != null ? _doctorProfessionalDetails!['specialty'] : 'Doctor',
+        // Puedes agregar más campos según lo que necesite tu DoctorChatScreen
+      };
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DoctorChatScreen(
+            doctor: doctorInfo,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Doctor information not available')),
+      );
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     if (_appointmentDetails == null || _doctorDetails == null) {
@@ -65,12 +91,12 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
         appBar: AppBar(
           backgroundColor: Color(0xFFA78AAB),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-          title: Text(
+          title: const Text(
             'Appointment Detail',
             style: TextStyle(
               color: Colors.white,
@@ -79,7 +105,7 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
           ),
           centerTitle: true,
         ),
-        body: Center(
+        body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
@@ -88,12 +114,12 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
       appBar: AppBar(
         backgroundColor: Color(0xFFA78AAB),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text(
+        title: const Text(
           'Appointment Detail',
           style: TextStyle(
             color: Colors.white,
@@ -128,7 +154,7 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
                     SizedBox(width: 8),
                     Text(
                       _doctorDetails!['fullName'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -182,18 +208,18 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
                           SnackBar(content: Text('Meeting link copied to clipboard')),
                         );
                       },
-                      icon: Icon(Icons.copy, color: Colors.blue),
-                      label: Text(
+                      icon: const Icon(Icons.copy, color: Colors.blue),
+                      label: const Text(
                         'Copy Link',
                         style: TextStyle(color: Colors.blue),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey),
+                        side: const BorderSide(color: Colors.grey),
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
@@ -206,18 +232,41 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
                           );
                         }
                       },
-                      icon: Icon(Icons.link, color: Colors.blue),
-                      label: Text(
+                      icon: const Icon(Icons.link, color: Colors.blue),
+                      label: const Text(
                         'Join Meeting',
                         style: TextStyle(color: Colors.blue),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey),
+                        side: const BorderSide(color: Colors.grey),
                       ),
                     ),
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Nuevo botón para ir al chat
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: ElevatedButton.icon(
+                onPressed: _navigateToChatScreen,
+                icon: const Icon(Icons.chat, color: Colors.white),
+                label: const Text(
+                  'Chat with Doctor',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFA78AAB),
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
             ),
           ],
