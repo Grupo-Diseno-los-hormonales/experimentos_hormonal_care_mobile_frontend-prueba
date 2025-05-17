@@ -9,7 +9,6 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentati
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/select_user_type.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/admin_tools.dart';
 
-
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
@@ -33,7 +32,7 @@ class _SignInState extends State<SignIn> {
         'Verify CAPTCHA',
         'width=600,height=600',
       );
-  
+
       // Verifica periódicamente si el popup sigue abierto
       Timer.periodic(const Duration(seconds: 1), (timer) {
         if (popup.closed!) {
@@ -66,7 +65,7 @@ class _SignInState extends State<SignIn> {
           ),
         )
         ..loadRequest(Uri.parse('https://www.google.com/recaptcha/api2/demo'));
-  
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -78,6 +77,7 @@ class _SignInState extends State<SignIn> {
       );
     }
   }
+
   void _submit() async {
     if (_formKey.currentState!.validate() && _captchaVerified) {
       final username = _emailController.text.trim();
@@ -237,6 +237,26 @@ class _SignInState extends State<SignIn> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SelectUserType(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Don't have an account? Register",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
                             ),
