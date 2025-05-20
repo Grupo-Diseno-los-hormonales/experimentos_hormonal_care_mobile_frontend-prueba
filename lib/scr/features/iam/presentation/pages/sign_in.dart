@@ -8,6 +8,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentati
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/select_user_type.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/admin_tools.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/puzzle_captcha_dialog.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -24,59 +25,51 @@ class _SignInState extends State<SignIn> {
   bool _obscureText = true;
   final _authService = AuthService();
 
-  void _verifyCaptcha() async {
-    if (kIsWeb) {
-      // Lógica para Flutter Web
-      final html.WindowBase popup = html.window.open(
-        'https://www.google.com/recaptcha/api2/demo',
-        'Verify CAPTCHA',
-        'width=600,height=600',
+    void _verifyCaptcha() async {
+      final result = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const PuzzleCaptchaDialog(),
       );
-
-      // Verifica periódicamente si el popup sigue abierto
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (popup.closed!) {
-          timer.cancel();
-          setState(() {
-            _captchaVerified = true;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('CAPTCHA Verified!')),
-          );
-        }
-      });
-    } else {
-      // Lógica para dispositivos móviles
-      final controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setNavigationDelegate(
-          NavigationDelegate(
-            onPageFinished: (String url) {
-              if (url.contains('success')) {
-                setState(() {
-                  _captchaVerified = true;
-                });
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('CAPTCHA Verified!')),
-                );
-              }
-            },
+      if (result == true) {
+        setState(() {
+          _captchaVerified = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            duration: const Duration(seconds: 2),
+            content: Row(
+              children: [
+                const Icon(Icons.verified, color: Colors.white, size: 28),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Text(
+                    '¡CAPTCHA verificado!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        )
-        ..loadRequest(Uri.parse('https://www.google.com/recaptcha/api2/demo'));
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Scaffold(
-            appBar: AppBar(title: const Text('Verify CAPTCHA')),
-            body: WebViewWidget(controller: controller),
-          ),
-        ),
-      );
+        );
+      } else {
+        setState(() {
+          _captchaVerified = false;
+        });
+      }
     }
-  }
+
 
   void _submit() async {
     if (_formKey.currentState!.validate() && _captchaVerified) {
