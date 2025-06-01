@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/doctor_signup_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/puzzle_captcha_dialog.dart';
 
 class SignUpDoctor extends StatefulWidget {
   @override
@@ -23,17 +24,63 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
   final FocusNode _professionalIdFocusNode = FocusNode();
   String _image = '';
   String? _gender;
+  bool _captchaVerified = false;
+
+   Future<void> _verifyCaptcha() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const PuzzleCaptchaDialog(),
+    );
+    if (result == true) {
+      setState(() {
+        _captchaVerified = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green[600],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+          duration: const Duration(seconds: 2),
+          content: Row(
+            children: [
+              const Icon(Icons.verified, color: Colors.white, size: 28),
+              const SizedBox(width: 16),
+              const Expanded(
+                child: Text(
+                  '¡CAPTCHA verificado!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      setState(() {
+        _captchaVerified = false;
+      });
+    }
+  }
 
   void _submit() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _captchaVerified) {
       try {
         final imageUrl = _image.isNotEmpty
             ? _image
             : 'https://hips.hearstapps.com/hmg-prod/images/portrait-of-a-happy-young-doctor-in-his-clinic-royalty-free-image-1661432441.jpg?crop=0.66698xw:1xh;center,top&resize=1200:*';
-  
+
         // Convierte la fecha al formato ISO 8601
         final birthdayIsoFormat = DateTime.parse(_birthdayController.text.trim()).toIso8601String();
-  
+
         print('Datos enviados al servidor:');
         print({
           'username': _usernameController.text.trim(),
@@ -47,7 +94,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
           'professionalIdentificationNumber': _medicalLicenseNumberController.text.trim(),
           'subSpecialty': _subSpecialtyController.text.trim(),
         });
-  
+
         await DoctorSignUpService.signUpDoctor(
           _usernameController.text.trim(),
           _passwordController.text.trim(),
@@ -60,7 +107,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
           _medicalLicenseNumberController.text.trim(), // Enviar como cadena
           _subSpecialtyController.text.trim(),
         );
-  
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Doctor registered successfully!')),
         );
@@ -70,6 +117,10 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
+    } else if (!_captchaVerified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please verify the CAPTCHA')),
+      );
     }
   }
 
@@ -263,40 +314,40 @@ Widget _buildBirthdayField() {
 }
 
 @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: const Color(0xFFE5DDE6),
-    appBar: AppBar(
-      backgroundColor: const Color(0xFFC0A0C3),
-      title: const Text("Doctor's Sign Up"),
-      centerTitle: true,
-      titleTextStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 20.0,
-        fontWeight: FontWeight.bold,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFE5DDE6),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFC0A0C3),
+        title: const Text("Doctor's Sign Up"),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-    ),
-    body: Center(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFC0A0C3),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFFC0A0C3),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                   _buildTextField(
                     _usernameController,
                     'Enter your username',
@@ -373,24 +424,42 @@ Widget build(BuildContext context) {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 10),
-                  _buildProfessionalIdField(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8F7193),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                 const SizedBox(height: 10),
+                    _buildProfessionalIdField(),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _verifyCaptcha,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8F7193),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Verify CAPTCHA',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8F7193),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                     ),
                   ),
                 ],

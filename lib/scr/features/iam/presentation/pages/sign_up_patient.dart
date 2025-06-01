@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/patient_signup_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/puzzle_captcha_dialog.dart';
 
 class SignUpPatient extends StatefulWidget {
   @override
@@ -20,9 +21,56 @@ class _SignUpPatientState extends State<SignUpPatient> {
   final TextEditingController _doctorIdController = TextEditingController();
   String _image = '';
   String? _gender; // No se inicializa con un valor predeterminado
+  bool _captchaVerified = false;
 
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
+ Future<void> _verifyCaptcha() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const PuzzleCaptchaDialog(),
+    );
+    if (result == true) {
+      setState(() {
+        _captchaVerified = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green[600],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+          duration: const Duration(seconds: 2),
+          content: Row(
+            children: [
+              const Icon(Icons.verified, color: Colors.white, size: 28),
+              const SizedBox(width: 16),
+              const Expanded(
+                child: Text(
+                  '¡CAPTCHA verificado!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      setState(() {
+        _captchaVerified = false;
+      });
+    }
+  }
+
+
+ void _submit() async {
+    if (_formKey.currentState!.validate() && _captchaVerified) {
       try {
         final doctorId = int.parse(_doctorIdController.text);
         if (doctorId < 1 || doctorId > 100) {
@@ -55,10 +103,13 @@ class _SignUpPatientState extends State<SignUpPatient> {
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
+    } else if (!_captchaVerified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please verify the CAPTCHA')),
+      );
     }
   }
-
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE5DDE6),
@@ -114,19 +165,19 @@ class _SignUpPatientState extends State<SignUpPatient> {
                     },
                   ),
                   _buildTextField(
-                  _passwordController,
-                  'Enter your password',
-                  obscureText: true, // Oculta el texto para la contraseña
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
-                    }
-                    return null;
-                  },
-                ),
+                    _passwordController,
+                    'Enter your password',
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
                   _buildTextField(
                     _firstNameController,
                     'Enter your first name',
@@ -200,6 +251,24 @@ class _SignUpPatientState extends State<SignUpPatient> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
+                    onPressed: _verifyCaptcha,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF8F7193),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Verify CAPTCHA',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF8F7193),
@@ -225,6 +294,7 @@ class _SignUpPatientState extends State<SignUpPatient> {
     );
   }
 
+  
   Widget _buildTextField(
     TextEditingController controller,
     String label, {
