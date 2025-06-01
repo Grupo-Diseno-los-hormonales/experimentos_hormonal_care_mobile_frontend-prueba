@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/doctor_signup_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/puzzle_captcha_dialog.dart';
+import 'package:flutter/gestures.dart';
 
 class SignUpDoctor extends StatefulWidget {
   @override
@@ -25,6 +26,124 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
   String _image = '';
   String? _gender;
   bool _captchaVerified = false;
+  bool _termsAccepted = false;
+
+
+void _showTermsDialog() async {
+    final accepted = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          constraints: const BoxConstraints(maxHeight: 500, maxWidth: 400),
+          child: Column(
+            children: [
+              const Text(
+                'Términos y Condiciones',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: Color(0xFF8F7193),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              const Expanded(
+                child: SingleChildScrollView(
+                  child: Text(
+                    '''
+HormonalCare 2025 5.2.4 Acuerdo de Servicio - SaaS
+
+El presente Acuerdo de Servicio (el "Acuerdo") establece los términos y condiciones bajo los cuales los usuarios podrán acceder y utilizar la plataforma HormonalCare como parte del servicio SaaS (Software as a Service) proporcionado por Los Hormonales. Este Acuerdo es aplicable a todos los usuarios que utilicen el servicio, ya sea de manera gratuita o mediante suscripción.
+
+1. Definiciones
+"Plataforma": Se refiere al servicio en línea proporcionado por Los Hormonales para la gestión de enfermedades hormonales, disponible a través de la web y la aplicación móvil HormonalCare.
+"Usuario": Cualquier persona que acceda a la plataforma HormonalCare para utilizar los servicios ofrecidos.
+"Servicios": Los servicios proporcionados por la plataforma HormonalCare, incluyendo acceso a consultas médicas, seguimiento de tratamientos, gestión de citas médicas, entre otros.
+
+2. Derechos y Obligaciones del Usuario
+El usuario tiene el derecho de utilizar la plataforma HormonalCare de acuerdo con las funcionalidades proporcionadas.
+El usuario es responsable de proporcionar información precisa y actualizada al registrarse y utilizar el servicio.
+El usuario se compromete a utilizar la plataforma únicamente para fines legales y en conformidad con los términos del presente Acuerdo.
+El usuario deberá cumplir con las políticas de privacidad y seguridad aplicables, protegiendo su cuenta de acceso.
+
+3. Licencia de Uso
+Los Hormonales concede al usuario una licencia no exclusiva, intransferible y limitada para acceder y utilizar la plataforma HormonalCare durante el período de validez del servicio contratado.
+
+4. Obligaciones de Los Hormonales
+Los Hormonales se comprometen a garantizar la disponibilidad y accesibilidad del servicio, sujeto a mantenimiento programado y circunstancias fuera de su control.
+Los Hormonales garantizan que los datos del usuario serán tratados conforme a su Política de Privacidad y las normativas aplicables en materia de protección de datos.
+
+5. Limitaciones de Responsabilidad
+Los Hormonales no serán responsables por daños directos, indirectos, incidentales, especiales o consecuentes derivados del uso o la imposibilidad de uso de la plataforma HormonalCare, incluyendo, pero no limitado a, la pérdida de datos o interrupciones en el servicio.
+
+6. Suspensión o Terminación de Servicios
+Los Hormonales se reservan el derecho de suspender o terminar el acceso de un usuario a la plataforma HormonalCare en caso de violaciones de este Acuerdo, incluyendo el uso inapropiado de la plataforma, o el incumplimiento de las políticas establecidas.
+El usuario puede cancelar su cuenta en cualquier momento, sujeto a los términos de cancelación aplicables.
+
+7. Confidencialidad
+Ambas partes se comprometen a mantener la confidencialidad de cualquier información confidencial intercambiada durante la duración del Acuerdo, y a no divulgar dicha información sin el consentimiento expreso de la otra parte, excepto cuando lo exija la ley.
+
+8. Modificaciones del Acuerdo
+Los Hormonales se reservan el derecho de modificar este Acuerdo en cualquier momento. Las modificaciones se publicarán en la sección de "Términos y Condiciones" de la plataforma HormonalCare, y el usuario será notificado de las actualizaciones.
+
+9. Cumplimiento Normativo
+El uso de la plataforma HormonalCare debe cumplir con todas las leyes y regulaciones aplicables, incluidas aquellas relacionadas con la protección de datos personales, propiedad intelectual y otros derechos de propiedad.
+
+10. Resolución de Conflictos
+En caso de controversias derivadas del uso de la plataforma HormonalCare, ambas partes acuerdan resolver los conflictos mediante un proceso de mediación antes de recurrir a procedimientos legales.
+
+11. Vigencia
+Este Acuerdo entrará en vigencia desde el momento en que el usuario acceda por primera vez a la plataforma HormonalCare y continuará en vigor hasta que sea terminado por cualquiera de las partes, conforme a las disposiciones del Acuerdo.
+                    ''',
+                    style: TextStyle(fontSize: 13, color: Colors.black),
+                    textAlign: TextAlign.justify,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8F7193),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  'Aceptar términos',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: Color(0xFF8F7193),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (accepted == true) {
+      setState(() {
+        _termsAccepted = true;
+      });
+    }
+  }
+
 
    Future<void> _verifyCaptcha() async {
     final result = await showDialog<bool>(
@@ -72,6 +191,12 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
   }
 
   void _submit() async {
+    if (!_termsAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Debes aceptar los Términos y Condiciones')),
+      );
+      return;
+    }
     if (_formKey.currentState!.validate() && _captchaVerified) {
       try {
         final imageUrl = _image.isNotEmpty
@@ -123,6 +248,7 @@ class _SignUpDoctorState extends State<SignUpDoctor> {
       );
     }
   }
+
 
   String? _validateDate(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -424,8 +550,46 @@ Widget _buildBirthdayField() {
                       return null;
                     },
                   ),
+
                  const SizedBox(height: 10),
                     _buildProfessionalIdField(),
+
+                  const SizedBox(height: 10),
+                    // Checkbox de términos y condiciones
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _termsAccepted,
+                          activeColor: const Color(0xFF8F7193),
+                          onChanged: (value) {
+                            if (!_termsAccepted) {
+                              _showTermsDialog();
+                            }
+                          },
+                        ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Acepto los ',
+                              style: const TextStyle(color: Colors.black, fontSize: 15),
+                              children: [
+                                TextSpan(
+                                  text: 'Términos y Condiciones',
+                                  style: const TextStyle(
+                                    color: Color(0xFF8F7193),
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = _showTermsDialog,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _verifyCaptcha,
@@ -435,6 +599,7 @@ Widget _buildBirthdayField() {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+
                       child: const Text(
                         'Verify CAPTCHA',
                         style: TextStyle(
@@ -444,6 +609,7 @@ Widget _buildBirthdayField() {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: _submit,
