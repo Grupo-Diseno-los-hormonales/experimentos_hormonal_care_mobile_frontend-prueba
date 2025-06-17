@@ -51,7 +51,8 @@ dependencies:
   webview_flutter: ^4.2.1
   universal_html: ^2.0.6
   slider_captcha: ^1.0.2
-
+  fl_chart: ^0.66.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
