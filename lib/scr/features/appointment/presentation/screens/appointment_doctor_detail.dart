@@ -1,6 +1,5 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/presentation/pages/conversation_list_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -79,12 +78,14 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
   }
   
   void _navigateToChatScreen() {
-    if (_doctorDetails != null) {
+    if (_doctorDetails != null && _appointmentDetails != null) {
       // Crear un mapa con la información del doctor necesaria para el chat
       final doctorInfo = {
         'fullName': _doctorDetails!['fullName'],
         'imageUrl': _doctorDetails!['image'],
         'specialty': _doctorProfessionalDetails != null ? _doctorProfessionalDetails!['specialty'] : 'Doctor',
+        'doctorId': _appointmentDetails!['doctorId'],
+        'id': _appointmentDetails!['doctorId'],
       };
       
       Navigator.push(

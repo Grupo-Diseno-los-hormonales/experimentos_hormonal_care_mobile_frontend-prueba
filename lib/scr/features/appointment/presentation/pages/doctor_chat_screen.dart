@@ -39,7 +39,6 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
     _initializeConversation();
   }
   
-  
   @override
   void dispose() {
     _messageController.dispose();
@@ -57,14 +56,14 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
       
       final currentUserId = widget.currentUserId;
       
-      // Paso 1: Preparar los datos del doctor usando la misma lógica que DoctorListScreen
+      // Paso 1: Preparar los datos del doctor
       final doctorData = Map<String, dynamic>.from(widget.doctor);
       _prepareDoctorData(doctorData);
       
       // Paso 2: Obtener el doctorId (el ID real del doctor en la base de datos)
       final doctorId = _extractDoctorId(doctorData);
       if (doctorId == null) {
-        throw Exception('...');
+        throw Exception('No se pudo obtener el ID del doctor de los datos proporcionados');
       }
       
       // Paso 3: Obtener el profileId del doctor (para las conversaciones)
@@ -136,6 +135,10 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
         doctor['userId'] = doctor['id'];
       } else if (doctor['profileId'] != null) {
         doctor['userId'] = doctor['profileId'];
+      } else if (doctor['doctorId'] != null) {
+        // Para casos donde viene desde AppointmentDoctorDetail
+        doctor['userId'] = doctor['doctorId'];
+        doctor['id'] = doctor['doctorId']; // También asignar como id
       }
     }
   }
@@ -143,25 +146,20 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
   // Extraer el ID del doctor (para usar con el servicio médico)
   int? _extractDoctorId(Map<String, dynamic> doctor) {
     
-    // Priorizar 'id' que es el campo principal en fetchAllDoctors
-    final id = doctor['id'];
-    if (id != null && id is int && id > 0) {
-      return id;
-    }
+    // Lista de posibles campos donde puede estar el ID del doctor
+    final possibleFields = ['id', 'doctorId', 'userId', 'profileId'];
     
-    // Fallback a otros campos
-    final possibleFields = ['doctorId', 'userId'];
     for (String field in possibleFields) {
       final value = doctor[field];
       if (value != null && value is int && value > 0) {
         return value;
       }
     }
-    
     return null;
   }
 
   // Extraer el Profile ID del doctor (para las conversaciones)
+  // ¡CORRECCIÓN DEL BUG PRINCIPAL!
   int? _extractDoctorProfileId(Map<String, dynamic> doctor) {
     
     // Priorizar 'profileId' si está disponible
@@ -170,18 +168,24 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
       return profileId;
     }
     
-    // Fallback a 'userId' que se asigna en _prepareDoctorData
-    final userId = doctor['Id'];
+    // CORRECCIÓN: Cambiar 'Id' por 'userId'
+    final userId = doctor['userId']; // ¡Era doctor['Id'] - error tipográfico!
     if (userId != null && userId is int && userId > 0) {
       return userId;
+    }
+    
+    // Fallback adicional
+    final id = doctor['id'];
+    if (id != null && id is int && id > 0) {
+      return id;
     }
     return null;
   }
 
   Future<void> _findOrCreateConversation(int currentUserId) async {
+    
     try {
       final conversations = await _communicationApi.getConversationsByUserId(currentUserId);
-
       Map<String, dynamic>? existingConversation;
       
       for (var conversation in conversations) {
@@ -189,6 +193,7 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
         
         bool doctorInConversation = participants.any((participant) {
           final participantUserId = participant['userId'];
+          print('  Participante: $participantUserId, buscando: $_doctorProfileId');
           return participantUserId == _doctorProfileId;
         });
         
@@ -219,7 +224,7 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
         _conversationId!, 
         widget.currentUserId
       );
-      
+
       final loadedMessages = rawMessages.map((msg) {
         return ChatMessage(
           text: msg['text'] ?? '',
@@ -246,6 +251,7 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
         });
       }
     } catch (e) {
+      print('⚠️ Error cargando mensajes: $e');
     }
   }
 
@@ -254,6 +260,7 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
         _conversationId == null || 
         _doctorProfileId == null ||
         !_isInitialized) {
+      print('⚠️ No se puede enviar mensaje');
       return;
     }
 
@@ -322,11 +329,11 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
           children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: displayInfo['imageUrl'] != null
-                  ? NetworkImage(displayInfo['imageUrl'])
+              backgroundImage: displayInfo['imageUrl'] != null || displayInfo['image'] != null
+                  ? NetworkImage(displayInfo['imageUrl'] ?? displayInfo['image'])
                   : null,
               backgroundColor: Colors.grey[200],
-              child: displayInfo['imageUrl'] == null
+              child: (displayInfo['imageUrl'] == null && displayInfo['image'] == null)
                   ? const Icon(Icons.person, color: Color(0xFFA78AAB))
                   : null,
             ),
@@ -635,11 +642,11 @@ class _DoctorChatScreenState extends State<DoctorChatScreen> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: displayInfo['imageUrl'] != null
-                        ? NetworkImage(displayInfo['imageUrl'])
+                    backgroundImage: displayInfo['imageUrl'] != null || displayInfo['image'] != null
+                        ? NetworkImage(displayInfo['imageUrl'] ?? displayInfo['image'])
                         : null,
                     backgroundColor: Colors.grey[200],
-                    child: displayInfo['imageUrl'] == null
+                    child: (displayInfo['imageUrl'] == null && displayInfo['image'] == null)
                         ? const Icon(Icons.person, size: 40, color: Color(0xFFA78AAB))
                         : null,
                   ),

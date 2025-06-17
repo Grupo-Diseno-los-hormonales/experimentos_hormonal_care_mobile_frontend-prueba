@@ -81,7 +81,7 @@ class CommunicationApi {
   }
 
   // Enviar mensaje
-  Future<int> sendMessage({
+  Future<Map<String, dynamic>> sendMessage({
     required int conversationId,
     required int senderProfileId,
     required int receiverProfileId,
@@ -100,12 +100,12 @@ class CommunicationApi {
           'senderProfileId': senderProfileId,
           'receiverProfileId': receiverProfileId,
           'text': text,
-          'imageUrl': imageUrl,
+          if (imageUrl != null) 'imageUrl': imageUrl,
         }),
       );
 
-      if (response.statusCode == 201) {
-        return int.parse(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
       } else {
         throw Exception('Failed to send message: ${response.statusCode}');
       }
@@ -130,7 +130,7 @@ class CommunicationApi {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
         throw Exception('Failed to create conversation: ${response.statusCode}');
@@ -165,7 +165,6 @@ class CommunicationApi {
     }
   }
 
-  // Marcar mensaje como leído
   Future<void> markMessageAsRead({
     required int conversationId,
     required int messageId,
@@ -188,5 +187,4 @@ class CommunicationApi {
       throw Exception('Error marking message as read: $e');
     }
   }
-
 }
