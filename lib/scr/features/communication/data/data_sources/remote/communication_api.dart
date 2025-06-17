@@ -54,7 +54,7 @@ class CommunicationApi {
 
   // Obtener mensajes de una conversación
   Future<List<Map<String, dynamic>>> getMessagesByConversationId(
-    int conversationId, {
+    int conversationId, int currentUserId, {
     int page = 0,
     int size = 20,
   }) async {
@@ -164,4 +164,29 @@ class CommunicationApi {
       throw Exception('Error fetching unread messages: $e');
     }
   }
+
+  // Marcar mensaje como leído
+  Future<void> markMessageAsRead({
+    required int conversationId,
+    required int messageId,
+  }) async {
+    try {
+      final token = await JwtStorage.getToken();
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/Messages/conversations/$conversationId/messages/$messageId/read'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to mark message as read: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error marking message as read: $e');
+      throw Exception('Error marking message as read: $e');
+    }
+  }
+
 }

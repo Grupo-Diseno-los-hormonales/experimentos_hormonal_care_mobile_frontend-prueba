@@ -1,4 +1,6 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/presentation/pages/conversation_list_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
   Map<String, dynamic>? _appointmentDetails;
   Map<String, dynamic>? _doctorDetails;
   Map<String, dynamic>? _doctorProfessionalDetails;
+  late int _currentUserId;
   bool _isLoading = true;
   String _errorMessage = '';
   
@@ -28,6 +31,22 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
   void initState() {
     super.initState();
     _loadAppointmentDetails();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      final userId = await JwtStorage.getUserId(); 
+      if (userId != null) {
+        setState(() {
+          _currentUserId = userId;
+        });
+      } else {
+        throw Exception('No se pudo obtener el ID del usuario');
+      }
+    } catch (e) {
+      print('Error obteniendo userId: $e');
+    }
   }
 
   Future<void> _loadAppointmentDetails() async {
@@ -66,15 +85,12 @@ class _AppointmentDoctorDetailState extends State<AppointmentDoctorDetail> {
         'fullName': _doctorDetails!['fullName'],
         'imageUrl': _doctorDetails!['image'],
         'specialty': _doctorProfessionalDetails != null ? _doctorProfessionalDetails!['specialty'] : 'Doctor',
-        // Puedes agregar más campos según lo que necesite tu DoctorChatScreen
       };
       
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DoctorChatScreen(
-            doctor: doctorInfo,
-          ),
+          builder: (context) => DoctorChatScreen(doctor: doctorInfo, currentUserId: _currentUserId,),
         ),
       );
     } else {
