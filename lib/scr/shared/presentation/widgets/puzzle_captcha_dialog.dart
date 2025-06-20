@@ -16,6 +16,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
   bool _showSuccess = false;
   late AnimationController _controller;
   bool _imgLoaded = false;
+  bool _imgError = false;
 
   static const double imgWidth = 240;
   static const double imgHeight = 100;
@@ -32,13 +33,16 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
   }
 
   void _loadNewPuzzle() {
-    _imgLoaded = false;
-    _imgUrl = 'https://picsum.photos/${imgWidth.toInt()}/${imgHeight.toInt()}?random=${DateTime.now().millisecondsSinceEpoch}';
-    _targetX = 60 + Random().nextInt((imgWidth - pieceSize - 60).toInt()).toDouble();
-    _pieceX = 10;
-    _solved = false;
-    _showSuccess = false;
-    _controller.reset();
+    setState(() {
+      _imgLoaded = false;
+      _imgError = false;
+      _imgUrl = 'https://picsum.photos/${imgWidth.toInt()}/${imgHeight.toInt()}?random=${DateTime.now().millisecondsSinceEpoch}';
+      _targetX = 60 + Random().nextInt((imgWidth - pieceSize - 60).toInt()).toDouble();
+      _pieceX = 10;
+      _solved = false;
+      _showSuccess = false;
+      _controller.reset();
+    });
 
     // Precarga la imagen
     final img = Image.network(_imgUrl);
@@ -48,16 +52,22 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
       if (mounted) {
         setState(() {
           _imgLoaded = true;
+          _imgError = false;
         });
       }
       stream.removeListener(listener!);
     }, onError: (dynamic _, __) {
       if (mounted) {
         setState(() {
-          _imgLoaded = true; // Para evitar loop infinito si falla la carga
+          _imgLoaded = false;
+          _imgError = true;
         });
       }
       stream.removeListener(listener!);
+      // Intenta otra imagen automáticamente después de un breve delay
+      Future.delayed(const Duration(milliseconds: 700), () {
+        if (mounted) _loadNewPuzzle();
+      });
     });
     stream.addListener(listener);
   }
@@ -85,12 +95,24 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Verifica que eres humano'),
+      title: const Text('Image Verification'),
       content: SizedBox(
         width: imgWidth,
-        height: imgHeight + 30,
+        height: imgHeight + 40,
         child: !_imgLoaded
-            ? const Center(child: CircularProgressIndicator())
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    _imgError
+                        ? "Failed to load image. Trying another..."
+                        : "Wait a moment...",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              )
             : Stack(
                 children: [
                   // Imagen base con hueco
@@ -163,7 +185,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
                           child: Container(
                             width: 60,
                             height: 60,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.green,
                               shape: BoxShape.circle,
                             ),
@@ -178,7 +200,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancelar'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
@@ -186,7 +208,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
               _loadNewPuzzle();
             });
           },
-          child: const Text('Otra imagen'),
+          child: const Text('Another image'),
         ),
       ],
     );
