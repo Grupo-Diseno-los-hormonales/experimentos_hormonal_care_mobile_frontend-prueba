@@ -28,4 +28,11 @@ class FakeAdminGlobalChatApi {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_chatKey);
   }
+  
+  static Future<void> clearChatForUser(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  final messages = await getMessages();
+  messages.removeWhere((msg) => msg['userId'] == userId);
+  await prefs.setString(_chatKey, json.encode(messages));
+}
 }
