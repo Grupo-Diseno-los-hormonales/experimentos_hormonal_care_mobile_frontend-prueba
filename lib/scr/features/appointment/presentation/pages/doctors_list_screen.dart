@@ -1,3 +1,4 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
@@ -21,11 +22,28 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   String _searchQuery = '';
   String _selectedSpecialty = 'All';
   List<String> _specialties = ['All'];
+  late int _currentUserId;
 
   @override
   void initState() {
     super.initState();
     _loadDoctors();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      final userId = await JwtStorage.getUserId(); // este método ya lo usas
+      if (userId != null) {
+        setState(() {
+          _currentUserId = userId;
+        });
+      } else {
+        throw Exception('No se pudo obtener el ID del usuario');
+      }
+    } catch (e) {
+      print('Error obteniendo userId: $e');
+    }
   }
 
   Future<void> _loadDoctors() async {
@@ -486,15 +504,30 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           ),
         );
       },
-    );
+    ); 
   }
 
-  void _scheduleAppointment(Map<String, dynamic> doctor) {
+void _scheduleAppointment(Map<String, dynamic> doctor) {
+    if (doctor['userId'] == null) {
+      if (doctor['id'] != null) {
+        doctor['userId'] = doctor['id'];
+      } else if (doctor['profileId'] != null) {
+        doctor['userId'] = doctor['profileId'];
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error: No se pudo obtener el ID del doctor')),
+        );
+        return;
+      }
+    }
     
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DoctorChatScreen(doctor: doctor,),
+        builder: (context) => DoctorChatScreen(
+          doctor: doctor, 
+          currentUserId: _currentUserId,
+        ),
       ),
     );
   }
