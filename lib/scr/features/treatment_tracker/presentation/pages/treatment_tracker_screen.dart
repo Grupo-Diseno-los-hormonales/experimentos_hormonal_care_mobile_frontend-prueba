@@ -1,3 +1,4 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/support_chat_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/appointment_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctors_list_screen.dart';
@@ -226,15 +227,15 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
               // Logo
               Container(
                 width: 50,
@@ -443,97 +444,114 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
               ),
               const SizedBox(height: 32),
               
-              // Historial de registros
-              const Text(
-                "LOG HISTORY",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+               // Historial de registros
+            const Text(
+              "LOG HISTORY",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 8),
-              
-              // Lista de registros
-              Column(
-                children: _logHistory.isEmpty
-                    ? [
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text("No logs yet"),
-                          ),
-                        )
-                      ]
-                    : _logHistory.take(3).map((entry) {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    _formatLogDate(entry.date),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                    ),
+            ),
+            const SizedBox(height: 8),
+            Column(
+              children: _logHistory.isEmpty
+                  ? [
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("No logs yet"),
+                        ),
+                      )
+                    ]
+                  : _logHistory.take(3).map((entry) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _formatLogDate(entry.date),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  const Spacer(),
-                                  Text(
-                                    "${entry.glucose.toStringAsFixed(0)} mg/dL",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  "${entry.glucose.toStringAsFixed(0)} mg/dL",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
+                          ),
+                          const Divider(height: 1),
+                        ],
+                      );
+                    }).toList(),
+            ),
+
+            // --- Botón de soporte al final de la sección de perfil ---
+            const SizedBox(height: 32),
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8F7193),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                icon: const Icon(Icons.support_agent, color: Colors.white),
+                label: const Text(
+                  'Soporte HormonalCare',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const SupportChatScreen()),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
       ),
-
-      // Bottom navigation bar
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreenPatient()),
-              );
-              break;
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DoctorListScreen()),
-              );
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AppointmentScreenPatient()),
-              );
-              break;
-            case 3:
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const TreatmentTrackerScreen(
-                        //preferredName: 'Patient',
-                        )),
-              );
-              break;
-          }
-        },
-      ),
-    );
-  }
+    ),
+    bottomNavigationBar: CustomBottomNavigationBar(
+      currentIndex: 0,
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreenPatient()),
+            );
+            break;
+          case 1:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DoctorListScreen()),
+            );
+            break;
+          case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AppointmentScreenPatient()),
+            );
+            break;
+          case 3:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TreatmentTrackerScreen()),
+            );
+            break;
+        }
+      },
+    ),
+  );
+}
   
   // Formatear fecha para el historial
   String _formatLogDate(DateTime date) {

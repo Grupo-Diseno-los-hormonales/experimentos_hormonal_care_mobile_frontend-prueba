@@ -1,55 +1,69 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/widgets/fake_admin_chat_api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AdminGlobalChatSection extends StatefulWidget {
-  const AdminGlobalChatSection({super.key});
+class SupportUserChatSection extends StatefulWidget {
+  const SupportUserChatSection({super.key});
 
   @override
-  State<AdminGlobalChatSection> createState() => _AdminGlobalChatSectionState();
+  State<SupportUserChatSection> createState() => _SupportUserChatSectionState();
 }
 
-class _AdminGlobalChatSectionState extends State<AdminGlobalChatSection> {
+class _SupportUserChatSectionState extends State<SupportUserChatSection> {
   List<Map<String, dynamic>> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _loading = true;
+  String? _userId;
 
   @override
   void initState() {
     super.initState();
-    _loadMessages();
+    _loadUserIdAndMessages();
   }
 
+   Future<void> _loadUserIdAndMessages() async {
+    final prefs = await SharedPreferences.getInstance();
+    dynamic userIdRaw = prefs.get('user_id');
+    String userId;
+    if (userIdRaw == null) {
+      userId = 'unknown_user';
+    } else if (userIdRaw is int) {
+      userId = userIdRaw.toString();
+    } else {
+      userId = userIdRaw as String;
+    }
+    setState(() {
+      _userId = userId;
+    });
+    await _loadMessages();
+  }
   Future<void> _loadMessages() async {
     final msgs = await FakeAdminGlobalChatApi.getMessages();
+    // Filtra solo los mensajes de este usuario
+    final filtered = msgs.where((msg) => msg['userId'] == _userId).toList();
     setState(() {
-      _messages = msgs;
+      _messages = filtered;
       _loading = false;
     });
     _scrollToBottom();
   }
 
-  Future<void> _sendMessage({required bool isAdmin}) async {
+  Future<void> _sendMessage() async {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || _userId == null) return;
     final msg = {
       'type': 'message',
       'text': text,
-      'sender': isAdmin ? 'admin' : 'user',
+      'sender': 'user',
+      'userId': _userId, // Guarda el userId en el mensaje
       'timestamp': DateTime.now().toIso8601String(),
     };
     await FakeAdminGlobalChatApi.addMessage(msg);
     _controller.clear();
     await _loadMessages();
   }
-
-  Future<void> _addDivider() async {
-  await FakeAdminGlobalChatApi.addDivider();
-  await Future.delayed(const Duration(milliseconds: 300)); // Opcional: para que se vea el divider
-  await FakeAdminGlobalChatApi.clearChat(); // Limpia el chat
-  await _loadMessages();
-}
 
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -72,51 +86,21 @@ class _AdminGlobalChatSectionState extends State<AdminGlobalChatSection> {
               itemCount: _messages.length,
               itemBuilder: (context, idx) {
                 final msg = _messages[idx];
-                if (msg['type'] == 'divider') {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.deepPurple,
-                            thickness: 2,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Conversation ended',
-                          style: TextStyle(
-                            color: Colors.deepPurple,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.deepPurple,
-                            thickness: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                final isAdmin = msg['sender'] == 'admin';
+                final isMe = msg['sender'] == 'user';
                 return ListTile(
                   title: Align(
-                    alignment: isAdmin ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: isAdmin ? const Color(0xFFE2D1F4) : Colors.grey[200],
+                        color: isMe ? const Color(0xFFE2D1F4) : Colors.grey[200],
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(msg['text'] ?? ''),
                     ),
                   ),
                   subtitle: Align(
-                    alignment: isAdmin ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Text(
                       msg['timestamp'] != null
                           ? DateFormat('hh:mm a').format(DateTime.parse(msg['timestamp']))
@@ -146,7 +130,7 @@ class _AdminGlobalChatSectionState extends State<AdminGlobalChatSection> {
                   ),
                   textCapitalization: TextCapitalization.sentences,
                   maxLines: null,
-                  onSubmitted: (_) => _sendMessage(isAdmin: true),
+                  onSubmitted: (_) => _sendMessage(),
                 ),
               ),
               const SizedBox(width: 8),
@@ -154,19 +138,7 @@ class _AdminGlobalChatSectionState extends State<AdminGlobalChatSection> {
                 mini: true,
                 backgroundColor: const Color(0xFFA78AAB),
                 child: const Icon(Icons.send, color: Colors.white),
-                onPressed: () => _sendMessage(isAdmin: true),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton.icon(
-                onPressed: _addDivider,
-                icon: const Icon(Icons.stop_circle, color: Colors.deepPurple),
-                label: const Text('End'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.deepPurple,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                ),
+                onPressed: _sendMessage,
               ),
             ],
           ),

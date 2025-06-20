@@ -1,3 +1,5 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/support_chat_screen.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/widgets/admin_chat_section.dart';
 import 'package:flutter/material.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
@@ -18,11 +20,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   final AuthService _authService = AuthService();
   final ProfileService _profileService = ProfileService();
   int? _doctorId;
+  String? _role;
+  bool _loadingRole = true;
 
   @override
   void initState() {
     super.initState();
     _loadDoctorProfileDetails();
+    _loadRole();
   }
 
   Future<void> _loadDoctorProfileDetails() async {
@@ -46,6 +51,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     }
   }
 
+  Future<void> _loadRole() async {
+    final role = await _authService.getRole();
+    setState(() {
+      _role = role;
+      _loadingRole = false;
+    });
+  }
+
   void toggleEditMode() {
     setState(() {
       isEditing = !isEditing;
@@ -67,17 +80,17 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
         return AlertDialog(
           title: const Text(
             'Confirm Logout',
-            style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+            style: TextStyle(color: Color(0xFF8F7193)),
           ),
           content: const Text(
             'Are you sure you want to log out?',
-            style: TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
+            style: TextStyle(color: Color(0xFFA788AB)),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                style: TextStyle(color: Color(0xFF8F7193)),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -86,7 +99,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             TextButton(
               child: const Text(
                 'Yes',
-                style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                style: TextStyle(color: Color(0xFF8F7193)),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -99,11 +112,19 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
+void _openSupportChat() {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => const SupportChatScreen(),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8F7193), // Fondo morado oscuro
+        backgroundColor: const Color(0xFF8F7193),
         title: const Text(
           'Doctor Profile',
           style: TextStyle(color: Colors.white),
@@ -119,7 +140,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit, color: Color(0xFFA788AB)), // Icono morado intermedio
+                  icon: const Icon(Icons.edit, color: Color(0xFFA788AB)),
                   onPressed: toggleEditMode,
                 ),
                 const SizedBox(width: 8.0),
@@ -128,12 +149,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(
-                        color: Color(0xFF8F7193), // Indicador morado oscuro
+                        color: Color(0xFF8F7193),
                       );
                     } else if (snapshot.hasError) {
-                      return const Icon(Icons.error, color: Color(0xFF8F7193)); // Icono morado oscuro
+                      return const Icon(Icons.error, color: Color(0xFF8F7193));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Icon(Icons.person, color: Color(0xFF8F7193)); // Icono morado oscuro
+                      return const Icon(Icons.person, color: Color(0xFF8F7193));
                     } else {
                       final doctorProfile = snapshot.data!;
                       final imageUrl = doctorProfile['image'] as String?;
@@ -147,12 +168,30 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 ),
                 const SizedBox(width: 8.0),
                 IconButton(
-                  icon: const Icon(Icons.logout, color: Color(0xFFA788AB)), // Icono morado intermedio
+                  icon: const Icon(Icons.logout, color: Color(0xFFA788AB)),
                   onPressed: _showLogoutDialog,
                 ),
               ],
             ),
             const SizedBox(height: 20.0),
+            // Botón de soporte solo si NO es admin
+            if (!_loadingRole && _role != 'ROLE_ADMIN')
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8F7193),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  icon: const Icon(Icons.support_agent, color: Colors.white),
+                  label: const Text(
+                    'Support Chat',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  onPressed: _openSupportChat,
+                ),
+              ),
             if (!isEditing) ...[
               FutureBuilder<Map<String, dynamic>>(
                 future: _doctorProfileDetails,
@@ -160,21 +199,21 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF8F7193), // Indicador morado oscuro
+                        color: Color(0xFF8F7193),
                       ),
                     );
                   } else if (snapshot.hasError) {
                     return const Center(
                       child: Text(
                         'Error loading profile',
-                        style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                        style: TextStyle(color: Color(0xFF8F7193)),
                       ),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
                       child: Text(
                         'No data found',
-                        style: TextStyle(color: Color(0xFF8F7193)), // Texto morado oscuro
+                        style: TextStyle(color: Color(0xFF8F7193)),
                       ),
                     );
                   } else {
@@ -182,7 +221,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                     return Column(
                       children: [
                         Card(
-                          color: const Color(0xFFDFCAE1), // Fondo morado claro
+                          color: const Color(0xFFDFCAE1),
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),

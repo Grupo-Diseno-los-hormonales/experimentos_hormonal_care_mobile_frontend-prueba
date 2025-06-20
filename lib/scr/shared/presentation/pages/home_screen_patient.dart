@@ -214,6 +214,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -580,11 +581,14 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                     ),
                   ),
                 ),
+
+                
               ],
             ),
           ),
         ),
       ),
+      
 
       // Bottom navigation bar
       bottomNavigationBar: CustomBottomNavigationBar(

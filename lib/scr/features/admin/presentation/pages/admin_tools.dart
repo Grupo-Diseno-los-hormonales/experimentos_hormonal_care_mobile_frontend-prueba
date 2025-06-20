@@ -1,3 +1,4 @@
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/widgets/admin_chat_section.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math';
@@ -27,15 +28,15 @@ Future<void> _logout() async {
   );
 }
 
-  @override
-  void initState() {
-    _tabController = TabController(length: 4, vsync: this);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
-    )..repeat();
-    super.initState();
-  }
+ @override
+void initState() {
+  _tabController = TabController(length: 5, vsync: this); // Cambia a 5
+  _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 6),
+  )..repeat();
+  super.initState();
+}
 
   @override
   void dispose() {
@@ -98,7 +99,7 @@ Future<void> _logout() async {
                     Tab(text: 'Dashboard'),
                     Tab(text: 'Stats'),
                     Tab(text: 'Avisos'),
-                  //  Tab(text: 'Chat'),
+                    Tab(text: 'Chat'),
                     Tab(text: 'Logs'),
 
                   ],
@@ -112,15 +113,16 @@ Future<void> _logout() async {
               Positioned.fill(
                 child: AnimatedGradientBackground(animation: _animationController),
               ),
-              TabBarView(
-                controller: _tabController,
-                children: [
-                  _DashboardSection(animation: _animationController),
-                  _StatsSection(animation: _animationController),
-                  SendNoticeScreen(),
-                  _LogsSection(animation: _animationController),
-                ],
-              ),
+                      TabBarView(
+            controller: _tabController,
+            children: [
+              _DashboardSection(animation: _animationController),
+              _StatsSection(animation: _animationController),
+              SendNoticeScreen(),
+              AdminGlobalChatSection(), // <-- Aquí agregas el chat
+              _LogsSection(animation: _animationController),
+            ],
+          ),
             ],
           ),
         );
