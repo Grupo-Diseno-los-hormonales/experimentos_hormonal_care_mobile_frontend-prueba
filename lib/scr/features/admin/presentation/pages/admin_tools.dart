@@ -98,7 +98,9 @@ Future<void> _logout() async {
                     Tab(text: 'Dashboard'),
                     Tab(text: 'Stats'),
                     Tab(text: 'Avisos'),
+                  //  Tab(text: 'Chat'),
                     Tab(text: 'Logs'),
+
                   ],
                 ),
               ),
@@ -387,7 +389,7 @@ class _LogsSection extends StatelessWidget {
       'event': 'Intento fallido',
       'ip': '192.168.0.42',
       'risk': 'Medio',
-      'details': 'Arequipa, Perú\nEdge en Windows'
+      'details': 'Lima, Perú\nEdge en Windows'
     },
     {
       'timestamp': '2025-06-13 23:01',
@@ -395,7 +397,7 @@ class _LogsSection extends StatelessWidget {
       'event': 'Eliminación de usuario',
       'ip': '10.0.0.1',
       'risk': 'Alto',
-      'details': 'Trujillo, Perú\nSafari en macOS'
+      'details': 'Lima, Perú\nSafari en macOS'
     },
   ];
 
