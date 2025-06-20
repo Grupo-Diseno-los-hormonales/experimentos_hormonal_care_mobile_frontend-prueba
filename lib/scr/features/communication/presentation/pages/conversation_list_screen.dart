@@ -1,9 +1,6 @@
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/domain/models/conversation_model.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/domain/models/participant_model.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/presentation/widgets/chat_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/pages/doctor_chat_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/communication/data/data_sources/remote/communication_api.dart';
-import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ConversationListScreen extends StatefulWidget {
@@ -14,11 +11,10 @@ class ConversationListScreen extends StatefulWidget {
 }
 
 class _ConversationListScreenState extends State<ConversationListScreen> {
-  final CommunicationApi _communicationApi = CommunicationApi();
-  List<ConversationModel> _conversations = [];
+  final CommunicationApi _communicationService = CommunicationApi();
+  List<Map<String, dynamic>> _conversations = [];
   bool _isLoading = true;
-  String _errorMessage = '';
-  int? _currentUserId;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -29,24 +25,19 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
   Future<void> _loadConversations() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = '';
+      _errorMessage = null;
     });
 
     try {
-      _currentUserId = await JwtStorage.getProfileId();
-      if (_currentUserId != null) {
-        final conversationsData = await _communicationApi.getConversationsByUserId(_currentUserId!);
-        
-        setState(() {
-          _conversations = conversationsData
-              .map((data) => ConversationModel.fromJson(data))
-              .toList();
-          _isLoading = false;
-        });
-      }
+      final conversations = await _communicationService.getMyConversations();
+      
+      setState(() {
+        _conversations = conversations;
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error loading conversations: $e';
+        _errorMessage = e.toString();
         _isLoading = false;
       });
     }
@@ -57,7 +48,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Messages',
+          'Mensajes',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -83,20 +74,20 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
       );
     }
 
-    if (_errorMessage.isNotEmpty) {
+    if (_errorMessage != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            Text(
-              'Error loading conversations',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const Text(
+              'Error cargando conversaciones',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              _errorMessage,
+              _errorMessage!,
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
@@ -106,7 +97,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFA78AAB),
               ),
-              child: const Text('Retry'),
+              child: const Text('Reintentar'),
             ),
           ],
         ),
@@ -121,12 +112,12 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
             Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
             SizedBox(height: 16),
             Text(
-              'No conversations yet',
+              'No hay conversaciones',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text(
-              'Start a conversation with a doctor',
+              'Inicia una conversación con un doctor',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
@@ -148,30 +139,30 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
     );
   }
 
-  Widget _buildConversationCard(ConversationModel conversation) {
-    // Encontrar el otro participante (no el usuario actual)
-    final otherParticipant = conversation.participants.firstWhere(
-      (p) => p.userId != _currentUserId,
-      orElse: () => conversation.participants.first,
-    );
+  Widget _buildConversationCard(Map<String, dynamic> conversation) {
+    final participants = conversation['participants'] as List<dynamic>? ?? [];
+    final lastActivity = DateTime.parse(conversation['lastActivityAt'] ?? DateTime.now().toIso8601String());
+    
+    // Encontrar el otro participante (asumiendo que es el doctor)
+    final otherParticipant = participants.isNotEmpty ? participants.first : null;
+    final participantType = otherParticipant?['type'] ?? 'Doctor';
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        onTap: () => _navigateToChat(conversation, otherParticipant),
+        onTap: () => _navigateToChat(conversation),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Avatar del participante
               CircleAvatar(
                 radius: 30,
                 backgroundColor: const Color(0xFFA78AAB),
                 child: Text(
-                  otherParticipant.participantType[0],
+                  participantType[0],
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -181,7 +172,6 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
               ),
               const SizedBox(width: 16),
               
-              // Información de la conversación
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,14 +180,14 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${otherParticipant.participantType} Chat',
+                          '$participantType Chat',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          _formatTime(conversation.lastActivityAt),
+                          _formatTime(lastActivity),
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -207,46 +197,13 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                     ),
                     const SizedBox(height: 4),
                     
-                    if (conversation.lastMessage != null) ...[
-                      Text(
-                        conversation.lastMessage!.text ?? 'Image',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    Text(
+                      'Conversación activa',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
                       ),
-                    ] else ...[
-                      Text(
-                        'No messages yet',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                    
-                    const SizedBox(height: 4),
-                    
-                    // Indicador de mensajes no leídos
-                    if (conversation.unreadCount > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFA78AAB),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '${conversation.unreadCount} unread',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                    ),
                   ],
                 ),
               ),
@@ -264,7 +221,7 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
     if (difference.inDays == 0) {
       return DateFormat('HH:mm').format(dateTime);
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return 'Ayer';
     } else if (difference.inDays < 7) {
       return DateFormat('EEEE').format(dateTime);
     } else {
@@ -272,19 +229,30 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
     }
   }
 
-  void _navigateToChat(ConversationModel conversation, ParticipantModel otherParticipant) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          conversationId: conversation.id,
-          otherParticipant: otherParticipant,
-          currentUserId: _currentUserId!,
+  void _navigateToChat(Map<String, dynamic> conversation) {
+    // Extraer información del doctor de los participantes
+    final participants = conversation['participants'] as List<dynamic>? ?? [];
+    final doctorParticipant = participants.isNotEmpty ? participants.first : null;
+    
+    if (doctorParticipant != null) {
+      final doctorData = {
+        'id': doctorParticipant['userId'],
+        'fullName': 'Doctor ${doctorParticipant['type']}',
+        'specialty': doctorParticipant['type'],
+      };
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DoctorChatScreen(
+            doctor: doctorData,
+            currentUserId: conversation['participants']
+                .firstWhere((p) => p['userId'] != doctorParticipant['userId'])['userId'],
+          ),
         ),
-      ),
-    ).then((_) {
-      // Recargar conversaciones cuando regrese del chat
-      _loadConversations();
-    });
+      ).then((_) {
+        _loadConversations();
+      });
+    }
   }
 }

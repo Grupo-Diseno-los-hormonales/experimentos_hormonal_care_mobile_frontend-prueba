@@ -1,37 +1,35 @@
-class MessageModel {
+class ChatMessage {
   final int id;
-  final int senderProfileId;
-  final int receiverProfileId;
-  final String? text;
-  final String messageType;
+  final String text;
+  final DateTime timestamp;
+  final int senderId;
+  final int receiverId;
+  final bool isRead;
   final String? imageUrl;
-  final String status;
-  final DateTime sentAt;
 
-  MessageModel({
+  ChatMessage({
     required this.id,
-    required this.senderProfileId,
-    required this.receiverProfileId,
-    this.text,
-    required this.messageType,
+    required this.text,
+    required this.timestamp,
+    required this.senderId,
+    required this.receiverId,
+    this.isRead = false,
     this.imageUrl,
-    required this.status,
-    required this.sentAt,
   });
 
-  factory MessageModel.fromJson(Map<String, dynamic> json) {
-    return MessageModel(
-      id: json['id'],
-      senderProfileId: json['senderProfileId'],
-      receiverProfileId: json['receiverProfileId'],
-      text: json['text'],
-      messageType: json['messageType'],
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
+      id: json['id'] ?? 0,
+      text: json['text'] ?? '',
+      timestamp: DateTime.parse(json['sentAt'] ?? DateTime.now().toIso8601String()),
+      senderId: json['senderProfileId'] ?? 0,
+      receiverId: json['receiverProfileId'] ?? 0,
+      isRead: json['status'] == 'READ',
       imageUrl: json['imageUrl'],
-      status: json['status'],
-      sentAt: DateTime.parse(json['sentAt']),
     );
   }
 
-  bool get isRead => status == 'READ';
-  bool get isImage => messageType == 'IMAGE';
+  bool isFromCurrentUser(int currentUserId) {
+    return senderId == currentUserId;
+  }
 }
