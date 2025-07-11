@@ -1,0 +1,98 @@
+{
+    "@@locale": "en",
+    "welcomeMessage": "Welcome to HormonalCare",
+    "selectLanguage": "Select Language",
+    "logInTitle": "Log In",
+    "enterUsernameHint": "Enter your username",
+    "enterPasswordHint": "Enter your password",
+    "verifyCaptchaButton": "Verify CAPTCHA",
+    "enterButton": "Enter",
+    "dontHaveAccount": "Don't have an account? Register",
+    "patientSignUpTitle": "Patient's Sign Up",
+    "enterFirstNameHint": "Enter your first name",
+    "enterLastNameHint": "Enter your last name",
+    "selectGenderHint": "Select your gender",
+    "enterPhoneNumberHint": "Enter your phone number (XXX-XXX-XXXX)",
+    "enterBirthdayHint": "Enter your birthday (YYYY-MM-DD)",
+    "selectBloodTypeHint": "Select your blood type",
+    "enterDoctorIdHint": "Enter your doctor ID",
+    "doctorSignUpTitle": "Doctor's Sign Up",
+    "enterSubSpecialtyHint": "Enter your sub-specialty",
+    "birthdayLabel": "Birthday:",
+    "phoneNumberLabel": "Phone Number:",
+    "enterProfessionalIdHint": "Enter your professional ID",
+    "acceptTerms": "I accept the Terms and Conditions",
+    "todayMedicationTitle": "Today's medication",
+    "medicationsCount": "%d medications",
+     "@medicationsCount": {
+        "description": "Count of medications",
+        "placeholders": {
+            "d": {
+                "type": "int"
+            }
+        }
+    },
+    "medicationNumberTitle": "Medication %d",
+     "@medicationNumberTitle": {
+        "description": "Title for a specific medication",
+        "placeholders": {
+            "d": {
+                "type": "int"
+            }
+        }
+    },
+    "dosageLabel": "Dosage:",
+    "frequencyLabel": "Frequency:",
+    "durationLabel": "Duration:",
+    "examsToEvaluateTitle": "Exams to evaluate",
+    "hormonalTestLabel": "Hormonal test",
+    "bloodTestLabel": "Blood test",
+    "enterExamNameHint": "Enter exam name",
+    "findADoctorTitle": "Find a Doctor",
+    "searchDoctorsHint": "Search doctors...",
+    "allButton": "All",
+    "diabetesButton": "Diabetes",
+    "hormonesButton": "Hormones",
+    "obesityButton": "Obesity",
+    "thyroidButton": "Thyroid",
+    "scheduleAppointmentButton": "Schedule Appointment",
+    "myAppointmentsTitle": "My Appointments",
+    "daysStreak": "%d days streak",
+    "@daysStreak": {
+        "description": "Number of consecutive days",
+        "placeholders": {
+            "d": {
+                "type": "int"
+            }
+        }
+    },
+    "keepGoingMessage": "Keep going like this!",
+    "todayTitle": "Today",
+    "bloodGlucoseLabel": "Blood glucose",
+    "insulinLabel": "Insulin",
+    "saveButton": "Save",
+    "logHistoryTitle": "LOG HISTORY",
+    "noLogsYetMessage": "No logs yet",
+    "hormonalCareSupportButton": "Soporte HormonalCare",
+    "homeTab": "Home",
+    "searchTab": "Search",
+    "appointmentsTab": "Appointments",
+    "profileTab": "Profile",
+
+
+    "todayPatientsTitle": "Today's Patients",
+    "nameColumnHeader": "Name",
+    "dateColumnHeader": "Date",
+    "reassignDateButton": "Reassign date",
+    "patientsTitle": "Patients",
+    "medicalRecordButton": "Medical record",
+    "medicalAppointmentsTitle": "Medical Appointments",
+    "appointmentCreatedSuccessMessage": "Appointment created successfully!",
+    "doctorProfileTitle": "Doctor Profile",
+    "supportChatButton": "Support Chat",
+    "firstNameLabel": "First Name",
+    "lastNameLabel": "Last Name",
+    "genderLabel": "Gender",
+    "professionalIdNumberLabel": "Professional ID Number",
+    "subSpecialtyLabel": "SubSpecialty"
+}

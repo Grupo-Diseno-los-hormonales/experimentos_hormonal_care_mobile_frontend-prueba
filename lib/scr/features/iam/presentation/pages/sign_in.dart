@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
@@ -134,8 +135,8 @@ class _SignInState extends State<SignIn> {
                   height: 100,
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Welcome to HormonalCare',
+                Text(
+                  AppLocalizations.of(context)?.welcomeMessage ?? 'Welcome to HormonalCare',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -152,8 +153,8 @@ class _SignInState extends State<SignIn> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Log In',
+                      Text(
+                        AppLocalizations.of(context)?.logInTitle ?? 'Log In',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
