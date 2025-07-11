@@ -6,6 +6,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatmen
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -276,8 +277,8 @@ Widget build(BuildContext context) {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      "days streak",
+                    Text(
+                      AppLocalizations.of(context)?.daysStreak(_streakCount) ?? "$_streakCount days streak",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -333,8 +334,8 @@ Widget build(BuildContext context) {
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 8),
-                    const Text(
-                      "Keep going like this!",
+                    Text(
+                      AppLocalizations.of(context)?.keepGoingMessage ?? "Keep going like this!",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.grey,
@@ -346,8 +347,8 @@ Widget build(BuildContext context) {
               const SizedBox(height: 32),
               
               // Sección de hoy
-              const Text(
-                "Today",
+              Text(
+                AppLocalizations.of(context)?.todayTitle ?? "Today",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -364,8 +365,8 @@ Widget build(BuildContext context) {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Row(
                   children: [
-                    const Text(
-                      "Blood glucose",
+                    Text(
+                      AppLocalizations.of(context)?.bloodGlucoseLabel ?? "Blood glucose",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -399,8 +400,8 @@ Widget build(BuildContext context) {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Row(
                   children: [
-                    const Text(
-                      "Insulin",
+                    Text(
+                      AppLocalizations.of(context)?.insulinLabel ?? "Insulin",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -438,15 +439,15 @@ Widget build(BuildContext context) {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    child: const Text("Save"),
+                    child: Text(AppLocalizations.of(context)?.saveButton ?? "Save"),
                   ),
                 ),
               ),
               const SizedBox(height: 32),
               
                // Historial de registros
-            const Text(
-              "LOG HISTORY",
+            Text(
+              AppLocalizations.of(context)?.logHistoryTitle ?? "LOG HISTORY",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -456,10 +457,10 @@ Widget build(BuildContext context) {
             Column(
               children: _logHistory.isEmpty
                   ? [
-                      const Center(
+                      Center(
                         child: Padding(
                           padding: EdgeInsets.all(16.0),
-                          child: Text("No logs yet"),
+                          child: Text(AppLocalizations.of(context)?.noLogsYetMessage ?? "No logs yet"),
                         ),
                       )
                     ]

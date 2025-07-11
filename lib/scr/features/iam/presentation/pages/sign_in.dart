@@ -169,7 +169,7 @@ class _SignInState extends State<SignIn> {
                             TextFormField(
                               controller: _emailController,
                               decoration: InputDecoration(
-                                labelText: 'Enter your username',
+                                labelText: AppLocalizations.of(context)?.enterUsernameHint ?? 'Enter your username',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -182,7 +182,7 @@ class _SignInState extends State<SignIn> {
                               controller: _passwordController,
                               obscureText: _obscureText,
                               decoration: InputDecoration(
-                                labelText: 'Enter your password',
+                                labelText: AppLocalizations.of(context)?.enterPasswordHint ?? 'Enter your password',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -209,8 +209,8 @@ class _SignInState extends State<SignIn> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              child: const Text(
-                                'Verify CAPTCHA',
+                              child: Text(
+                                AppLocalizations.of(context)?.verifyCaptchaButton ?? 'Verify CAPTCHA',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -226,8 +226,8 @@ class _SignInState extends State<SignIn> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              child: const Text(
-                                'Enter',
+                              child: Text(
+                                AppLocalizations.of(context)?.enterButton ?? 'Enter',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -244,8 +244,8 @@ class _SignInState extends State<SignIn> {
                                   ),
                                 );
                               },
-                              child: const Text(
-                                "Don't have an account? Register",
+                              child: Text(
+                                AppLocalizations.of(context)?.dontHaveAccount ?? "Don't have an account? Register",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,

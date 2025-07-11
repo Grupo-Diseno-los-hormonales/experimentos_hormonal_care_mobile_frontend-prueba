@@ -5,6 +5,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,12 +35,8 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
   int? _medicalRecordId;
   
   // Lista de exámenes
-  final List<ExamItem> _examItems = [
-    ExamItem(controller: TextEditingController(text: "Hormonal test"), isChecked: false),
-    ExamItem(controller: TextEditingController(text: "Blood test"), isChecked: false),
-    ExamItem(controller: TextEditingController(), isChecked: false),
-    ExamItem(controller: TextEditingController(), isChecked: false),
-  ];
+  late List<ExamItem> _examItems;
+  bool _examItemsInitialized = false;
   
   // Lista de archivos seleccionados
   List<PlatformFile> _selectedFiles = [];
@@ -47,10 +44,6 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
   @override
   void initState() {
     super.initState();
-    // Inicializar listeners para los exámenes
-    for (var item in _examItems) {
-      _addExamTextFieldListener(item.controller);
-    }
     
     // Cargar medicaciones
     _loadMedicalRecordId().then((_) {
@@ -58,6 +51,21 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
         _loadMedications();
       }
     });
+  }
+  
+  // Inicializar la lista de exámenes con traducciones
+  void _initializeExamItems(BuildContext context) {
+    _examItems = [
+      ExamItem(controller: TextEditingController(text: AppLocalizations.of(context)?.hormonalTestLabel ?? "Hormonal test"), isChecked: false),
+      ExamItem(controller: TextEditingController(text: AppLocalizations.of(context)?.bloodTestLabel ?? "Blood test"), isChecked: false),
+      ExamItem(controller: TextEditingController(), isChecked: false),
+      ExamItem(controller: TextEditingController(), isChecked: false),
+    ];
+    
+    // Inicializar listeners para los exámenes
+    for (var item in _examItems) {
+      _addExamTextFieldListener(item.controller);
+    }
   }
   
   // Cargar el ID del registro médico desde SharedPreferences
@@ -75,7 +83,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
     } catch (e) {
       print('Error loading medical record ID: $e');
       setState(() {
-        _errorMessage = 'Error loading patient data';
+        _errorMessage = AppLocalizations.of(context)?.errorLoadingPatientDataMessage ?? 'Error loading patient data';
         _isLoading = false;
       });
     }
@@ -85,7 +93,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
   Future<void> _loadMedications() async {
     if (_medicalRecordId == null) {
       setState(() {
-        _errorMessage = 'No medical record ID found';
+        _errorMessage = AppLocalizations.of(context)?.noMedicalRecordIdFoundMessage ?? 'No medical record ID found';
         _isLoading = false;
       });
       return;
@@ -107,7 +115,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
     } catch (e) {
       print('Error loading medications: $e');
       setState(() {
-        _errorMessage = 'Error loading medications';
+        _errorMessage = AppLocalizations.of(context)?.errorLoadingMedicationsMessage ?? 'Error loading medications';
         _isLoading = false;
       });
     }
@@ -147,7 +155,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${_selectedFiles.length} archivo(s) seleccionado(s)'),
+              content: Text(AppLocalizations.of(context)?.filesSelectedMessage(_selectedFiles.length) ?? '${_selectedFiles.length} file(s) selected'),
               duration: const Duration(seconds: 2),
             ),
           );
@@ -155,15 +163,15 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al seleccionar archivos: $e'),
+            content: Text(AppLocalizations.of(context)?.errorSelectingFilesMessage(e.toString()) ?? 'Error selecting files: $e'),
             backgroundColor: Colors.red,
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Se requieren permisos de almacenamiento para seleccionar archivos'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.storagePermissionRequiredMessage ?? 'Storage permissions are required to select files'),
           backgroundColor: Colors.red,
         ),
       );
@@ -183,7 +191,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
     }
     
     if (parts.isEmpty) {
-      return 'No dosage info';
+      return AppLocalizations.of(context)?.noDosageInfoLabel ?? 'No dosage info';
     }
     
     return parts.join(' - ');
@@ -209,6 +217,12 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
 
   @override
   Widget build(BuildContext context) {
+    // Inicializar exámenes con traducciones solo una vez
+    if (!_examItemsInitialized) {
+      _initializeExamItems(context);
+      _examItemsInitialized = true;
+    }
+    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -252,7 +266,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                     IconButton(
                       icon: const Icon(Icons.refresh),
                       onPressed: _loadMedications,
-                      tooltip: 'Reload medications',
+                      tooltip: AppLocalizations.of(context)?.reloadMedicationsTooltip ?? 'Reload medications',
                     ),
                   ],
                 ),
@@ -262,15 +276,15 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Today's medication",
+                    Text(
+                      AppLocalizations.of(context)?.todayMedicationTitle ?? "Today's medication",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "${_medications.length} medications",
+                      AppLocalizations.of(context)?.medicationsCount(_medications.length) ?? "${_medications.length} medications",
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 14,
@@ -306,11 +320,11 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                   )
                 // Mostrar mensaje si no hay medicaciones
                 else if (_medications.isEmpty)
-                  const Center(
+                  Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text(
-                        "No medications found",
+                        AppLocalizations.of(context)?.noMedicationsFoundMessage ?? "No medications found",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -338,7 +352,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Medication ${index + 1}",
+                                    AppLocalizations.of(context)?.medicationNumberTitle(index + 1) ?? "Medication ${index + 1}",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -365,7 +379,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            medication.drugName ?? 'Unknown medication',
+                                            medication.drugName ?? (AppLocalizations.of(context)?.unknownMedicationLabel ?? 'Unknown medication'),
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -384,7 +398,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                         const Icon(Icons.scale, size: 20, color: Colors.deepPurple),
                                         const SizedBox(width: 8),
                                         Text(
-                                          'Dosage: ${_formatDosage(medication)}',
+                                          '${AppLocalizations.of(context)?.dosageLabel ?? "Dosage:"} ${_formatDosage(medication)}',
                                           style: const TextStyle(
                                             fontSize: 14,
                                           ),
@@ -401,7 +415,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                             const Icon(Icons.schedule, size: 20, color: Colors.deepPurple),
                                             const SizedBox(width: 8),
                                             Text(
-                                              'Frequency: ${_formatFrequency(medication)}',
+                                              '${AppLocalizations.of(context)?.frequencyLabel ?? "Frequency:"} ${_formatFrequency(medication)}',
                                               style: const TextStyle(
                                                 fontSize: 14,
                                               ),
@@ -419,7 +433,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                             const Icon(Icons.date_range, size: 20, color: Colors.deepPurple),
                                             const SizedBox(width: 8),
                                             Text(
-                                              'Duration: ${medication.duration}',
+                                              '${AppLocalizations.of(context)?.durationLabel ?? "Duration:"} ${medication.duration}',
                                               style: const TextStyle(
                                                 fontSize: 14,
                                               ),
@@ -450,8 +464,8 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Exams to evaluate",
+                      Text(
+                        AppLocalizations.of(context)?.examsToEvaluateTitle ?? "Exams to evaluate",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -491,9 +505,9 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                                   height: 50,
                                   child: TextField(
                                     controller: _examItems[index].controller,
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Enter exam name",
+                                      hintText: AppLocalizations.of(context)?.enterExamNameHint ?? "Enter exam name",
                                     ),
                                   ),
                                 ),
@@ -518,8 +532,8 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Selected Files",
+                        Text(
+                          AppLocalizations.of(context)?.selectedFilesTitle ?? "Selected Files",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -572,8 +586,8 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
-                      "Upload your exams",
+                    child: Text(
+                      AppLocalizations.of(context)?.uploadExamsButton ?? "Upload your exams",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

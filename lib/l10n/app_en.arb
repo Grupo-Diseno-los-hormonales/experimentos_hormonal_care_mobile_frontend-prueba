@@ -94,5 +94,33 @@
     "lastNameLabel": "Last Name",
     "genderLabel": "Gender",
     "professionalIdNumberLabel": "Professional ID Number",
-    "subSpecialtyLabel": "SubSpecialty"
+    "subSpecialtyLabel": "SubSpecialty",
+    "reloadMedicationsTooltip": "Reload medications",
+    "noMedicationsFoundMessage": "No medications found",
+    "selectedFilesTitle": "Selected Files",
+    "uploadExamsButton": "Upload your exams",
+    "unknownMedicationLabel": "Unknown medication",
+    "noDosageInfoLabel": "No dosage info",
+    "filesSelectedMessage": "%d file(s) selected",
+    "@filesSelectedMessage": {
+        "description": "Number of files selected",
+        "placeholders": {
+            "d": {
+                "type": "int"
+            }
+        }
+    },
+    "errorSelectingFilesMessage": "Error selecting files: %s",
+    "@errorSelectingFilesMessage": {
+        "description": "Error message when selecting files",
+        "placeholders": {
+            "s": {
+                "type": "String"
+            }
+        }
+    },
+    "storagePermissionRequiredMessage": "Storage permissions are required to select files",
+    "errorLoadingMedicationsMessage": "Error loading medications",
+    "errorLoadingPatientDataMessage": "Error loading patient data",
+    "noMedicalRecordIdFoundMessage": "No medical record ID found"
 }

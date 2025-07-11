@@ -93,5 +93,33 @@
     "lastNameLabel": "Apellido",
     "genderLabel": "Género",
     "professionalIdNumberLabel": "Número de Identificación Profesional",
-    "subSpecialtyLabel": "Subespecialidad"
+    "subSpecialtyLabel": "Subespecialidad",
+    "reloadMedicationsTooltip": "Recargar medicamentos",
+    "noMedicationsFoundMessage": "No se encontraron medicamentos",
+    "selectedFilesTitle": "Archivos seleccionados",
+    "uploadExamsButton": "Subir tus exámenes",
+    "unknownMedicationLabel": "Medicamento desconocido",
+    "noDosageInfoLabel": "Sin información de dosis",
+    "filesSelectedMessage": "%d archivo(s) seleccionado(s)",
+    "@filesSelectedMessage": {
+        "description": "Número de archivos seleccionados",
+        "placeholders": {
+            "d": {
+                "type": "int"
+            }
+        }
+    },
+    "errorSelectingFilesMessage": "Error al seleccionar archivos: %s",
+    "@errorSelectingFilesMessage": {
+        "description": "Mensaje de error al seleccionar archivos",
+        "placeholders": {
+            "s": {
+                "type": "String"
+            }
+        }
+    },
+    "storagePermissionRequiredMessage": "Se requieren permisos de almacenamiento para seleccionar archivos",
+    "errorLoadingMedicationsMessage": "Error al cargar medicamentos",
+    "errorLoadingPatientDataMessage": "Error al cargar datos del paciente",
+    "noMedicalRecordIdFoundMessage": "No se encontró ID de registro médico"
 }

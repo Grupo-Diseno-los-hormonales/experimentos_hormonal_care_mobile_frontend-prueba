@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/widget/language_provider.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/presentation/pages/sign_in.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 
 class LanguageSwitcherApp extends StatefulWidget {
   const LanguageSwitcherApp({Key? key}) : super(key: key);
@@ -46,6 +47,7 @@ class _LanguageSwitcherAppState extends State<LanguageSwitcherApp> {
         ],
         home: LanguageFloatingWrapper(
           child: SignIn(),
+          locale: _locale,
           onLanguageChange: _changeLanguage,
         ),
       ),
@@ -55,11 +57,13 @@ class _LanguageSwitcherAppState extends State<LanguageSwitcherApp> {
 
 class LanguageFloatingWrapper extends StatelessWidget {
   final Widget child;
+  final Locale locale;
   final Function(Locale) onLanguageChange;
 
   const LanguageFloatingWrapper({
     Key? key,
     required this.child,
+    required this.locale,
     required this.onLanguageChange,
   }) : super(key: key);
 
@@ -73,52 +77,12 @@ class LanguageFloatingWrapper extends StatelessWidget {
         Positioned(
           bottom: 16,
           right: 16,
-          child: FloatingActionButton(
-            onPressed: () {
-              _showLanguageDialog(context);
-            },
-            backgroundColor: Color(0xFFA78AAB),
-            child: Icon(
-              Icons.language,
-              color: Colors.white,
-              size: 28,
-            ),
-            tooltip: 'Cambiar idioma / Change language',
+          child: LanguageButton(
+            currentLocale: locale,
+            onLocaleChange: onLanguageChange,
           ),
         ),
       ],
-    );
-  }
-
-  void _showLanguageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)?.selectLanguage ?? 'Seleccionar idioma / Select Language'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.flag, color: Colors.red),
-                title: Text('Español'),
-                onTap: () {
-                  onLanguageChange(Locale('es', ''));
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.flag, color: Colors.blue),
-                title: Text('English'),
-                onTap: () {
-                  onLanguageChange(Locale('en', ''));
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

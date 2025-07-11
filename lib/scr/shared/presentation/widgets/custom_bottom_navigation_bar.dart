@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -15,22 +16,22 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex,
-      items: const [
+      items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: AppLocalizations.of(context)?.homeTab ?? 'Home',
         ),
         BottomNavigationBarItem(
            icon: Icon(Icons.list),
-          label: 'Search',
+          label: AppLocalizations.of(context)?.searchTab ?? 'Search',
         ),
         BottomNavigationBarItem(
          icon: Icon(Icons.calendar_today),
-          label: 'Appointments',
+          label: AppLocalizations.of(context)?.appointmentsTab ?? 'Appointments',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: 'Profile',
+          label: AppLocalizations.of(context)?.profileTab ?? 'Profile',
         ),
       ],
       selectedItemColor: const Color(0xFFA788AB),
