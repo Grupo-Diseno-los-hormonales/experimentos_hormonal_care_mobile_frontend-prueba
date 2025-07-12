@@ -28,7 +28,7 @@ class _LanguageSwitcherAppState extends State<LanguageSwitcherApp> {
       onLanguageChanged: _changeLanguage,
       child: MaterialApp(
         locale: _locale,
-        title: 'Medical Care App',
+        title: AppLocalizations.of(context)?.medicalCareAppTitle ?? 'Medical Care App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFFA78AAB),
@@ -77,10 +77,7 @@ class LanguageFloatingWrapper extends StatelessWidget {
         Positioned(
           bottom: 16,
           right: 16,
-          child: LanguageButton(
-            currentLocale: locale,
-            onLocaleChange: onLanguageChange,
-          ),
+          child: LanguageButton(),
         ),
       ],
     );

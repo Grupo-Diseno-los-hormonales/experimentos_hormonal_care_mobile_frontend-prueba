@@ -4,6 +4,7 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/medical_record/diagnosis/domain/services/medicalrecord_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
@@ -194,13 +195,65 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
       return AppLocalizations.of(context)?.noDosageInfoLabel ?? 'No dosage info';
     }
     
-    return parts.join(' - ');
+    String result = parts.join(' - ');
+    
+    // Traducir patrones específicos conocidos usando AppLocalizations
+    if (result.contains('injection') && result.contains('units')) {
+      // Extraer el número de unidades usando regex
+      RegExp regExp = RegExp(r'(\d+)\s*units');
+      Match? match = regExp.firstMatch(result);
+      if (match != null) {
+        String units = match.group(1) ?? '10';
+        final localization = AppLocalizations.of(context);
+        if (localization != null) {
+          return localization.injectionUnitsLabel(units);
+        }
+      }
+    }
+    
+    return result;
   }
   
   // Formatear la información de frecuencia
   String _formatFrequency(Medication medication) {
     if (medication.frequency != null && medication.frequency!.isNotEmpty && medication.frequency != 'Unknown') {
-      return medication.frequency!;
+      String freq = medication.frequency!;
+      
+      // Traducir patrones específicos conocidos usando AppLocalizations
+      if (freq.contains('times per day') || freq.contains('time per day')) {
+        // Extraer el número de veces usando regex
+        RegExp regExp = RegExp(r'(\d+)\s*times?\s*per\s*day');
+        Match? match = regExp.firstMatch(freq);
+        if (match != null) {
+          String times = match.group(1) ?? '1';
+          final localization = AppLocalizations.of(context);
+          if (localization != null) {
+            // Para español, usar singular para "1" y plural para el resto
+            if (times == '1') {
+              return localization.timesPerDayLabel(times).replaceAll('vez', 'vez');
+            } else {
+              return localization.timesPerDayLabel(times).replaceAll('vez', 'veces');
+            }
+          }
+        }
+      }
+      
+      // Traducir "daily" 
+      if (freq.toLowerCase() == 'daily') {
+        return AppLocalizations.of(context)?.dailyLabel ?? freq;
+      }
+      
+      // Traducir "weekly"
+      if (freq.toLowerCase() == 'weekly') {
+        return AppLocalizations.of(context)?.weeklyLabel ?? freq;
+      }
+      
+      // Traducir "monthly"
+      if (freq.toLowerCase() == 'monthly') {
+        return AppLocalizations.of(context)?.monthlyLabel ?? freq;
+      }
+      
+      return freq;
     }
     return '';
   }
@@ -640,6 +693,7 @@ class _HomeScreenPatientState extends State<HomeScreenPatient> {
           }
         },
       ),
+      floatingActionButton: const LanguageButton(),
     );
   }
 }

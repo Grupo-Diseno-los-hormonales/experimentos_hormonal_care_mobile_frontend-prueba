@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PuzzleCaptchaDialog extends StatefulWidget {
   const PuzzleCaptchaDialog({super.key});
@@ -95,7 +96,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Image Verification'),
+      title: Text(AppLocalizations.of(context)?.imageVerificationTitle ?? 'Image Verification'),
       content: SizedBox(
         width: imgWidth,
         height: imgHeight + 40,
@@ -200,7 +201,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)?.cancelButton ?? 'Cancel'),
         ),
         TextButton(
           onPressed: () {
@@ -208,7 +209,7 @@ class _PuzzleCaptchaDialogState extends State<PuzzleCaptchaDialog> with SingleTi
               _loadNewPuzzle();
             });
           },
-          child: const Text('Another image'),
+          child: Text(AppLocalizations.of(context)?.anotherImageButton ?? 'Another image'),
         ),
       ],
     );

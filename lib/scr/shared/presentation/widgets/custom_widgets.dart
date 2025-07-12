@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -53,7 +54,7 @@ class CustomDateField extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: Color.fromARGB(255, 200, 200, 200), // Fondo gris claro
-            labelText: 'Day',
+            labelText: AppLocalizations.of(context)?.dayLabel ?? 'Day',
             prefixIcon: Icon(Icons.calendar_today, color: Colors.black),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
@@ -90,7 +91,7 @@ class CustomHourField extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: Color.fromARGB(255, 200, 200, 200), // Fondo gris claro
-            labelText: 'Hour',
+            labelText: AppLocalizations.of(context)?.hourLabel ?? 'Hour',
             prefixIcon: Icon(Icons.access_time, color: Colors.black),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0), // Bordes redondeados

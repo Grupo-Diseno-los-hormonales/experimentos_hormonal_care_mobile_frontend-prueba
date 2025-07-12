@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/add_appointment.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/appointment_detail.dart';
@@ -72,8 +74,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Medical Appointments',
-          style: TextStyle(
+          AppLocalizations.of(context)?.medicalAppointmentsCalendarTitle ?? 'Medical Appointments',
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -91,7 +93,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 color: Color(0xFFA78AAB),
               ),
               child: Text(
-                'Calendar View',
+                AppLocalizations.of(context)?.calendarViewTitle ?? 'Calendar View',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -100,7 +102,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             ),
             ListTile(
               leading: Icon(Icons.view_day),
-              title: Text('Day'),
+              title: Text(AppLocalizations.of(context)?.dayViewLabel ?? 'Day'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.day);
                 Navigator.pop(context);
@@ -108,7 +110,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             ),
             ListTile(
               leading: Icon(Icons.view_week),
-              title: Text('Week'),
+              title: Text(AppLocalizations.of(context)?.weekViewLabel ?? 'Week'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.week);
                 Navigator.pop(context);
@@ -116,7 +118,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             ),
             ListTile(
               leading: Icon(Icons.view_agenda),
-              title: Text('Month Agenda View'),
+              title: Text(AppLocalizations.of(context)?.monthAgendaViewLabel ?? 'Month Agenda View'),
               onTap: () {
                 _onCalendarViewChanged(CalendarView.month);
                 Navigator.pop(context);
@@ -138,6 +140,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 onTap: _calendarView == CalendarView.month ? null : _calendarTapped,
               ),
             ),
+      floatingActionButton: LanguageButton(),
     );
   }
 

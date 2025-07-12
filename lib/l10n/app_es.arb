@@ -1,42 +1,42 @@
-{
+﻿{
     "@@locale": "es",
     "welcomeMessage": "Bienvenido a HormonalCare",
-    "selectLanguage": "Select Language",
+    "selectLanguage": "Seleccionar Idioma",
     "logInTitle": "Iniciar Sesión",
     "enterUsernameHint": "Ingresa tu nombre de usuario",
     "enterPasswordHint": "Ingresa tu contraseña",
     "verifyCaptchaButton": "Verificar CAPTCHA",
-    "enterButton": "Ingresar",
-    "dontHaveAccount": "¿No tienes cuenta? Regístrate",
+    "enterButton": "Entrar",
+    "dontHaveAccount": "¿No tienes una cuenta? Regístrate",
     "patientSignUpTitle": "Registro de Paciente",
     "enterFirstNameHint": "Ingresa tu nombre",
     "enterLastNameHint": "Ingresa tu apellido",
     "selectGenderHint": "Selecciona tu género",
     "enterPhoneNumberHint": "Ingresa tu número de teléfono (XXX-XXX-XXXX)",
-    "enterBirthdayHint": "Ingresa tu fecha de nacimiento (AAAA-MM-DD)",
+    "enterBirthdayHint": "Ingresa tu fecha de nacimiento (YYYY-MM-DD)",
     "selectBloodTypeHint": "Selecciona tu tipo de sangre",
-    "enterDoctorIdHint": "Ingresa el ID de tu médico",
-    "doctorSignUpTitle": "Registro de Médico",
-    "enterSubSpecialtyHint": "Ingresa tu sub-especialidad",
-    "birthdayLabel": "Fecha de Nacimiento:",
-    "phoneNumberLabel": "Número de Teléfono:",
+    "enterDoctorIdHint": "Ingresa tu ID de doctor",
+    "doctorSignUpTitle": "Registro de Doctor",
+    "enterSubSpecialtyHint": "Ingresa tu subespecialidad",
+    "birthdayLabel": "Fecha de nacimiento:",
+    "phoneNumberLabel": "Número de teléfono:",
     "enterProfessionalIdHint": "Ingresa tu ID profesional",
     "acceptTerms": "Acepto los Términos y Condiciones",
     "todayMedicationTitle": "Medicación de hoy",
-    "medicationsCount": "%d medicamentos",
-     "@medicationsCount": {
-        "description": "Cantidad de medicamentos",
+    "medicationsCount": "{count} medicamentos",
+    "@medicationsCount": {
+        "description": "Conteo de medicamentos",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
     },
-    "medicationNumberTitle": "Medicación %d",
-     "@medicationNumberTitle": {
-        "description": "Título para una medicación específica",
+    "medicationNumberTitle": "Medicamento {number}",
+    "@medicationNumberTitle": {
+        "description": "Título para un medicamento específico",
         "placeholders": {
-            "d": {
+            "number": {
                 "type": "int"
             }
         }
@@ -44,12 +44,12 @@
     "dosageLabel": "Dosis:",
     "frequencyLabel": "Frecuencia:",
     "durationLabel": "Duración:",
-    "examsToEvaluateTitle": "Exámenes a evaluar",
-    "hormonalTestLabel": "Examen hormonal",
-    "bloodTestLabel": "Examen de sangre",
-    "enterExamNameHint": "Ingresar nombre del examen",
-    "findADoctorTitle": "Encontrar un Médico",
-    "searchDoctorsHint": "Buscar médicos...",
+    "examsToEvaluateTitle": "Exámenes para evaluar",
+    "hormonalTestLabel": "Prueba hormonal",
+    "bloodTestLabel": "Análisis de sangre",
+    "enterExamNameHint": "Ingresa el nombre del examen",
+    "findADoctorTitle": "Buscar un Doctor",
+    "searchDoctorsHint": "Buscar doctores...",
     "allButton": "Todos",
     "diabetesButton": "Diabetes",
     "hormonesButton": "Hormonas",
@@ -57,11 +57,11 @@
     "thyroidButton": "Tiroides",
     "scheduleAppointmentButton": "Programar Cita",
     "myAppointmentsTitle": "Mis Citas",
-    "daysStreak": "%d días consecutivos",
+    "daysStreak": "{count} días seguidos",
     "@daysStreak": {
         "description": "Número de días consecutivos",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
@@ -78,7 +78,6 @@
     "searchTab": "Buscar",
     "appointmentsTab": "Citas",
     "profileTab": "Perfil",
-
     "todayPatientsTitle": "Pacientes de hoy",
     "nameColumnHeader": "Nombre",
     "dateColumnHeader": "Fecha",
@@ -92,34 +91,177 @@
     "firstNameLabel": "Nombre",
     "lastNameLabel": "Apellido",
     "genderLabel": "Género",
-    "professionalIdNumberLabel": "Número de Identificación Profesional",
+    "professionalIdNumberLabel": "Número de ID Profesional",
     "subSpecialtyLabel": "Subespecialidad",
     "reloadMedicationsTooltip": "Recargar medicamentos",
     "noMedicationsFoundMessage": "No se encontraron medicamentos",
-    "selectedFilesTitle": "Archivos seleccionados",
+    "selectedFilesTitle": "Archivos Seleccionados",
     "uploadExamsButton": "Subir tus exámenes",
     "unknownMedicationLabel": "Medicamento desconocido",
     "noDosageInfoLabel": "Sin información de dosis",
-    "filesSelectedMessage": "%d archivo(s) seleccionado(s)",
+    "filesSelectedMessage": "{count} archivo(s) seleccionado(s)",
     "@filesSelectedMessage": {
         "description": "Número de archivos seleccionados",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
     },
-    "errorSelectingFilesMessage": "Error al seleccionar archivos: %s",
+    "errorSelectingFilesMessage": "Error seleccionando archivos: {errorMessage}",
     "@errorSelectingFilesMessage": {
         "description": "Mensaje de error al seleccionar archivos",
         "placeholders": {
-            "s": {
+            "errorMessage": {
                 "type": "String"
             }
         }
     },
     "storagePermissionRequiredMessage": "Se requieren permisos de almacenamiento para seleccionar archivos",
-    "errorLoadingMedicationsMessage": "Error al cargar medicamentos",
-    "errorLoadingPatientDataMessage": "Error al cargar datos del paciente",
-    "noMedicalRecordIdFoundMessage": "No se encontró ID de registro médico"
+    "errorLoadingMedicationsMessage": "Error cargando medicamentos",
+    "errorLoadingPatientDataMessage": "Error cargando datos del paciente",
+    "noMedicalRecordIdFoundMessage": "No se encontró ID de historial médico",
+    "refreshDoctorsTooltip": "Actualizar doctores",
+    "errorLoadingDoctorsMessage": "Error cargando doctores",
+    "retryButton": "Reintentar",
+    "noDoctorsFoundMessage": "No se encontraron doctores",
+    "tryChangingSearchCriteriaMessage": "Intenta cambiar tus criterios de búsqueda",
+    "unknownDoctorLabel": "Doctor Desconocido",
+    "generalMedicineLabel": "Medicina General",
+    "experienceLabel": "Experiencia",
+    "notSpecifiedLabel": "No especificado",
+    "contactInformationLabel": "Información de Contacto",
+    "doctorIdErrorMessage": "Error: No se pudo obtener el ID del doctor",
+    "injectionUnitsLabel": "inyección - {units} unidades",
+    "@injectionUnitsLabel": {
+        "description": "Formato para inyección con unidades",
+        "placeholders": {
+            "units": {
+                "type": "String"
+            }
+        }
+    },
+    "timesPerDayLabel": "{times} veces por día",
+    "@timesPerDayLabel": {
+        "description": "Frecuencia de veces por día",
+        "placeholders": {
+            "times": {
+                "type": "String"
+            }
+        }
+    },
+    "dailyLabel": "diario",
+    "weeklyLabel": "semanal",
+    "monthlyLabel": "mensual",
+    "mgLabel": "mg",
+    "mlLabel": "ml",
+    "unitsLabel": "unidades",
+    "pillLabel": "pastilla",
+    "pillsLabel": "pastillas",
+    "tabletLabel": "tableta",
+    "tabletsLabel": "tabletas",
+    "capsuleLabel": "cápsula",
+    "capsulesLabel": "cápsulas",
+    "calendarViewTitle": "Vista de Calendario",
+    "dayViewLabel": "Día",
+    "weekViewLabel": "Semana",
+    "monthViewLabel": "Mes",
+    "monthAgendaViewLabel": "Vista de Agenda Mensual",
+    "phoneNumberLabel": "Número de Teléfono",
+    "birthdayLabel": "Fecha de Nacimiento",
+    "maleLabel": "Masculino",
+    "femaleLabel": "Femenino",
+    "otherGenderLabel": "Otro",
+    "medicalRecordTitle": "Historial médico",
+    "ageLabel": "Edad:",
+    "patientHistoryTab": "Historial del Paciente",
+    "diagnosisTreatmentsTab": "Diagnósticos y Tratamientos",
+    "chatWithPatientTab": "Chat con Paciente",
+    "externalReportsTab": "Reportes Externos",
+    "personalHistoryLabel": "Historia personal:",
+    "familyHistoryLabel": "Historia familiar:",
+    "diagnosisLabel": "Diagnóstico",
+    "addDiagnosisButton": "Agregar Diagnóstico",
+    "medicationLabel": "Medicamento",
+    "concentrationLabel": "Concentración",
+    "unitLabel": "Unidad",
+    "addMedicationButton": "Agregar Medicamento",
+    "treatmentLabel": "Tratamiento",
+    "addTreatmentButton": "Agregar Tratamiento",
+    "typeMessageHint": "Escribe un mensaje...",
+    "noExternalReportsMessage": "No se encontraron reportes externos",
+    "timesPerDayPattern": "{times} veces por día",
+    "invalidCredentialsMessage": "Credenciales inválidas",
+    "pleaseFillBothValuesMessage": "Por favor complete ambos valores de glucosa e insulina",
+    "pleaseEnterValidNumbersMessage": "Por favor ingrese números válidos",
+    "pleaseVerifyCaptchaMessage": "Por favor verifique el CAPTCHA",
+    "imageVerificationTitle": "Verificación de Imagen",
+    "cancelButton": "Cancelar",
+    "anotherImageButton": "Otra imagen",
+    "dayLabel": "Día",
+    "hourLabel": "Hora",
+    "medicalCareAppTitle": "Aplicación de Atención Médica",
+    "hormonalCareTitle": "Cuidado Hormonal",
+    "userIdErrorMessage": "No se pudo obtener el ID de usuario",
+    "englishLanguageName": "Inglés",
+    "spanishLanguageName": "Español",
+    "myAppointmentsCalendarTitle": "Mis Citas",
+    "medicalAppointmentsCalendarTitle": "Citas Médicas",
+    "concentrationColumnHeader": "Concentración",
+    "unitColumnHeader": "Unidad",
+    "frequencyColumnHeader": "Frecuencia",
+    "addDiagnosisDialogTitle": "Añadir Diagnóstico",
+    "addMedicationDialogTitle": "Añadir Medicamento",
+    "addPrescriptionDialogTitle": "Añadir Prescripción",
+    "addTreatmentDialogTitle": "Añadir Tratamiento",
+    "medicalTypeLabel": "Tipo Médico",
+    "medicationNameHint": "Nombre del Medicamento",
+    "unitQuantityLabel": "Cantidad de Unidad",
+    "timePeriodLabel": "Período de Tiempo",
+    "prescriptionDateLabel": "Fecha de Prescripción",
+    "personalHistoryLabel": "Historia personal",
+    "familyHistoryLabel": "Historia familiar",
+    "fullNameLabel": "Nombre completo",
+    "phoneNumberLabel": "Número de teléfono",
+    "unknownLabel": "Desconocido",
+    "noNameLabel": "Sin nombre",
+    "noDateLabel": "Sin fecha",
+    "noTitleLabel": "Sin título",
+    "noDescriptionLabel": "Sin descripción",
+    "reassignDateButton": "Reasignar fecha",
+    "confirmLogoutTitle": "Confirmar Cierre de Sesión",
+    "patientProfileTitle": "Perfil del Paciente",
+    "medicalRecordTitle": "Historial médico",
+    "logOutDialogTitle": "Cerrar Sesión",
+    "firstNameFieldLabel": "Nombre",
+    "lastNameFieldLabel": "Apellido",
+    "phoneNumberFieldLabel": "Número de teléfono",
+    "unnamedTestLabel": "Prueba Sin Nombre",
+    "treatmentTrackerTitle": "Seguimiento de Tratamiento",
+    "doctorsTitle": "Doctores",
+    "appointmentsTitle": "Citas",
+    "profileTitle": "Perfil",
+    "medicationNameLabel": "Nombre del Medicamento",
+    "addAppointmentTitle": "Agregar Cita",
+    "titleLabel": "Título",
+    "titleHint": "Ingresa el título de la cita",
+    "dateLabel": "Fecha",
+    "startTimeLabel": "Hora de Inicio (HH:MM)",
+    "startTimeHint": "Ingresa la hora de inicio",
+    "endTimeLabel": "Hora de Fin (HH:MM)",
+    "endTimeHint": "Ingresa la hora de fin",
+    "choosePatientLabel": "Elegir un Paciente",
+    "choosePatientHint": "Selecciona un paciente",
+    "chooseColorLabel": "Elegir un Color",
+    "azulTurquesaColor": "Azul Turquesa",
+    "addAppointmentButton": "Agregar Cita",
+    "editAppointmentTitle": "Editar Cita",
+    "updateAppointmentButton": "Actualizar Cita",
+    "deleteAppointmentButton": "Eliminar Cita",
+    "appointmentDetailsTitle": "Detalles de la Cita",
+    "patientLabel": "Paciente",
+    "colorLabel": "Color",
+    "startTimeScheduleLabel": "Hora de Inicio",
+    "endTimeScheduleLabel": "Hora de Fin",
+    "pleaseChoosePatientMessage": "Por favor elige un paciente"
 }

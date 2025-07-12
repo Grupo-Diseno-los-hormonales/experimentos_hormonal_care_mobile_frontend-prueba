@@ -5,7 +5,9 @@ import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointm
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/treatment_tracker/presentation/pages/treatment_tracker_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/pages/home_screen_patient.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/shared/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DoctorListScreen extends StatefulWidget {
   const DoctorListScreen({Key? key}) : super(key: key);
@@ -20,8 +22,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
   String _searchQuery = '';
-  String _selectedSpecialty = 'All';
-  List<String> _specialties = ['All'];
+  String _selectedSpecialty = '';
+  List<String> _specialties = [];
   late int _currentUserId;
 
   @override
@@ -29,6 +31,18 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     super.initState();
     _loadDoctors();
     _loadCurrentUser();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Inicializar las especialidades con la traducción después de que el contexto esté disponible
+    if (_selectedSpecialty.isEmpty) {
+      _selectedSpecialty = AppLocalizations.of(context)?.allButton ?? 'All';
+      if (_specialties.isEmpty) {
+        _specialties = [_selectedSpecialty];
+      }
+    }
   }
 
   Future<void> _loadCurrentUser() async {
@@ -39,13 +53,29 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           _currentUserId = userId;
         });
       } else {
-        throw Exception('No se pudo obtener el ID del usuario');
+        throw Exception(AppLocalizations.of(context)?.userIdErrorMessage ?? 'No se pudo obtener el ID del usuario');
       }
     } catch (e) {
       print('Error obteniendo userId: $e');
     }
   }
 
+  // Método para obtener la traducción de una especialidad
+  String _getTranslatedSpecialty(String specialty) {
+    switch (specialty.toLowerCase()) {
+      case 'diabetes':
+        return AppLocalizations.of(context)?.diabetesButton ?? 'Diabetes';
+      case 'hormones':
+        return AppLocalizations.of(context)?.hormonesButton ?? 'Hormones';
+      case 'obesity':
+        return AppLocalizations.of(context)?.obesityButton ?? 'Obesity';
+      case 'thyroid':
+        return AppLocalizations.of(context)?.thyroidButton ?? 'Thyroid';
+      default:
+        return specialty;
+    }
+  }
+  
   Future<void> _loadDoctors() async {
     setState(() {
       _isLoading = true;
@@ -56,17 +86,17 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
       // Obtener la lista de doctores usando el nuevo endpoint
       final doctors = await _appointmentApi.fetchAllDoctors();
       
-      // Extraer especialidades únicas para el filtro
+      // Extraer especialidades únicas para el filtro y traducirlas
       final specialtiesSet = <String>{};
       for (var doctor in doctors) {
         if (doctor['specialty'] != null && doctor['specialty'].isNotEmpty) {
-          specialtiesSet.add(doctor['specialty']);
+          specialtiesSet.add(_getTranslatedSpecialty(doctor['specialty']));
         }
       }
       
       setState(() {
         _doctors = doctors;
-        _specialties = ['All', ...specialtiesSet.toList()..sort()];
+        _specialties = [AppLocalizations.of(context)?.allButton ?? 'All', ...specialtiesSet.toList()..sort()];
         _isLoading = false;
       });
       
@@ -81,13 +111,14 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   }
 
   List<Map<String, dynamic>> _getFilteredDoctors() {
+    final allText = AppLocalizations.of(context)?.allButton ?? 'All';
     return _doctors.where((doctor) {
       // Filtrar por búsqueda en el nombre
       final nameMatches = doctor['fullName']?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false;
       
       // Filtrar por especialidad
-      final specialtyMatches = _selectedSpecialty == 'All' || 
-                              doctor['specialty'] == _selectedSpecialty;
+      final specialtyMatches = _selectedSpecialty == allText || 
+                              _getTranslatedSpecialty(doctor['specialty'] ?? '') == _selectedSpecialty;
       
       return nameMatches && specialtyMatches;
     }).toList();
@@ -99,8 +130,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Find a Doctor',
+        title: Text(
+          AppLocalizations.of(context)?.findADoctorTitle ?? 'Find a Doctor',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -112,7 +143,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadDoctors,
-            tooltip: 'Refresh doctors',
+            tooltip: AppLocalizations.of(context)?.refreshDoctorsTooltip ?? 'Refresh doctors',
           ),
         ],
       ),
@@ -125,7 +156,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               children: [
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search doctors...',
+                    hintText: AppLocalizations.of(context)?.searchDoctorsHint ?? 'Search doctors...',
                     prefixIcon: const Icon(Icons.search, color: Color(0xFFA78AAB)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -191,7 +222,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
                             const SizedBox(height: 16),
                             Text(
-                              'Error loading doctors',
+                              AppLocalizations.of(context)?.errorLoadingDoctorsMessage ?? 'Error loading doctors',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -213,7 +244,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 backgroundColor: const Color(0xFFA78AAB),
                                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               ),
-                              child: const Text('Retry'),
+                              child: Text(AppLocalizations.of(context)?.retryButton ?? 'Retry'),
                             ),
                           ],
                         ),
@@ -225,8 +256,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               children: [
                                 const Icon(Icons.search_off, size: 64, color: Colors.grey),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'No doctors found',
+                                Text(
+                                  AppLocalizations.of(context)?.noDoctorsFoundMessage ?? 'No doctors found',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -234,7 +265,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Try changing your search criteria',
+                                  AppLocalizations.of(context)?.tryChangingSearchCriteriaMessage ?? 'Try changing your search criteria',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[600],
@@ -286,6 +317,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           }
         },
       ),
+      floatingActionButton: const LanguageButton(),
     );
   }
 
@@ -323,7 +355,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      doctor['fullName'] ?? 'Unknown Doctor',
+                      doctor['fullName'] ?? (AppLocalizations.of(context)?.unknownDoctorLabel ?? 'Unknown Doctor'),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -331,7 +363,9 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      doctor['specialty'] ?? 'General Medicine',
+                      _getTranslatedSpecialty(doctor['specialty'] ?? '') != '' 
+                        ? _getTranslatedSpecialty(doctor['specialty'] ?? '')
+                        : (AppLocalizations.of(context)?.generalMedicineLabel ?? 'General Medicine'),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -347,8 +381,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: const Text(
-                        'Schedule Appointment',
+                      child: Text(
+                        AppLocalizations.of(context)?.scheduleAppointmentButton ?? 'Schedule Appointment',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -402,7 +436,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          doctor['fullName'] ?? 'Unknown Doctor',
+                          doctor['fullName'] ?? (AppLocalizations.of(context)?.unknownDoctorLabel ?? 'Unknown Doctor'),
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -420,8 +454,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               const SizedBox(height: 16),
               
               // Experiencia
-              const Text(
-                'Experience',
+              Text(
+                AppLocalizations.of(context)?.experienceLabel ?? 'Experience',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -429,7 +463,9 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                doctor['specialty'] ?? 'Not specified',
+                _getTranslatedSpecialty(doctor['specialty'] ?? '') != '' 
+                  ? _getTranslatedSpecialty(doctor['specialty'] ?? '')
+                  : (AppLocalizations.of(context)?.notSpecifiedLabel ?? 'Not specified'),
                 style: const TextStyle(fontSize: 16),
               ),
               
@@ -439,8 +475,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
               // Información de contacto
               if (doctor['phoneNumber'] != null || doctor['email'] != null) ...[
                 const SizedBox(height: 16),
-                const Text(
-                  'Contact Information',
+                Text(
+                  AppLocalizations.of(context)?.contactInformationLabel ?? 'Contact Information',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -490,8 +526,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Schedule Appointment',
+                  child: Text(
+                    AppLocalizations.of(context)?.scheduleAppointmentButton ?? 'Schedule Appointment',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -515,7 +551,7 @@ void _scheduleAppointment(Map<String, dynamic> doctor) {
         doctor['userId'] = doctor['profileId'];
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: No se pudo obtener el ID del doctor')),
+          SnackBar(content: Text(AppLocalizations.of(context)?.doctorIdErrorMessage ?? 'Error: Could not get doctor ID')),
         );
         return;
       }

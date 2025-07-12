@@ -23,20 +23,20 @@
     "enterProfessionalIdHint": "Enter your professional ID",
     "acceptTerms": "I accept the Terms and Conditions",
     "todayMedicationTitle": "Today's medication",
-    "medicationsCount": "%d medications",
+    "medicationsCount": "{count} medications",
      "@medicationsCount": {
         "description": "Count of medications",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
     },
-    "medicationNumberTitle": "Medication %d",
+    "medicationNumberTitle": "Medication {number}",
      "@medicationNumberTitle": {
         "description": "Title for a specific medication",
         "placeholders": {
-            "d": {
+            "number": {
                 "type": "int"
             }
         }
@@ -57,11 +57,11 @@
     "thyroidButton": "Thyroid",
     "scheduleAppointmentButton": "Schedule Appointment",
     "myAppointmentsTitle": "My Appointments",
-    "daysStreak": "%d days streak",
+    "daysStreak": "{count} days streak",
     "@daysStreak": {
         "description": "Number of consecutive days",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
@@ -101,20 +101,20 @@
     "uploadExamsButton": "Upload your exams",
     "unknownMedicationLabel": "Unknown medication",
     "noDosageInfoLabel": "No dosage info",
-    "filesSelectedMessage": "%d file(s) selected",
+    "filesSelectedMessage": "{count} file(s) selected",
     "@filesSelectedMessage": {
         "description": "Number of files selected",
         "placeholders": {
-            "d": {
+            "count": {
                 "type": "int"
             }
         }
     },
-    "errorSelectingFilesMessage": "Error selecting files: %s",
+    "errorSelectingFilesMessage": "Error selecting files: {errorMessage}",
     "@errorSelectingFilesMessage": {
         "description": "Error message when selecting files",
         "placeholders": {
-            "s": {
+            "errorMessage": {
                 "type": "String"
             }
         }
@@ -122,5 +122,145 @@
     "storagePermissionRequiredMessage": "Storage permissions are required to select files",
     "errorLoadingMedicationsMessage": "Error loading medications",
     "errorLoadingPatientDataMessage": "Error loading patient data",
-    "noMedicalRecordIdFoundMessage": "No medical record ID found"
+    "noMedicalRecordIdFoundMessage": "No medical record ID found",
+    
+    "refreshDoctorsTooltip": "Refresh doctors",
+    "errorLoadingDoctorsMessage": "Error loading doctors",
+    "retryButton": "Retry",
+    "noDoctorsFoundMessage": "No doctors found",
+    "tryChangingSearchCriteriaMessage": "Try changing your search criteria",
+    "unknownDoctorLabel": "Unknown Doctor",
+    "generalMedicineLabel": "General Medicine",
+    "experienceLabel": "Experience",
+    "notSpecifiedLabel": "Not specified",
+    "contactInformationLabel": "Contact Information",
+    "doctorIdErrorMessage": "Error: Could not get doctor ID",
+    
+    "injectionUnitsLabel": "injection - {units} units",
+    "@injectionUnitsLabel": {
+        "description": "Format for injection with units",
+        "placeholders": {
+            "units": {
+                "type": "String"
+            }
+        }
+    },
+    "timesPerDayLabel": "{times} times per day",
+    "@timesPerDayLabel": {
+        "description": "Frequency of times per day",
+        "placeholders": {
+            "times": {
+                "type": "String"
+            }
+        }
+    },
+    "dailyLabel": "daily",
+    "weeklyLabel": "weekly",
+    "monthlyLabel": "monthly",
+    "mgLabel": "mg",
+    "mlLabel": "ml",
+    "unitsLabel": "units",
+    "pillLabel": "pill",
+    "pillsLabel": "pills",
+    "tabletLabel": "tablet",
+    "tabletsLabel": "tablets",
+    "capsuleLabel": "capsule",
+    "capsulesLabel": "capsules",
+    "calendarViewTitle": "Calendar View",
+    "dayViewLabel": "Day",
+    "weekViewLabel": "Week", 
+    "monthViewLabel": "Month",
+    "monthAgendaViewLabel": "Month Agenda View",
+    "phoneNumberLabel": "Phone Number",
+    "birthdayLabel": "Birthday",
+    "maleLabel": "Male",
+    "femaleLabel": "Female",
+    "otherGenderLabel": "Other",
+    "medicalRecordTitle": "Medical record",
+    "ageLabel": "Age:",
+    "patientHistoryTab": "Patient History",
+    "diagnosisTreatmentsTab": "Diagnosis & Treatments",
+    "chatWithPatientTab": "Chat with Patient",
+    "externalReportsTab": "External Reports",
+    "personalHistoryLabel": "Personal history:",
+    "familyHistoryLabel": "Family history:",
+    "diagnosisLabel": "Diagnosis",
+    "addDiagnosisButton": "Add Diagnosis",
+    "medicationLabel": "Medication",
+    "concentrationLabel": "Concentration",
+    "unitLabel": "Unit",
+    "addMedicationButton": "Add Medication",
+    "treatmentLabel": "Treatment",
+    "addTreatmentButton": "Add Treatment",
+    "typeMessageHint": "Type a message...",
+    "noExternalReportsMessage": "No external reports found",
+    "timesPerDayPattern": "{times} times per day",
+    "invalidCredentialsMessage": "Invalid credentials",
+    "pleaseFillBothValuesMessage": "Please fill in both glucose and insulin values",
+    "pleaseEnterValidNumbersMessage": "Please enter valid numbers",
+    "pleaseVerifyCaptchaMessage": "Please verify the CAPTCHA",
+    "imageVerificationTitle": "Image Verification",
+    "cancelButton": "Cancel",
+    "anotherImageButton": "Another image",
+    "dayLabel": "Day",
+    "hourLabel": "Hour",
+    "medicalCareAppTitle": "Medical Care App",
+    "hormonalCareTitle": "Hormonal Care",
+    "userIdErrorMessage": "Could not get user ID",
+    "englishLanguageName": "English",
+    "spanishLanguageName": "Spanish",
+    "myAppointmentsCalendarTitle": "My Appointments",
+    "medicalAppointmentsCalendarTitle": "Medical Appointments",
+    "concentrationColumnHeader": "Concentration",
+    "unitColumnHeader": "Unit",
+    "frequencyColumnHeader": "Frequency",
+    "addDiagnosisDialogTitle": "Add Diagnosis",
+    "addMedicationDialogTitle": "Add Medication",
+    "addPrescriptionDialogTitle": "Add Prescription",
+    "addTreatmentDialogTitle": "Add Treatment",
+    "medicalTypeLabel": "Medical Type",
+    "medicationNameHint": "Medication Name",
+    "unitQuantityLabel": "Unit Quantity",
+    "timePeriodLabel": "Time Period",
+    "prescriptionDateLabel": "Prescription Date",
+    "personalHistoryLabel": "Personal history",
+    "familyHistoryLabel": "Family history",
+    "fullNameLabel": "Full name",
+    "phoneNumberLabel": "Phone number",
+    "unknownLabel": "Unknown",
+    "noNameLabel": "No name",
+    "noDateLabel": "No date",
+    "noTitleLabel": "No title",
+    "noDescriptionLabel": "No description",
+    "reassignDateButton": "Reassign date",
+    "confirmLogoutTitle": "Confirm Logout",
+    "patientProfileTitle": "Patient Profile",
+    "medicalRecordTitle": "Medical record",
+    "logOutDialogTitle": "Log Out",
+    "firstNameFieldLabel": "First name",
+    "lastNameFieldLabel": "Last name",
+    "phoneNumberFieldLabel": "Phone number",
+    "unnamedTestLabel": "Unnamed Test",
+    "addAppointmentTitle": "Add Appointment",
+    "titleLabel": "Title",
+    "titleHint": "Enter appointment title",
+    "dateLabel": "Date",
+    "startTimeLabel": "Start Time (HH:MM)",
+    "startTimeHint": "Enter start time",
+    "endTimeLabel": "End Time (HH:MM)",
+    "endTimeHint": "Enter end time",
+    "choosePatientLabel": "Choose a Patient",
+    "choosePatientHint": "Select a patient",
+    "chooseColorLabel": "Choose a Color",
+    "azulTurquesaColor": "Turquoise Blue",
+    "addAppointmentButton": "Add Appointment",
+    "editAppointmentTitle": "Edit Appointment",
+    "updateAppointmentButton": "Update Appointment",
+    "deleteAppointmentButton": "Delete Appointment",
+    "appointmentDetailsTitle": "Appointment Details",
+    "patientLabel": "Patient",
+    "colorLabel": "Color",
+    "startTimeScheduleLabel": "Start Time",
+    "endTimeScheduleLabel": "End Time",
+    "pleaseChoosePatientMessage": "Please choose a patient"
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/add_appointment.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/presentation/screens/appointment_detail.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/patient_service.dart';
@@ -105,19 +107,17 @@ class _HomePatientsScreenState extends State<HomePatientsScreen> {
 @override
 Widget build(BuildContext context) {
   final limaTimeZone = tz.getLocation('America/Lima');
-  final now = tz.TZDateTime.now(limaTimeZone);
-
-  return Scaffold(
-    appBar: AppBar(
-      backgroundColor: const Color(0xFF8F7193), // Fondo morado del AppBar
-      title: const Text("Today's Patients"),
-      centerTitle: true,
-      titleTextStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-        fontWeight: FontWeight.bold,
+  final now = tz.TZDateTime.now(limaTimeZone);    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF8F7193), // Fondo morado del AppBar
+        title: Text(AppLocalizations.of(context)?.todayPatientsTitle ?? "Today's Patients"),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    ),
     body: Column(
       children: [
         // Espaciado entre el encabezado y el cuadro morado
@@ -145,7 +145,7 @@ Widget build(BuildContext context) {
                     children: [
                       Expanded(
                         child: Text(
-                          'Name',
+                          AppLocalizations.of(context)?.nameColumnHeader ?? 'Name',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -156,7 +156,7 @@ Widget build(BuildContext context) {
                       ),
                       Expanded(
                         child: Text(
-                          'Date',
+                          AppLocalizations.of(context)?.dateColumnHeader ?? 'Date',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -271,13 +271,14 @@ Widget build(BuildContext context) {
               padding: EdgeInsets.symmetric(vertical: 13),
             ),
             child: Text(
-              'Reassign date',
+              AppLocalizations.of(context)?.reassignDateButton ?? 'Reassign date',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ),
       ],
     ),
+    floatingActionButton: LanguageButton(),
   );
 }
 }

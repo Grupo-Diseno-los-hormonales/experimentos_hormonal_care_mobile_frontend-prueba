@@ -104,7 +104,7 @@ class _SignInState extends State<SignIn> {
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid credentials')),
+            SnackBar(content: Text(AppLocalizations.of(context)?.invalidCredentialsMessage ?? 'Invalid credentials')),
           );
         }
       } catch (e) {
@@ -114,7 +114,7 @@ class _SignInState extends State<SignIn> {
       }
     } else if (!_captchaVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please verify the CAPTCHA')),
+        SnackBar(content: Text(AppLocalizations.of(context)?.pleaseVerifyCaptchaMessage ?? 'Please verify the CAPTCHA')),
       );
     }
   }

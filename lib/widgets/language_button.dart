@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'language_switcher_app.dart'; // Import the global provider
 
 class LanguageButton extends StatelessWidget {
-  final Locale currentLocale;
-  final ValueChanged<Locale> onLocaleChange;
-
-  const LanguageButton({
-    Key? key,
-    required this.currentLocale,
-    required this.onLocaleChange,
-  }) : super(key: key);
+  const LanguageButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,17 +30,17 @@ class LanguageButton extends StatelessWidget {
             children: [
               ListTile(
                 leading: Text('🇪🇸', style: TextStyle(fontSize: 24)),
-                title: Text('Español'),
+                title: Text(AppLocalizations.of(context)?.spanishLanguageName ?? 'Español'),
                 onTap: () {
-                  onLocaleChange(Locale('es', ''));
+                  languageProvider.changeLanguage(Locale('es', ''));
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 leading: Text('🇺🇸', style: TextStyle(fontSize: 24)),
-                title: Text('English'),
+                title: Text(AppLocalizations.of(context)?.englishLanguageName ?? 'English'),
                 onTap: () {
-                  onLocaleChange(Locale('en', ''));
+                  languageProvider.changeLanguage(Locale('en', ''));
                   Navigator.of(context).pop();
                 },
               ),

@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Medical Care App',
+      title: AppLocalizations.of(context)?.medicalCareAppTitle ?? 'Medical Care App',
       debugShowCheckedModeBanner: false,
       locale: locale, // Usar el locale pasado al widget
       theme: ThemeData(

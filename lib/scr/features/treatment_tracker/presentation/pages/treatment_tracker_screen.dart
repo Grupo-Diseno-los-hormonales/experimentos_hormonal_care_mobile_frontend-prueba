@@ -167,8 +167,8 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
     // Validar que ambos campos estén completos
     if (_glucoseController.text.isEmpty || _insulinController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in both glucose and insulin values'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.pleaseFillBothValuesMessage ?? 'Please fill in both glucose and insulin values'),
           backgroundColor: Colors.red,
         ),
       );
@@ -181,8 +181,8 @@ class _TreatmentTrackerScreenState extends State<TreatmentTrackerScreen> {
     
     if (glucoseValue == null || insulinValue == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter valid numbers'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.pleaseEnterValidNumbersMessage ?? 'Please enter valid numbers'),
           backgroundColor: Colors.red,
         ),
       );
@@ -503,9 +503,9 @@ Widget build(BuildContext context) {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 icon: const Icon(Icons.support_agent, color: Colors.white),
-                label: const Text(
-                  'Soporte HormonalCare',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                label: Text(
+                  AppLocalizations.of(context)?.hormonalCareSupportButton ?? 'Soporte HormonalCare',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(

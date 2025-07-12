@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/appointment/data/data_sources/remote/medical_appointment_api.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math';
 
 class JitsiMeetingLinkGenerator {
@@ -39,19 +40,21 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
 
-  final List<Map<String, dynamic>> _colors = [
-    {'name': 'Rojo Tomate', 'color': Color(0xFFD50000)},
-    {'name': 'Rosa Chicle', 'color': Color(0xFFE67C73)},
-    {'name': 'Mandarina', 'color': Color(0xFFF4511E)},
-    {'name': 'Amarillo Huevo', 'color': Color(0xFFF6BF26)},
-    {'name': 'Verde Esmeralda', 'color': Color(0xFF33B679)},
-    {'name': 'Verde Musgo', 'color': Color(0xFF0B8043)},
-    {'name': 'Azul Turquesa', 'color': Color(0xFF039BE5)},
-    {'name': 'Azul Arándano', 'color': Color(0xFF3F51B5)},
-    {'name': 'Lavanda', 'color': Color(0xFF7986CB)},
-    {'name': 'Morado Intenso', 'color': Color(0xFF8E24AA)},
-    {'name': 'Grafito', 'color': Color(0xFF616161)},
-  ];
+  List<Map<String, dynamic>> _getColors(BuildContext context) {
+    return [
+      {'name': 'Rojo Tomate', 'color': Color(0xFFD50000)},
+      {'name': 'Rosa Chicle', 'color': Color(0xFFE67C73)},
+      {'name': 'Mandarina', 'color': Color(0xFFF4511E)},
+      {'name': 'Amarillo Huevo', 'color': Color(0xFFF6BF26)},
+      {'name': 'Verde Esmeralda', 'color': Color(0xFF33B679)},
+      {'name': 'Verde Musgo', 'color': Color(0xFF0B8043)},
+      {'name': AppLocalizations.of(context)?.azulTurquesaColor ?? 'Azul Turquesa', 'color': Color(0xFF039BE5)},
+      {'name': 'Azul Arándano', 'color': Color(0xFF3F51B5)},
+      {'name': 'Lavanda', 'color': Color(0xFF7986CB)},
+      {'name': 'Morado Intenso', 'color': Color(0xFF8E24AA)},
+      {'name': 'Grafito', 'color': Color(0xFF616161)},
+    ];
+  }
 
   @override
   void initState() {
@@ -115,7 +118,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Appointment',
+          AppLocalizations.of(context)?.addAppointmentTitle ?? 'Add Appointment',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -137,20 +140,20 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
             children: [
               _buildTextField(
                 controller: _titleController,
-                labelText: 'Title',
+                labelText: AppLocalizations.of(context)?.titleLabel ?? 'Title',
                 icon: Icons.title,
               ),
               SizedBox(height: 16),
               _buildDateField(
                 controller: _dateController,
-                labelText: 'Date',
+                labelText: AppLocalizations.of(context)?.dateLabel ?? 'Date',
                 icon: Icons.calendar_today,
                 onTap: () => _selectDate(context),
               ),
               SizedBox(height: 16),
               _buildTextField(
                 controller: _startTimeController,
-                labelText: 'Start Time (HH:MM)',
+                labelText: AppLocalizations.of(context)?.startTimeLabel ?? 'Start Time (HH:MM)',
                 icon: Icons.access_time,
                 keyboardType: TextInputType.number,
                 inputFormatters: [TimeTextInputFormatter()],
@@ -158,7 +161,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
               SizedBox(height: 16),
               _buildTextField(
                 controller: _endTimeController,
-                labelText: 'End Time (HH:MM)',
+                labelText: AppLocalizations.of(context)?.endTimeLabel ?? 'End Time (HH:MM)',
                 icon: Icons.access_time,
                 keyboardType: TextInputType.number,
                 inputFormatters: [TimeTextInputFormatter()],
@@ -177,13 +180,13 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                     _selectedPatientId = value;
                   });
                 },
-                labelText: 'Choose a Patient',
+                labelText: AppLocalizations.of(context)?.choosePatientLabel ?? 'Choose a Patient',
                 icon: Icons.person,
               ),
               SizedBox(height: 16),
               _buildDropdown<Color>(
                 value: _selectedColor,
-                items: _colors.map((color) {
+                items: _getColors(context).map((color) {
                   return DropdownMenuItem<Color>(
                     value: color['color'],
                     child: Row(
@@ -200,7 +203,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                     _selectedColor = value!;
                   });
                 },
-                labelText: 'Choose a Color',
+                labelText: AppLocalizations.of(context)?.chooseColorLabel ?? 'Choose a Color',
                 icon: Icons.color_lens,
               ),
               SizedBox(height: 20),
@@ -225,7 +228,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
 
                   if (_selectedPatientId == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please choose a patient')),
+                      SnackBar(content: Text(AppLocalizations.of(context)?.pleaseChoosePatientMessage ?? 'Please choose a patient')),
                     );
                     return;
                   }
@@ -246,7 +249,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                   await _createAppointment(appointmentData);
                 },
                 child: Text(
-                  'Add Appointment',
+                  AppLocalizations.of(context)?.addAppointmentButton ?? 'Add Appointment',
                   style: TextStyle(color: Colors.white, fontSize: 18), // Aumenta el tamaño del texto
                 ),
                 style: ElevatedButton.styleFrom(

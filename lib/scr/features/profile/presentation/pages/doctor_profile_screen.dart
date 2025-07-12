@@ -1,9 +1,11 @@
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/pages/support_chat_screen.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/admin/presentation/widgets/admin_chat_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/profile/data/data_sources/remote/profile_service.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/core/utils/usecases/jwt_storage.dart';
 import 'package:experimentos_hormonal_care_mobile_frontend/scr/features/iam/domain/services/auth_service.dart';
+import 'package:experimentos_hormonal_care_mobile_frontend/widgets/language_button.dart';
 import '../widgets/profile_picture_widget.dart';
 import '../widgets/profile_field_widget.dart';
 import '../widgets/edit_mode_doctor_widget.dart';
@@ -125,12 +127,13 @@ void _openSupportChat() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF8F7193),
-        title: const Text(
-          'Doctor Profile',
+        title: Text(
+          AppLocalizations.of(context)?.doctorProfileTitle ?? 'Doctor Profile',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
+      floatingActionButton: LanguageButton(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -185,8 +188,8 @@ void _openSupportChat() {
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   icon: const Icon(Icons.support_agent, color: Colors.white),
-                  label: const Text(
-                    'Support Chat',
+                  label: Text(
+                    AppLocalizations.of(context)?.supportChatButton ?? 'Support Chat',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   onPressed: _openSupportChat,

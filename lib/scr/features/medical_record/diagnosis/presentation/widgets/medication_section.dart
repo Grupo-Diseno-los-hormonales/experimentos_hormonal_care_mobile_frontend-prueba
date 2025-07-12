@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MedicationSection extends StatelessWidget {
   final List<Map<String, String>> medications;
@@ -16,9 +17,9 @@ class MedicationSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Medication',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)?.medicationLabel ?? 'Medication',
+          style: const TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,
             color: Color(0xFF8F7193), // Texto morado oscuro
@@ -28,7 +29,7 @@ class MedicationSection extends StatelessWidget {
         ...medications.asMap().entries.map((entry) {
           int index = entry.key;
           Map<String, String> medication = entry.value;
-          return _buildMedicationItem(medication, index);
+          return _buildMedicationItem(context, medication, index);
         }).toList(),
         const SizedBox(height: 10),
         ElevatedButton(
@@ -50,7 +51,7 @@ class MedicationSection extends StatelessWidget {
     );
   }
 
-  Widget _buildMedicationItem(Map<String, String> medication, int index) {
+  Widget _buildMedicationItem(BuildContext context, Map<String, String> medication, int index) {
     return Card(
       color: const Color(0xFFDFCAE1), // Fondo morado claro
       child: ListTile(
@@ -61,7 +62,7 @@ class MedicationSection extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          'Concentration: ${medication["concentration"]}, Unit: ${medication["unit"]}, Frequency: ${medication["frequency"]}',
+          '${AppLocalizations.of(context)?.concentrationLabel ?? 'Concentration'}: ${medication["concentration"]}, ${AppLocalizations.of(context)?.unitLabel ?? 'Unit'}: ${medication["unit"]}, ${AppLocalizations.of(context)?.frequencyLabel ?? 'Frequency'}: ${medication["frequency"]}',
           style: const TextStyle(
             color: Color(0xFFA788AB), // Texto morado intermedio
           ),
@@ -102,23 +103,23 @@ class MedicationSection extends StatelessWidget {
               ),
               TextField(
                 controller: concentrationController,
-                decoration: const InputDecoration(
-                  hintText: 'Concentration',
-                  hintStyle: TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)?.concentrationLabel ?? 'Concentration',
+                  hintStyle: const TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
                 ),
               ),
               TextField(
                 controller: unitController,
-                decoration: const InputDecoration(
-                  hintText: 'Unit',
-                  hintStyle: TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)?.unitLabel ?? 'Unit',
+                  hintStyle: const TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
                 ),
               ),
               TextField(
                 controller: frequencyController,
-                decoration: const InputDecoration(
-                  hintText: 'Frequency',
-                  hintStyle: TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)?.frequencyLabel ?? 'Frequency',
+                  hintStyle: const TextStyle(color: Color(0xFFA788AB)), // Texto morado intermedio
                 ),
               ),
             ],
