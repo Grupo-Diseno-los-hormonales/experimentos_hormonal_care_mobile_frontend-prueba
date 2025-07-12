@@ -354,13 +354,20 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      doctor['fullName'] ?? (AppLocalizations.of(context)?.unknownDoctorLabel ?? 'Unknown Doctor'),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Row(
+                      children: [
+                        Text(
+                          doctor['fullName'] ?? (AppLocalizations.of(context)?.unknownDoctorLabel ?? 'Unknown Doctor'),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 8), // Espacio entre el nombre y la imagen
+                        // Agregar la imagen de verificado
+                        Image.asset('assets/images/verified.png', width: 18, height: 18), // Ajusta el tamaño según necesites
+                      ],
+                    ), // Fin del Row para el nombre y la imagen
                     const SizedBox(height: 4),
                     Text(
                       _getTranslatedSpecialty(doctor['specialty'] ?? '') != '' 

@@ -83,6 +83,7 @@ flutter:
     - assets/images/newlogohormonalcare.png
     - assets/images/patienticon.png
     - assets/images/doctoricon.png
+    - assets/images/verified.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
