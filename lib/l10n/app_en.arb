@@ -262,5 +262,13 @@
     "colorLabel": "Color",
     "startTimeScheduleLabel": "Start Time",
     "endTimeScheduleLabel": "End Time",
-    "pleaseChoosePatientMessage": "Please choose a patient"
+    "pleaseChoosePatientMessage": "Please choose a patient",
+    "firstNameLabel": "First Name",
+    "lastNameLabel": "Last Name",
+    "genderLabel": "Gender",
+    "phoneNumberLabel": "Phone Number",
+    "birthdayLabel": "Birthday",
+    "professionalIdNumberLabel": "Professional ID Number",
+    "subSpecialtyLabel": "SubSpecialty",
+    "patientsLabel": "Patients"
 }
